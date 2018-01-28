@@ -50,6 +50,9 @@ module.exports=require("./navigator.html")({
     zaifPay(){
       this.openSide=false;this.$set(this,"pageStack",[require("./zaifPay.js")])
     },
+    openassets(){
+      this.openSide=false;this.$set(this,"pageStack",[require("./openassets.js")])
+    },
   },
   created(){
     storage.get("keyPairs").then((data)=>{
