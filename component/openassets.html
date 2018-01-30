@@ -1,11 +1,23 @@
 <v-ons-page data-page="openassets" v-show="!$store.state.transparency">
     <custom-bar title="OpenAssets" menu="true">
-      <v-ons-toolbar-button @click="qr">
+      <!-- <v-ons-toolbar-button @click="qr">
         <v-ons-icon icon="ion-qr-scanner"></v-ons-icon>
-      </v-ons-toolbar-button>
+      </v-ons-toolbar-button> -->
     </custom-bar>
     <div>
       <v-ons-list>
+        <v-ons-list-item modifier="tappable" @click="getAssetDefinition">
+          <div class="left">get my assets</div>
+            </v-ons-list-item>
+            
+            
+            <img style="-webkit-user-select: none;background-position: 0px 0px, 10px 10px;
+          background-size: 20px 20px;
+          background-image:linear-gradient(45deg, #eee 25%, transparent 25%, transparent 75%, #eee 75%, #eee 100%),
+          linear-gradient(45deg, #eee 25%, white 25%, white 75%, #eee 75%, #eee 100%);"
+           src="http://160.16.224.84/image/neko1.jpg"
+            width="218" 
+            height="129">
         <v-ons-list-item modifier="small" v-show="signature&&!verifyResult">
           署名の検証に失敗しました。
         </v-ons-list-item>

@@ -19,11 +19,45 @@ module.exports=require("./openassets.html")({
       txLabel:"",
       verifyResult:true,
       signature:false,
-      utxoStr:""
+      utxoStr:"",
+      image_url:""
     }
   },
   store:require("../js/store.js"),
   methods:{
+    // assetIDを元にURLリクエストを行いjsonを取得する
+    httpRequestAsset(assetId){
+      xhr = new XMLHttpRequest();
+      if (assetId == "xxx") {
+        // create Request
+        url = "http://160.16.224.84:3000";
+      }
+      // url open
+      xhr.open("GET", url);
+      // EventListner
+      xhr.addEventListener("load", (event) => {
+        console.log("addEventListener")
+        console.log(event.target.status); // => 200
+        console.log(event.target.responseText); // => "{...}"
+        json =  JSON.parse(event.target.responseText);
+        console.log(json.image_url);
+
+      });
+      xhr.addEventListener("error", () => {
+        console.log("Shit!! Network Error");
+      });
+      // send
+      xhr.send(null);
+    },
+    showlistUrlImage(){
+      return ""
+    },
+    getAssetDefinition(){
+      this.httpRequestAsset("xxx");
+    },
+    getMyUtxo(){
+
+    },
     confirm(){
       if(!this.address||!this.coinType||isNaN(this.amount*1)||(this.amount*1)<=0||!this.feePerByte||!coinUtil.getAddrVersion(this.address)||(this.message&&Buffer.from(this.message, 'utf8').length>40)){
         
