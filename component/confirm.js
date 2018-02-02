@@ -111,6 +111,7 @@ module.exports=require("./confirm.html")({
       
       this.ready=false
       storage.get("keyPairs").then((cipher)=>{
+        // 署名する
         const finalTx=cur.signTx({
           entropyCipher:cipher.entropy,
           password:this.password,

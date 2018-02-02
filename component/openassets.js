@@ -15,17 +15,31 @@ module.exports=require("./openassets.html")({
       fiatTicker:this.$store.state.fiat,
       advanced:false,
       label:"",
-      messageToShow:"",
+      messageToShow:"aaa",
       txLabel:"",
       verifyResult:true,
       signature:false,
       utxoStr:"",
-      image_url:""
+      urlAsset:"http://160.16.224.84/image/neko1.jpg",
+
+      curs:[],
+      fiatConv:0,
+      fiat:this.$store.state.fiat,
+      loading:false,
+      state:"initial",
+      error:false
+      
     }
   },
   store:require("../js/store.js"),
   methods:{
-    // assetIDを元にURLリクエストを行いjsonを取得する
+    showlistUrlImage(){
+      return ""
+    },
+    getAssetDefinition(){
+      this.httpRequestAsset("xxx");
+    },
+        // assetIDを元にURLリクエストを行いjsonを取得する
     httpRequestAsset(assetId){
       xhr = new XMLHttpRequest();
       if (assetId == "xxx") {
@@ -34,14 +48,14 @@ module.exports=require("./openassets.html")({
       }
       // url open
       xhr.open("GET", url);
-      // EventListner
       xhr.addEventListener("load", (event) => {
         console.log("addEventListener")
         console.log(event.target.status); // => 200
         console.log(event.target.responseText); // => "{...}"
         json =  JSON.parse(event.target.responseText);
         console.log(json.image_url);
-
+        this.urlAsset=json.image_url;
+        return;
       });
       xhr.addEventListener("error", () => {
         console.log("Shit!! Network Error");
@@ -49,14 +63,53 @@ module.exports=require("./openassets.html")({
       // send
       xhr.send(null);
     },
-    showlistUrlImage(){
-      return ""
-    },
-    getAssetDefinition(){
-      this.httpRequestAsset("xxx");
-    },
     getMyUtxo(){
-
+      this.httpRequestUtxo("xxx");
+    },
+    httpRequestUtxo(done){
+      this.curs=[]
+      this.fiatConv=0
+      this.loading=true;
+      this.error=false
+      let timer=setTimeout(()=>{
+        this.loading=false
+      },10000)
+      const promises=[]
+      currencyList.eachWithPub(cur=>{
+        let obj={
+          coinId:cur.coinId,
+          balance:0,
+          unconfirmed:0,
+          screenName:cur.coinScreenName,
+          price:0,
+          icon:cur.icon
+        }
+        
+        promises.push(cur.getWholeBalanceOfThisAccount()
+          .then(res=>{
+            console.log("sono1");
+            obj.balance=res.balance
+            obj.unconfirmed=res.unconfirmed
+            this.curs.push(obj)
+            return coinUtil.getPrice(cur.coinId,this.$store.state.fiat)
+          }).then(res=>{
+            console.log("sono2");
+            this.fiatConv += res*obj.balance
+            obj.price=res
+            return obj
+          }).catch(()=>{
+            console.log("sono3");
+            this.error=true
+            obj.screenName=""
+            return obj
+          }))
+      })
+      Promise.all(promises).then(data=>{
+        this.curs=data
+        this.loading=false
+        clearTimeout(timer)
+        typeof(done)==='function'&&done()
+      })
     },
     confirm(){
       if(!this.address||!this.coinType||isNaN(this.amount*1)||(this.amount*1)<=0||!this.feePerByte||!coinUtil.getAddrVersion(this.address)||(this.message&&Buffer.from(this.message, 'utf8').length>40)){

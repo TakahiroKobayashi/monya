@@ -85,12 +85,16 @@ module.exports=class{
     return this.getUtxos(this.getReceiveAddr(),includeUnconfirmedFunds)
   }
   getChangeBalance(includeUnconfirmedFunds){
+    console.log("getChangeBalance");
     return this.getUtxos(this.getChangeAddr(),includeUnconfirmedFunds).then(d=>{
       let newestCnf=Infinity
       let newestAddr=""
       let bal=new BigNumber(0)
       let unconfirmed=new BigNumber(0)
       const res=d.utxos
+
+      console.log(res);
+      
       for(let i=0;i<res.length;i++){
         if(res[i].confirmations<newestCnf){
           newestCnf=res[i].confirmations
@@ -105,6 +109,7 @@ module.exports=class{
       this.changeIndex=newestAddr?
         this.getIndexFromAddress(newestAddr)[1]%coinUtil.GAP_LIMIT_FOR_CHANGE
       :-1
+      console.log(bal);
       return {
         balance:bal,
         unconfirmed 
@@ -113,6 +118,7 @@ module.exports=class{
   }
   
   getWholeBalanceOfThisAccount(){
+    console.log("currency getWholeBalanceOfThisAccount");
     if(this.dummy){return Promise.resolve()}
     return Promise.all([this.getReceiveBalance(false),this.getChangeBalance(false)]).then(vals=>({
       balance:vals[0].balance+vals[1].balance/100000000,
@@ -132,7 +138,9 @@ module.exports=class{
     }
     
     return promise.then(res=>{
+      console.log("promise");
       const v=res.data
+      console.log("res.data = %s",v);
       const utxos=[]
       let bal=0;
       let unconfirmed=0;
@@ -140,6 +148,7 @@ module.exports=class{
         bal+=v[i].amount
         const u=v[i]
         if(includeUnconfirmedFunds||u.confirmations){
+          console.log("utxo,txid=%s",u.txid);
           utxos.push({
             value:(new BigNumber(u.amount)).times(100000000).round().toNumber(),
             txId:u.txid,
@@ -151,6 +160,7 @@ module.exports=class{
           unconfirmed+=u.amount
         }
       }
+      console.log("bal = %s, utxo = %s", bal, utxos);
       return {
         balance:bal,
         utxos,
