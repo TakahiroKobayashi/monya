@@ -2923,7 +2923,7 @@ module.exports = typeforce
 
 const KEY_NAME = "data"
 const errors=__webpack_require__(34)
-exports.pubs = (key) => new Promise((resolve, reject) => {
+exports.get = (key) => new Promise((resolve, reject) => {
   const data=JSON.parse(localStorage.getItem(KEY_NAME))
   if(data){
     console.log("key = %s, data[key] = %s, data= %s",key, JSON.stringify(data[key]), JSON.stringify(data));
