@@ -59,7 +59,7 @@ module.exports=require("./confirm.html")({
       return JSON.stringify(this.utxosToShow)
     },
     build(){
-      
+      console.log("build passed")
       const cur =this.cur
       const targets = [{
         address:this.address,
@@ -72,6 +72,7 @@ module.exports=require("./confirm.html")({
         })
       }
       storage.get("settings").then((data)=>{
+        console.log("storage.get data = %d", data)
         this.paySound=data.paySound
         return cur.buildTransaction({
           targets,
@@ -82,13 +83,16 @@ module.exports=require("./confirm.html")({
       }).then(d=>{
         this.fee=(new BigNumber(d.fee)).divToInt(100000000)
         this.utxosToShow=d.utxos
+        console.log("d.utxos =", d.utxos)
         this.path=d.path
+        console.log("d.path =",d.path);
         this.myBalanceBeforeSending=d.balance
         this.txb=d.txBuilder
         this.ready=true
         this.loading=false
         return coinUtil.getPrice(cur.coinId,this.$store.state.fiat)
       }).then(price=>{
+        console.log("price = %s", price)
         this.price=price
       }).catch(e=>{
         this.ready=false
@@ -109,9 +113,14 @@ module.exports=require("./confirm.html")({
         (new Audio(cur.sound)).play()
       }
       
+      console.log("送金ボタン");
       this.ready=false
       storage.get("keyPairs").then((cipher)=>{
         // 署名する
+        console.log("storage.get");
+        console.log("cipher =", cipher);
+        console.log("password =", this.password);
+        console.log("this.path =", this.path);
         const finalTx=cur.signTx({
           entropyCipher:cipher.entropy,
           password:this.password,

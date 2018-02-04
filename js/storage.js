@@ -1,8 +1,9 @@
 const KEY_NAME = "data"
 const errors=require("./errors")
-exports.get = (key) => new Promise((resolve, reject) => {
+exports.pubs = (key) => new Promise((resolve, reject) => {
   const data=JSON.parse(localStorage.getItem(KEY_NAME))
   if(data){
+    console.log("key = %s, data[key] = %s, data= %s",key, JSON.stringify(data[key]), JSON.stringify(data));
     resolve(data[key])
   }else{
     resolve(null)

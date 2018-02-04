@@ -138,9 +138,9 @@ module.exports=class{
     }
     
     return promise.then(res=>{
-      console.log("promise");
+      console.log("promise in getUtxos");
       const v=res.data
-      console.log("res.data = %s",v);
+      console.log("res.data =",v);
       const utxos=[]
       let bal=0;
       let unconfirmed=0;
@@ -160,7 +160,7 @@ module.exports=class{
           unconfirmed+=u.amount
         }
       }
-      console.log("bal = %s, utxo = %s", bal, utxos);
+      console.log("bal = %s, utxo =", bal, utxos);
       return {
         balance:bal,
         utxos,
@@ -263,6 +263,15 @@ module.exports=class{
       }
     });
   }
+  // Transactionを作成します
+  /*
+          return cur.buildTransaction({
+          targets,
+          feeRate:this.feePerByte,
+          includeUnconfirmedFunds:data.includeUnconfirmedFunds,
+          utxoStr:this.utxoStr
+        })
+  */
   buildTransaction(option){
     if(this.dummy){return null;}
     if(!this.hdPubNode){throw new Error("HDNode isn't specified.");}
@@ -275,13 +284,21 @@ module.exports=class{
       let param
       if(option.utxoStr){
         param=JSON.parse(option.utxoStr)
+        console.log("option.utxoSrt param = %s", param)
       }else{
         param=this.getReceiveAddr().concat(this.getChangeAddr())
+        console.log("else param =", param)
       }
       
       this.getUtxos(param,option.includeUnconfirmedFunds).then(res=>{
+        console.log("in getUtxos.then, res.utxos = %s", JSON.stringify(res.utxos));
         const path=[]
+        //! 手持ちのutxoから送金に必要なutxoを簡単に作ってくれるライブラリ？
         const { inputs, outputs, fee } = coinSelect(res.utxos, targets, feeRate)
+
+        console.log("inputs =", inputs)
+        console.log("outputs =", outputs)
+        
         if (!inputs || !outputs) throw new errors.NoSolutionError()
         inputs.forEach(input => {
           txb.addInput(input.txId, input.vout)
@@ -313,6 +330,12 @@ module.exports=class{
             coinUtil.decrypt(entropyCipher,password)
           )
         )
+    console.log("entropyCipher = %s", entropyCipher)
+    console.log("txb = %s",txb)
+    console.log("path = %s",path)
+    console.log("seed = %s",seed) //! seed = Uint8Array(64) 512bitですか
+
+    //! 
     const node = bcLib.HDNode.fromSeedBuffer(seed,this.network)
 
     if(!txb){
