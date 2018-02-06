@@ -77,7 +77,7 @@ module.exports=require("./confirm.html")({
         return cur.buildTransaction({
           targets,
           feeRate:this.feePerByte,
-          includeUnconfirmedFunds:data.includeUnconfirmedFunds,
+          includeUnconfirmedFunds:data.includeUnconfirmedFunds, // settingsから未認証のfundsを含めるかflag
           utxoStr:this.utxoStr
         })
       }).then(d=>{

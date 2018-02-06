@@ -24,7 +24,7 @@ module.exports=require("./txDetail.html")({
       const txProm = cur.getTx(this.txId).then(v=>{
         this.res=v
         v.vout.forEach(o=>{
-          if(o.scriptPubKey.hex.substr(0,2)==="6a"){
+          if(o.scriptPubKey.hex.substr(0,2)==="6a"){ // OP_RETURN->OpenAssetsとうまく共存させ？
             this.message=bcLib.script.nullData.output.decode(new Buffer(o.scriptPubKey.hex,"hex")).toString('utf8')
           }
         })

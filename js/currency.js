@@ -82,6 +82,7 @@ module.exports=class{
     return false
   }
   getReceiveBalance(includeUnconfirmedFunds){
+    console.log("getReceiveBalance")
     return this.getUtxos(this.getReceiveAddr(),includeUnconfirmedFunds)
   }
   getChangeBalance(includeUnconfirmedFunds){
@@ -93,7 +94,7 @@ module.exports=class{
       let unconfirmed=new BigNumber(0)
       const res=d.utxos
 
-      console.log(res);
+      console.log("d.utxos=", res);
       
       for(let i=0;i<res.length;i++){
         if(res[i].confirmations<newestCnf){
@@ -109,7 +110,7 @@ module.exports=class{
       this.changeIndex=newestAddr?
         this.getIndexFromAddress(newestAddr)[1]%coinUtil.GAP_LIMIT_FOR_CHANGE
       :-1
-      console.log(bal);
+      console.log("bal=",bal);
       return {
         balance:bal,
         unconfirmed 
@@ -127,18 +128,20 @@ module.exports=class{
   }
   
   getUtxos(addressList,includeUnconfirmedFunds=false){
+    console.log("in getUtxos addressList = ", addressList)
     let promise
     if(typeof(addressList[0])==="string"){//address mode
+      console.log("address mode")
       promise=axios({
         url:this.apiEndpoint+"/addrs/"+addressList.join(",")+"/utxo",
         json:true,
         method:"GET"})
     }else{// manual utxo mode
+      console.log("manual utxo mode")
       promise=Promise.resolve({data:addressList})
     }
     
     return promise.then(res=>{
-      console.log("promise in getUtxos");
       const v=res.data
       console.log("res.data =",v);
       const utxos=[]
@@ -287,7 +290,7 @@ module.exports=class{
         console.log("option.utxoSrt param = %s", param)
       }else{
         param=this.getReceiveAddr().concat(this.getChangeAddr())
-        console.log("else param =", param)
+        console.log("else this.getReceiveAddr().concat(this.getChangeAddr()) =", param)
       }
       
       this.getUtxos(param,option.includeUnconfirmedFunds).then(res=>{
@@ -302,7 +305,8 @@ module.exports=class{
         if (!inputs || !outputs) throw new errors.NoSolutionError()
         inputs.forEach(input => {
           txb.addInput(input.txId, input.vout)
-          
+          console.log("input.txid = ",input.txId)
+          console.log("input.vout = ", input.vout)
           path.push(this.getIndexFromAddress(input.address))
           
         })
@@ -408,6 +412,7 @@ module.exports=class{
   }
   
   getTx(txId){
+    console.log("getTx called!!")
     if(this.dummy){return Promise.resolve()}
     return axios({
       url:this.apiEndpoint+"/tx/"+txId,

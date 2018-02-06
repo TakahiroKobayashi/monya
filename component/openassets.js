@@ -27,8 +27,11 @@ module.exports=require("./openassets.html")({
       fiat:this.$store.state.fiat,
       loading:false,
       state:"initial",
-      error:false
-      
+      error:false,
+      // add
+      addressList:[],
+      txidList:[],
+      txList:[],
     }
   },
   store:require("../js/store.js"),
@@ -63,6 +66,7 @@ module.exports=require("./openassets.html")({
       // send
       xhr.send(null);
     },
+    // "get all my UTXOをタップ時"
     getMyUtxo(){
       this.httpRequestUtxo("xxx");
     },
@@ -84,27 +88,82 @@ module.exports=require("./openassets.html")({
           price:0,
           icon:cur.icon
         }
-        
+        // address 取得
+        addressList = [];
+        const addressReceive = cur.getReceiveAddr();
+        const addressChange = cur.getChangeAddr();
+        for(let i=0; i<addressReceive.length;i++) {
+          addressList.push(addressReceive[i]);
+        }
+        for(let i=0; i<addressChange.length;i++) {
+          addressList.push(addressChange[i]);
+        }
+
+        console.log("addressList = ", addressList)
+
+        // getUtxoを直接呼ぶ
+        cur.getUtxos(addressList, true).then(res=>{
+          console.log("in getUtxos.then, res.utxos = %s", JSON.stringify(res.utxos));
+          // txidを元にMarker Outputを探すために全情報を取得する
+          txidList = [];
+          let utxoList = res.utxos
+          for (let i=0; i<utxoList.length; i++) {
+            console.log(utxoList[i])
+            txidList.push(utxoList[i].txId)
+          }
+          console.log("txidList = ", txidList)
+          
+          // txidが取れたならまた非同期でtxidによる全ての情報を取得（自分のvoutのみならず）
+          txList = [];
+          for(let i=0; i<txidList.length; i++) {
+            // getTxはinsight-apiを呼ぶ
+            // なんこtxあって、終わるのがいつかわからんからぐるぐる出しとく？
+            cur.getTx(txidList[i]).then(res=>{
+              txList.push(res)
+              console.log("tx%d",i, "=", res)
+              //! markerOutputをvoutから探す
+              res.vout.forEach(vout => {
+                console.log(vout)
+                // OP_RETURN
+                if(vout.scriptPubKey.hex.substr(0,2)!=="6a") {
+                  console.log(" not openassets marker ");
+                  return;
+                }
+                if(!(vout.scriptPubKey.hex.substr(4,8)!=="4f41")) { // OAP
+                  console.log(" not openassets marker ");
+                  return;
+                }
+                console.log("!! detect openassets marker ")
+                let pSize = vout.scriptPubKey.hex.substr(2,4)
+                // version
+              });
+              
+            })
+          }
+        })
+/*
         promises.push(cur.getWholeBalanceOfThisAccount()
           .then(res=>{
-            console.log("sono1");
+            console.log("res1 =",res);
             obj.balance=res.balance
             obj.unconfirmed=res.unconfirmed
             this.curs.push(obj)
             return coinUtil.getPrice(cur.coinId,this.$store.state.fiat)
           }).then(res=>{
-            console.log("sono2");
+            console.log("res2 =",res);
             this.fiatConv += res*obj.balance
             obj.price=res
             return obj
           }).catch(()=>{
-            console.log("sono3");
+            console.log("exception catch");
             this.error=true
             obj.screenName=""
             return obj
           }))
+          */
       })
       Promise.all(promises).then(data=>{
+        console.log("Promise.all")
         this.curs=data
         this.loading=false
         clearTimeout(timer)
