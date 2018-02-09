@@ -49234,6 +49234,7 @@ if (false) {(function () {
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {const coinUtil=__webpack_require__(5)
 const currencyList=__webpack_require__(4)
+const axios=__webpack_require__(18)
 module.exports=__webpack_require__(453)({
   data(){
     return {
@@ -49286,7 +49287,7 @@ module.exports=__webpack_require__(453)({
       // url open
       xhr.open("GET", url);
       xhr.addEventListener("load", (event) => {
-        console.log("addEventListener")
+        console.log("httpRequestAsset handler")
         console.log(event.target.status); // => 200
         console.log(event.target.responseText); // => "{...}"
         json =  JSON.parse(event.target.responseText);
@@ -49314,14 +49315,6 @@ module.exports=__webpack_require__(453)({
       },10000)
       const promises=[]
       currencyList.eachWithPub(cur=>{
-        let obj={
-          coinId:cur.coinId,
-          balance:0,
-          unconfirmed:0,
-          screenName:cur.coinScreenName,
-          price:0,
-          icon:cur.icon
-        }
         // address 取得
         addressList = [];
         const addressReceive = cur.getReceiveAddr();
@@ -49363,10 +49356,12 @@ module.exports=__webpack_require__(453)({
                   console.log(" not openassets marker ");
                   return;
                 }
-                if(!(vout.scriptPubKey.hex.substr(4,8)!=="4f41")) { // OAP
+                // OAPマーカー
+                if(!(vout.scriptPubKey.hex.substr(4,8)!=="4f41")) {
                   console.log(" not openassets marker ");
                   return;
                 }
+
                 console.log("!! detect openassets marker ")
                 let pSize = vout.scriptPubKey.hex.substr(2,4)
                 // version
@@ -49375,33 +49370,52 @@ module.exports=__webpack_require__(453)({
             })
           }
         })
-/*
-        promises.push(cur.getWholeBalanceOfThisAccount()
-          .then(res=>{
-            console.log("res1 =",res);
-            obj.balance=res.balance
-            obj.unconfirmed=res.unconfirmed
-            this.curs.push(obj)
-            return coinUtil.getPrice(cur.coinId,this.$store.state.fiat)
-          }).then(res=>{
-            console.log("res2 =",res);
-            this.fiatConv += res*obj.balance
-            obj.price=res
-            return obj
-          }).catch(()=>{
-            console.log("exception catch");
-            this.error=true
-            obj.screenName=""
-            return obj
-          }))
-          */
       })
+      // Promiseの全て終わった時のコールバックらしい,対象objectはpromises
       Promise.all(promises).then(data=>{
         console.log("Promise.all")
         this.curs=data
         this.loading=false
         clearTimeout(timer)
         typeof(done)==='function'&&done()
+      })
+    },
+    // 自分のサーバでOAPマーカー検索処理を任せるため
+    handlerAssetFromMyServer() {
+      this.loading=true;
+
+      let timer=setTimeout(()=>{
+        this.loading=false
+      },10000)
+      const promisesGetAssets=[]
+      // アドレス取得
+      currencyList.eachWithPub(cur=>{
+
+        // address 取得
+        addressList = [];
+        const addressReceive = cur.getReceiveAddr();
+        const addressChange = cur.getChangeAddr();
+        for(let i=0; i<addressReceive.length;i++) {
+          addressList.push(addressReceive[i]);
+        }
+        for(let i=0; i<addressChange.length;i++) {
+          addressList.push(addressChange[i]);
+        }
+
+        console.log("addressList = ", addressList)
+      })
+      // サーバリクエスト,レスポンス
+      promisesGetAssets.push(
+        axios({
+        url:"http://160.16.224.84:3000/api/v1/openassets?addrs="+addressList.join(','),
+        json:true,
+        method:"GET"}).then(res=>{
+          
+          console.log(res.data);
+        })
+      )
+      Promise.all(promisesGetAssets).then(res=>{
+        this.loading=false;
       })
     },
     confirm(){
@@ -49511,7 +49525,7 @@ module.exports=__webpack_require__(453)({
 /* 453 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var render = function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('v-ons-page',{directives:[{name:"show",rawName:"v-show",value:(!_vm.$store.state.transparency),expression:"!$store.state.transparency"}],attrs:{"data-page":"openassets"}},[_c('custom-bar',{attrs:{"title":"OpenAssets","menu":"true"}}),_vm._v(" "),_c('div',[_c('v-ons-list',[_c('v-ons-list-item',{attrs:{"modifier":"tappable"},on:{"click":_vm.getMyUtxo}},[_c('div',{staticClass:"left"},[_vm._v("get All my UTXO")])]),_vm._v(" "),_c('v-ons-list-item',{attrs:{"modifier":"tappable"},on:{"click":_vm.getAssetDefinition}},[_c('div',{staticClass:"left"},[_vm._v("get my assets")])]),_vm._v(" "),_c('v-ons-list-item',{directives:[{name:"show",rawName:"v-show",value:(_vm.urlAsset),expression:"urlAsset"}]},[_c('img',{attrs:{"src":_vm.urlAsset,"width":"300","height":"200"}})]),_vm._v(" "),_c('v-ons-list-item',{directives:[{name:"show",rawName:"v-show",value:(_vm.signature&&!_vm.verifyResult),expression:"signature&&!verifyResult"}],attrs:{"modifier":"small"}},[_vm._v("\n          署名の検証に失敗しました。\n        ")]),_vm._v(" "),_c('v-ons-list-item',{directives:[{name:"show",rawName:"v-show",value:(_vm.signature&&_vm.verifyResult),expression:"signature&&verifyResult"}],attrs:{"modifier":"small"}},[_vm._v("\n          署名の検証に成功しました。\n        ")]),_vm._v(" "),_c('v-ons-list-item',{directives:[{name:"show",rawName:"v-show",value:(_vm.messageToShow),expression:"messageToShow"}],attrs:{"modifier":"small"}},[_c('div',{staticClass:"center"},[_vm._v(_vm._s(_vm.messageToShow))])]),_vm._v(" "),_c('v-ons-list-header',[_vm._v("menu")]),_vm._v(" "),_c('v-ons-list-item',{attrs:{"modifier":"tappable chevron"},on:{"click":function($event){_vm.showLabel(_vm.currency[_vm.currencyIndex].coinId,_vm.l,0,_vm.index)}}},[_vm._v("\n          新規発行する\n        ")]),_vm._v(" "),_c('v-ons-list-item',{attrs:{"modifier":"tappable chevron"},on:{"click":function($event){_vm.showLabel(_vm.currency[_vm.currencyIndex].coinId,_vm.l,0,_vm.index)}}},[_vm._v("\n          送付する\n        ")]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_c('v-ons-list-item',[_c('v-ons-input',{attrs:{"placeholder":"送金先アドレス"},model:{value:(_vm.address),callback:function ($$v) {_vm.address=$$v},expression:"address"}})],1)],1),_vm._v(" "),_c('div',{staticClass:"right"},[_c('span',{directives:[{name:"show",rawName:"v-show",value:(_vm.label),expression:"label"}]},[_vm._v(_vm._s(_vm.label))])])]),_vm._v(" "),_c('v-ons-list-header',[_vm._v("コイン種類")]),_vm._v(" "),_vm._l((_vm.possibility),function(co){return _c('v-ons-list-item',[_c('div',{staticClass:"left"},[_c('v-ons-radio',{attrs:{"input-id":'coinType-'+co.coinId,"value":co.coinId},model:{value:(_vm.coinType),callback:function ($$v) {_vm.coinType=$$v},expression:"coinType"}})],1),_vm._v(" "),_c('label',{staticClass:"center",attrs:{"for":'coinType-'+co.coinId}},[_vm._v("\n            "+_vm._s(co.name)+"\n          ")]),_vm._v(" "),_c('div',{staticClass:"right"},[_c('currency-set',{attrs:{"ticker":co.coinId}})],1)])}),_vm._v(" "),_c('v-ons-list-item',{directives:[{name:"show",rawName:"v-show",value:(_vm.possibility.length<=0),expression:"possibility.length<=0"}]},[_c('div',{staticClass:"left"}),_vm._v(" "),_c('label',{staticClass:"center"},[_vm._v("まずは出金先アドレスを指定してください。")])]),_vm._v(" "),_c('v-ons-list-header',[_vm._v("相手に送金する金額")]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_c('v-ons-input',{attrs:{"type":"number","placeholder":"相手に送金する金額","disabled":!_vm.address||!_vm.coinType},on:{"input":_vm.calcFiat},model:{value:(_vm.amount),callback:function ($$v) {_vm.amount=$$v},expression:"amount"}})],1),_vm._v(" "),_c('div',{staticClass:"right"},[_c('currency-set',{attrs:{"ticker":_vm.coinType}})],1)]),_vm._v(" "),_c('v-ons-list-header',[_vm._v("法定通貨換算")]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_c('v-ons-input',{attrs:{"type":"number","placeholder":"日本円","disabled":!_vm.address||!_vm.coinType},on:{"input":_vm.calcCur},model:{value:(_vm.fiat),callback:function ($$v) {_vm.fiat=$$v},expression:"fiat"}})],1),_vm._v(" "),_c('div',{staticClass:"right"},[_c('currency-set',{attrs:{"ticker":_vm.fiatTicker}})],1)]),_vm._v(" "),_c('v-ons-list-item',[_c('v-ons-button',{attrs:{"modifier":"large","disabled":!_vm.address||!_vm.amount||!_vm.feePerByte},on:{"click":_vm.confirm}},[_vm._v("確認画面へ")])],1),_vm._v(" "),_c('v-ons-list-item',{directives:[{name:"show",rawName:"v-show",value:(!_vm.advanced),expression:"!advanced"}],on:{"click":function($event){_vm.advanced=true}}},[_c('div',{staticClass:"left"},[_c('v-ons-icon',{attrs:{"icon":"fa-caret-down"}})],1),_vm._v(" "),_c('div',{staticClass:"center"},[_vm._v("詳細オプション")])]),_vm._v(" "),_c('div',{directives:[{name:"show",rawName:"v-show",value:(_vm.advanced),expression:"advanced"}]},[_c('v-ons-list-header',[_vm._v("取引の説明(任意)")]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_c('v-ons-input',{attrs:{"placeholder":"履歴で確認できます。"},model:{value:(_vm.txLabel),callback:function ($$v) {_vm.txLabel=$$v},expression:"txLabel"}})],1),_vm._v(" "),_c('div',{staticClass:"right"},[_c('v-ons-icon',{attrs:{"icon":"ion-ios-list-outline"}})],1)]),_vm._v(" "),_c('v-ons-list-header',[_vm._v("送金手数料(sat/Byte) 少なすぎると危ないよ！")]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_c('v-ons-input',{attrs:{"type":"number","placeholder":"送金手数料(satoshi/Byte)","disabled":!_vm.address||!_vm.coinType},model:{value:(_vm.feePerByte),callback:function ($$v) {_vm.feePerByte=$$v},expression:"feePerByte"}})],1),_vm._v(" "),_c('div',{staticClass:"right"},[_c('currency-set',{attrs:{"ticker":"satByte"}})],1)]),_vm._v(" "),_c('v-ons-list-header',[_vm._v("相手に送るメッセージ(任意)")]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_c('v-ons-input',{attrs:{"placeholder":"40Byteまで"},model:{value:(_vm.message),callback:function ($$v) {_vm.message=$$v},expression:"message"}})],1),_vm._v(" "),_c('div',{staticClass:"right"},[_vm._v("\n              "+_vm._s(_vm.remainingBytes)+"\n            ")])]),_vm._v(" "),_c('v-ons-list-header',[_vm._v("UTXOを手動指定")]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_c('v-ons-input',{attrs:{"placeholder":"規定の形式、詳しくはソースコード"},model:{value:(_vm.utxoStr),callback:function ($$v) {_vm.utxoStr=$$v},expression:"utxoStr"}})],1)])],1)],2)],1)],1)}
+var render = function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('v-ons-page',{directives:[{name:"show",rawName:"v-show",value:(!_vm.$store.state.transparency),expression:"!$store.state.transparency"}],attrs:{"data-page":"openassets"}},[_c('custom-bar',{attrs:{"title":"OpenAssets","menu":"true"}}),_vm._v(" "),_c('div',[_c('v-ons-list',[_c('v-ons-list-item',{attrs:{"modifier":"tappable"},on:{"click":_vm.getMyUtxo}},[_c('div',{staticClass:"left"},[_vm._v("getAllMyUTXO")])]),_vm._v(" "),_c('v-ons-list-item',{attrs:{"modifier":"tappable"},on:{"click":_vm.getAssetDefinition}},[_c('div',{staticClass:"left"},[_vm._v("get my assets")])]),_vm._v(" "),_c('v-ons-list-item',{attrs:{"modifier":"tappable"},on:{"click":_vm.handlerAssetFromMyServer}},[_c('div',{staticClass:"left"},[_vm._v("AssetsFromMyServer")])]),_vm._v(" "),_c('v-ons-list-item',{directives:[{name:"show",rawName:"v-show",value:(_vm.urlAsset),expression:"urlAsset"}]},[_c('img',{attrs:{"src":_vm.urlAsset,"width":"300","height":"200"}})]),_vm._v(" "),_c('v-ons-list-item',{directives:[{name:"show",rawName:"v-show",value:(_vm.signature&&!_vm.verifyResult),expression:"signature&&!verifyResult"}],attrs:{"modifier":"small"}},[_vm._v("\n          署名の検証に失敗しました。\n        ")]),_vm._v(" "),_c('v-ons-list-item',{directives:[{name:"show",rawName:"v-show",value:(_vm.signature&&_vm.verifyResult),expression:"signature&&verifyResult"}],attrs:{"modifier":"small"}},[_vm._v("\n          署名の検証に成功しました。\n        ")]),_vm._v(" "),_c('v-ons-list-item',{directives:[{name:"show",rawName:"v-show",value:(_vm.messageToShow),expression:"messageToShow"}],attrs:{"modifier":"small"}},[_c('div',{staticClass:"center"},[_vm._v(_vm._s(_vm.messageToShow))])]),_vm._v(" "),_c('v-ons-list-header',[_vm._v("menu")]),_vm._v(" "),_c('v-ons-list-item',{attrs:{"modifier":"tappable chevron"},on:{"click":function($event){_vm.showLabel(_vm.currency[_vm.currencyIndex].coinId,_vm.l,0,_vm.index)}}},[_vm._v("\n          新規発行する\n        ")]),_vm._v(" "),_c('v-ons-list-item',{attrs:{"modifier":"tappable chevron"},on:{"click":function($event){_vm.showLabel(_vm.currency[_vm.currencyIndex].coinId,_vm.l,0,_vm.index)}}},[_vm._v("\n          送付する\n        ")]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_c('v-ons-list-item',[_c('v-ons-input',{attrs:{"placeholder":"送金先アドレス"},model:{value:(_vm.address),callback:function ($$v) {_vm.address=$$v},expression:"address"}})],1)],1),_vm._v(" "),_c('div',{staticClass:"right"},[_c('span',{directives:[{name:"show",rawName:"v-show",value:(_vm.label),expression:"label"}]},[_vm._v(_vm._s(_vm.label))])])]),_vm._v(" "),_c('v-ons-list-header',[_vm._v("コイン種類")]),_vm._v(" "),_vm._l((_vm.possibility),function(co){return _c('v-ons-list-item',[_c('div',{staticClass:"left"},[_c('v-ons-radio',{attrs:{"input-id":'coinType-'+co.coinId,"value":co.coinId},model:{value:(_vm.coinType),callback:function ($$v) {_vm.coinType=$$v},expression:"coinType"}})],1),_vm._v(" "),_c('label',{staticClass:"center",attrs:{"for":'coinType-'+co.coinId}},[_vm._v("\n            "+_vm._s(co.name)+"\n          ")]),_vm._v(" "),_c('div',{staticClass:"right"},[_c('currency-set',{attrs:{"ticker":co.coinId}})],1)])}),_vm._v(" "),_c('v-ons-list-item',{directives:[{name:"show",rawName:"v-show",value:(_vm.possibility.length<=0),expression:"possibility.length<=0"}]},[_c('div',{staticClass:"left"}),_vm._v(" "),_c('label',{staticClass:"center"},[_vm._v("まずは出金先アドレスを指定してください。")])]),_vm._v(" "),_c('v-ons-list-header',[_vm._v("相手に送金する金額")]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_c('v-ons-input',{attrs:{"type":"number","placeholder":"相手に送金する金額","disabled":!_vm.address||!_vm.coinType},on:{"input":_vm.calcFiat},model:{value:(_vm.amount),callback:function ($$v) {_vm.amount=$$v},expression:"amount"}})],1),_vm._v(" "),_c('div',{staticClass:"right"},[_c('currency-set',{attrs:{"ticker":_vm.coinType}})],1)]),_vm._v(" "),_c('v-ons-list-header',[_vm._v("法定通貨換算")]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_c('v-ons-input',{attrs:{"type":"number","placeholder":"日本円","disabled":!_vm.address||!_vm.coinType},on:{"input":_vm.calcCur},model:{value:(_vm.fiat),callback:function ($$v) {_vm.fiat=$$v},expression:"fiat"}})],1),_vm._v(" "),_c('div',{staticClass:"right"},[_c('currency-set',{attrs:{"ticker":_vm.fiatTicker}})],1)]),_vm._v(" "),_c('v-ons-list-item',[_c('v-ons-button',{attrs:{"modifier":"large","disabled":!_vm.address||!_vm.amount||!_vm.feePerByte},on:{"click":_vm.confirm}},[_vm._v("確認画面へ")])],1),_vm._v(" "),_c('v-ons-list-item',{directives:[{name:"show",rawName:"v-show",value:(!_vm.advanced),expression:"!advanced"}],on:{"click":function($event){_vm.advanced=true}}},[_c('div',{staticClass:"left"},[_c('v-ons-icon',{attrs:{"icon":"fa-caret-down"}})],1),_vm._v(" "),_c('div',{staticClass:"center"},[_vm._v("詳細オプション")])]),_vm._v(" "),_c('div',{directives:[{name:"show",rawName:"v-show",value:(_vm.advanced),expression:"advanced"}]},[_c('v-ons-list-header',[_vm._v("取引の説明(任意)")]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_c('v-ons-input',{attrs:{"placeholder":"履歴で確認できます。"},model:{value:(_vm.txLabel),callback:function ($$v) {_vm.txLabel=$$v},expression:"txLabel"}})],1),_vm._v(" "),_c('div',{staticClass:"right"},[_c('v-ons-icon',{attrs:{"icon":"ion-ios-list-outline"}})],1)]),_vm._v(" "),_c('v-ons-list-header',[_vm._v("送金手数料(sat/Byte) 少なすぎると危ないよ！")]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_c('v-ons-input',{attrs:{"type":"number","placeholder":"送金手数料(satoshi/Byte)","disabled":!_vm.address||!_vm.coinType},model:{value:(_vm.feePerByte),callback:function ($$v) {_vm.feePerByte=$$v},expression:"feePerByte"}})],1),_vm._v(" "),_c('div',{staticClass:"right"},[_c('currency-set',{attrs:{"ticker":"satByte"}})],1)]),_vm._v(" "),_c('v-ons-list-header',[_vm._v("相手に送るメッセージ(任意)")]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_c('v-ons-input',{attrs:{"placeholder":"40Byteまで"},model:{value:(_vm.message),callback:function ($$v) {_vm.message=$$v},expression:"message"}})],1),_vm._v(" "),_c('div',{staticClass:"right"},[_vm._v("\n              "+_vm._s(_vm.remainingBytes)+"\n            ")])]),_vm._v(" "),_c('v-ons-list-header',[_vm._v("UTXOを手動指定")]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_c('v-ons-input',{attrs:{"placeholder":"規定の形式、詳しくはソースコード"},model:{value:(_vm.utxoStr),callback:function ($$v) {_vm.utxoStr=$$v},expression:"utxoStr"}})],1)])],1)],2)],1)],1)}
 var staticRenderFns = []
 module.exports = function (_exports) {
   var options = typeof _exports === 'function'

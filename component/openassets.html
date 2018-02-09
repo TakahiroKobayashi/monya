@@ -7,13 +7,17 @@
     <div>
       <v-ons-list>
         <v-ons-list-item modifier="tappable" @click="getMyUtxo">
-          <div class="left">get All my UTXO</div>
+          <div class="left">getAllMyUTXO</div>
         </v-ons-list-item>
         
         <v-ons-list-item modifier="tappable" @click="getAssetDefinition">
           <div class="left">get my assets</div>
         </v-ons-list-item>
             
+        <v-ons-list-item modifier="tappable" @click="handlerAssetFromMyServer">
+          <div class="left">AssetsFromMyServer</div>
+        </v-ons-list-item>
+
         <v-ons-list-item v-show="urlAsset">
           <img v-bind:src="urlAsset"
             width="300" 

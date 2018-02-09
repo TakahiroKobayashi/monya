@@ -1,5 +1,6 @@
 const coinUtil=require("../js/coinUtil")
 const currencyList=require("../js/currencyList")
+const axios=require("axios")
 module.exports=require("./openassets.html")({
   data(){
     return {
@@ -52,7 +53,7 @@ module.exports=require("./openassets.html")({
       // url open
       xhr.open("GET", url);
       xhr.addEventListener("load", (event) => {
-        console.log("addEventListener")
+        console.log("httpRequestAsset handler")
         console.log(event.target.status); // => 200
         console.log(event.target.responseText); // => "{...}"
         json =  JSON.parse(event.target.responseText);
@@ -80,14 +81,6 @@ module.exports=require("./openassets.html")({
       },10000)
       const promises=[]
       currencyList.eachWithPub(cur=>{
-        let obj={
-          coinId:cur.coinId,
-          balance:0,
-          unconfirmed:0,
-          screenName:cur.coinScreenName,
-          price:0,
-          icon:cur.icon
-        }
         // address 取得
         addressList = [];
         const addressReceive = cur.getReceiveAddr();
@@ -129,10 +122,12 @@ module.exports=require("./openassets.html")({
                   console.log(" not openassets marker ");
                   return;
                 }
-                if(!(vout.scriptPubKey.hex.substr(4,8)!=="4f41")) { // OAP
+                // OAPマーカー
+                if(!(vout.scriptPubKey.hex.substr(4,8)!=="4f41")) {
                   console.log(" not openassets marker ");
                   return;
                 }
+
                 console.log("!! detect openassets marker ")
                 let pSize = vout.scriptPubKey.hex.substr(2,4)
                 // version
@@ -141,33 +136,52 @@ module.exports=require("./openassets.html")({
             })
           }
         })
-/*
-        promises.push(cur.getWholeBalanceOfThisAccount()
-          .then(res=>{
-            console.log("res1 =",res);
-            obj.balance=res.balance
-            obj.unconfirmed=res.unconfirmed
-            this.curs.push(obj)
-            return coinUtil.getPrice(cur.coinId,this.$store.state.fiat)
-          }).then(res=>{
-            console.log("res2 =",res);
-            this.fiatConv += res*obj.balance
-            obj.price=res
-            return obj
-          }).catch(()=>{
-            console.log("exception catch");
-            this.error=true
-            obj.screenName=""
-            return obj
-          }))
-          */
       })
+      // Promiseの全て終わった時のコールバックらしい,対象objectはpromises
       Promise.all(promises).then(data=>{
         console.log("Promise.all")
         this.curs=data
         this.loading=false
         clearTimeout(timer)
         typeof(done)==='function'&&done()
+      })
+    },
+    // 自分のサーバでOAPマーカー検索処理を任せるため
+    handlerAssetFromMyServer() {
+      this.loading=true;
+
+      let timer=setTimeout(()=>{
+        this.loading=false
+      },10000)
+      const promisesGetAssets=[]
+      // アドレス取得
+      currencyList.eachWithPub(cur=>{
+
+        // address 取得
+        addressList = [];
+        const addressReceive = cur.getReceiveAddr();
+        const addressChange = cur.getChangeAddr();
+        for(let i=0; i<addressReceive.length;i++) {
+          addressList.push(addressReceive[i]);
+        }
+        for(let i=0; i<addressChange.length;i++) {
+          addressList.push(addressChange[i]);
+        }
+
+        console.log("addressList = ", addressList)
+      })
+      // サーバリクエスト,レスポンス
+      promisesGetAssets.push(
+        axios({
+        url:"http://160.16.224.84:3000/api/v1/openassets?addrs="+addressList.join(','),
+        json:true,
+        method:"GET"}).then(res=>{
+          
+          console.log(res.data);
+        })
+      )
+      Promise.all(promisesGetAssets).then(res=>{
+        this.loading=false;
       })
     },
     confirm(){
