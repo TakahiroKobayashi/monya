@@ -21,7 +21,7 @@ module.exports=require("./openassets.html")({
       verifyResult:true,
       signature:false,
       utxoStr:"",
-      urlAsset:"http://160.16.224.84/image/neko1.jpg",
+      urlAsset:"http://160.16.224.84/image/inu1.jpg",
 
       curs:[],
       fiatConv:0,
@@ -33,6 +33,8 @@ module.exports=require("./openassets.html")({
       addressList:[],
       txidList:[],
       txList:[],
+      arrayDefinitionUrl:[],
+      arrayAssetDefinition:[],
     }
   },
   store:require("../js/store.js"),
@@ -173,15 +175,50 @@ module.exports=require("./openassets.html")({
       // サーバリクエスト,レスポンス
       promisesGetAssets.push(
         axios({
-        url:"http://160.16.224.84:3000/api/v1/openassets?addrs="+addressList.join(','),
+        url:"http://160.16.224.84:3000/api/v1/openassets/addrs/"+addressList.join(','),
         json:true,
         method:"GET"}).then(res=>{
           
+          arrayDefinitionUrl = []; // init
           console.log(res.data);
+          result = res.data.object;
+          result.forEach(utxo=>{
+            arrayDefinitionUrl.push(utxo.asset_definition_url);
+          })
+          console.log(arrayDefinitionUrl);
         })
       )
       Promise.all(promisesGetAssets).then(res=>{
-        this.loading=false;
+        // 次はdefinition_urlからAssetDefinitionPointerの取得
+        const promisesGetAssetURL=[];
+
+        // for demo
+        arrayDefinitionUrl = ["http://160.16.224.84/assets/asset1.json"];
+
+        arrayDefinitionUrl.forEach(definition_url=>{
+          promisesGetAssetURL.push(
+            axios({
+            url:definition_url,
+            json:true,
+            method:"GET"}).then(res=>{
+              arrayAssetDefinition = [];
+              arrayAssetDefinition.push(res.data);
+            })
+          )
+        })
+
+        Promise.all(promisesGetAssetURL).then(res=>{
+          this.loading=false;
+          //! とりあえず画像を表示する
+          if (arrayAssetDefinition.length == 0) {
+            return;
+          }
+
+          arrayAssetDefinition.forEach(adf=>{
+            this.urlAsset = adf.image_url
+          })
+
+        })
       })
     },
     confirm(){
