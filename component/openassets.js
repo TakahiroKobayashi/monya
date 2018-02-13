@@ -217,14 +217,16 @@ module.exports=require("./openassets.html")({
         urlGetAssetInfo = getAssetsInfoEndpoint+hashes;
 
         arrayDefinitionUrl.forEach(definition_url=>{
+          // init
           _url = definition_url.slice(2); // slice "u="
+          arrayAssetDefinition = [];
+
           promisesGetAssetURL.push(
             axios({
             url:_url,
             json:true,
             method:"GET"}).then(res=>{
               console.log(res.data);
-              arrayAssetDefinition = [];
               arrayAssetDefinition.push(res.data);
             })
           )
@@ -236,6 +238,7 @@ module.exports=require("./openassets.html")({
           if (arrayAssetDefinition.length == 0) {
             return;
           }
+          console.log (arrayAssetDefinition.length);
 
           arrayAssetDefinition.forEach(adf=>{
             console.log("adf =",adf.image_url)
