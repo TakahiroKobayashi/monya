@@ -50,7 +50,7 @@ module.exports=require("./openassets.html")({
       xhr = new XMLHttpRequest();
       if (assetId == "xxx") {
         // create Request
-        url = "http://160.16.224.84:3000";
+        url = "http://160.16.224.84/assets/inu1.jpg";
       }
       // url open
       xhr.open("GET", url);
@@ -193,14 +193,37 @@ module.exports=require("./openassets.html")({
         const promisesGetAssetURL=[];
 
         // for demo
-        arrayDefinitionUrl = ["http://160.16.224.84/assets/asset1.json"];
+        arrayDefinitionUrl = ["u=http://160.16.224.84:3000/assets/ABCDEF01","u=http://160.16.224.84:3000/assets/ABCDEF02"];
+
+        // type hash160(21byte)
+        arrayHashPointer = ["hSKATESKATESKATESKATE","hGRINDGRINDGRINDGRIND","hBOOSTBOOSTBOOSTBOOST","dDEBUGDEBUGDEBUGDEBUG"];
+
+        // GET AssetDefinitionFile
+        getAssetsInfoEndpoint = "http://160.16.224.84/api/v1/openassets/pointer/hash/";
+        
+        let hashes='';
+        arrayHashPointer.forEach(hash=>{
+          if (hash.indexOf('h') === 0) {
+            hashes = hashes+hash.slice(1)+',';
+          }
+        })
+        // 最後の","を削除
+        if (hashes.length !== 0 && hashes.lastIndexOf(',')+1 === hashes.length) {
+          console.log("deta =",hashes);
+          hashes = hashes.slice(0,-1); 
+        }
+        console.log(hashes);
+
+        urlGetAssetInfo = getAssetsInfoEndpoint+hashes;
 
         arrayDefinitionUrl.forEach(definition_url=>{
+          _url = definition_url.slice(2); // slice "u="
           promisesGetAssetURL.push(
             axios({
-            url:definition_url,
+            url:_url,
             json:true,
             method:"GET"}).then(res=>{
+              console.log(res.data);
               arrayAssetDefinition = [];
               arrayAssetDefinition.push(res.data);
             })
@@ -215,6 +238,7 @@ module.exports=require("./openassets.html")({
           }
 
           arrayAssetDefinition.forEach(adf=>{
+            console.log("adf =",adf.image_url)
             this.urlAsset = adf.image_url
           })
 
