@@ -17,7 +17,25 @@
         <v-ons-list-item modifier="tappable" @click="handlerAssetFromMyServer">
           <div class="left">AssetsFromMyServer</div>
         </v-ons-list-item>
-
+        <div id="coins">
+          <v-ons-list>
+            <v-ons-list-item v-for="opa in opas">
+              <div class="left">
+                <img :src="opa.image_url"/>
+              </div>
+              <!-- <div >
+                <div class="screenName">{{c.screenName||"取得失敗"}}</div>
+                <div class="price">
+                  <currency-set :amount="c.price" :ticker="c.coinId" :fiatTicker="fiat"></currency-set>
+                </div>
+              </div>
+              <div class="w_right">
+                <div class="amount" :class='{unconfirmed:c.unconfirmed}'><currency-set :amount="c.balance" :ticker="c.coinId"></currency-set><span v-show="c.unconfirmed">+{{c.unconfirmed}}待機中</span></div>
+                <div class="fiatConv"><currency-set :amount="c.balance*c.price" :ticker="fiat" :easy="isEasy"></currency-set></div>
+              </div> -->
+            </v-ons-list-item>
+          </v-ons-list>
+        </div>
         <v-ons-list-item v-show="urlAsset">
           <img v-bind:src="urlAsset"
             width="300" 

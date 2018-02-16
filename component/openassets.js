@@ -1,6 +1,7 @@
 const coinUtil=require("../js/coinUtil")
 const currencyList=require("../js/currencyList")
 const axios=require("axios")
+const apiServerEntry = "http://prueba-semilla.org"
 module.exports=require("./openassets.html")({
   data(){
     return {
@@ -21,7 +22,7 @@ module.exports=require("./openassets.html")({
       verifyResult:true,
       signature:false,
       utxoStr:"",
-      urlAsset:"http://160.16.224.84/image/inu1.jpg",
+      urlAsset:apiServerEntry+":88/image/inu1.jpg",
 
       curs:[],
       fiatConv:0,
@@ -35,6 +36,7 @@ module.exports=require("./openassets.html")({
       txList:[],
       arrayDefinitionUrl:[],
       arrayAssetDefinition:[],
+      opas:[{image_url:apiServerEntry+":88/image/inu1.jpg"},{image_url:apiServerEntry+":88/image/inu1.jpg"}],
     }
   },
   store:require("../js/store.js"),
@@ -50,7 +52,7 @@ module.exports=require("./openassets.html")({
       xhr = new XMLHttpRequest();
       if (assetId == "xxx") {
         // create Request
-        url = "http://160.16.224.84/assets/inu1.jpg";
+        url = apiServerEntry+"assets/inu1.jpg";
       }
       // url open
       xhr.open("GET", url);
@@ -174,8 +176,9 @@ module.exports=require("./openassets.html")({
       })
       // サーバリクエスト,レスポンス
       promisesGetAssets.push(
+        // 自分の複数のアドレスからcoloredされたutxoのみを取得するapi
         axios({
-        url:"http://160.16.224.84:3000/api/v1/openassets/addrs/"+addressList.join(','),
+        url:apiServerEntry+"/api/v1/openassets/addrs/"+addressList.join(','),
         json:true,
         method:"GET"}).then(res=>{
           
@@ -183,23 +186,29 @@ module.exports=require("./openassets.html")({
           console.log(res.data);
           result = res.data.object;
           result.forEach(utxo=>{
-            arrayDefinitionUrl.push(utxo.asset_definition_url);
+            if (utxo.asset_definition_url.indexOf("The asset definition is invalid.") !== 0) {
+              arrayDefinitionUrl.push(utxo.asset_definition_url);
+            }
           })
-          console.log(arrayDefinitionUrl);
+          console.log("urlADF=",arrayDefinitionUrl);
         })
       )
+
       Promise.all(promisesGetAssets).then(res=>{
         // 次はdefinition_urlからAssetDefinitionPointerの取得
-        const promisesGetAssetURL=[];
+        promisesGetAssetURL=[];
 
         // for demo
-        arrayDefinitionUrl = ["u=http://160.16.224.84:3000/assets/ABCDEF01","u=http://160.16.224.84:3000/assets/ABCDEF02"];
+        //if (arrayDefinitionUrl.length == 0) {
+        if (1) {
+            arrayDefinitionUrl = [apiServerEntry+"/assets/test1",apiServerEntry+"/assets/test2"];
+        }
 
-        // type hash160(21byte)
-        arrayHashPointer = ["hSKATESKATESKATESKATE","hGRINDGRINDGRINDGRIND","hBOOSTBOOSTBOOSTBOOST","dDEBUGDEBUGDEBUGDEBUG"];
+// type hash160(21byte)
+/*        arrayHashPointer = ["hSKATESKATESKATESKATE","hGRINDGRINDGRINDGRIND","hBOOSTBOOSTBOOSTBOOST","dDEBUGDEBUGDEBUGDEBUG"];
 
         // GET AssetDefinitionFile
-        getAssetsInfoEndpoint = "http://160.16.224.84/api/v1/openassets/pointer/hash/";
+        getAssetsInfoEndpoint = apiServerEntry+"/api/v1/openassets/pointer/hash/";
         
         let hashes='';
         arrayHashPointer.forEach(hash=>{
@@ -215,37 +224,38 @@ module.exports=require("./openassets.html")({
         console.log(hashes);
 
         urlGetAssetInfo = getAssetsInfoEndpoint+hashes;
-
+*/
+        this.opas = [];
         arrayDefinitionUrl.forEach(definition_url=>{
           // init
-          _url = definition_url.slice(2); // slice "u="
-          arrayAssetDefinition = [];
+//          _url = definition_url.slice(2); // slice "u=" 
+          _url = definition_url; // 上の処理は不要、openassets-rubyに関して言えばu=は削除されて戻ってくる
 
           promisesGetAssetURL.push(
             axios({
             url:_url,
             json:true,
             method:"GET"}).then(res=>{
-              console.log(res.data);
-              arrayAssetDefinition.push(res.data);
+             // this.urlAsset = res.data.image_url
+              this.opas.push(res.data)
             })
           )
         })
 
-        Promise.all(promisesGetAssetURL).then(res=>{
-          this.loading=false;
-          //! とりあえず画像を表示する
-          if (arrayAssetDefinition.length == 0) {
-            return;
+        // count
+        console.log("promisesGetAssetURL count =", promisesGetAssetURL.length);
+
+        Promise.all(promisesGetAssetURL).then(
+          response => {
+            console.log("全てダウンロード終了")
+            this.opas.forEach(o=>{
+              console.log(o);
+            })
+          },
+          error => {
+            console.log("ダウンロード失敗したものがある")
           }
-          console.log (arrayAssetDefinition.length);
-
-          arrayAssetDefinition.forEach(adf=>{
-            console.log("adf =",adf.image_url)
-            this.urlAsset = adf.image_url
-          })
-
-        })
+        );
       })
     },
     confirm(){

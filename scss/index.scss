@@ -50,7 +50,7 @@ ons-dialog .dialog{
   background:transparent;
 }
 
-[data-page="home"]{
+[data-page="home"],[data-page="openassets"]{
   #youHave{
     width:100%;
     background-color: $baseColor;
