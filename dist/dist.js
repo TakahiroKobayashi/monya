@@ -27483,7 +27483,7 @@ exports = module.exports = __webpack_require__(26)(false);
 
 
 // module
-exports.push([module.i, ".spinner {\n  width: 90px;\n  height: 90px;\n  animation-name: spin;\n  animation-duration: 4s;\n  animation-timing-function: ease;\n  animation-iteration-count: infinite;\n  background-image: url(" + escape(__webpack_require__(161)) + ");\n  background-repeat: no-repeat no-repeat;\n  background-position: center center;\n  background-size: contain;\n  display: inline-block; }\n\n.list-item--small .list-item--small__left, .list-item--small .list-item--small__center, .list-item--small .list-item--small__right {\n  min-height: 0px;\n  padding-top: 4px;\n  padding-bottom: 4px; }\n\nons-list-item .w_right {\n  margin-left: auto;\n  text-align: right; }\n\n.toolbar-button .ons-icon {\n  vertical-align: top; }\n\nons-dialog .dialog {\n  max-height: 100%;\n  max-width: 100%;\n  overflow-y: scroll;\n  overflow-y: auto; }\n\n.shake {\n  animation: shake 0.72s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;\n  transform: translate3d(0, 0, 0); }\n\n.transparent {\n  background: transparent; }\n\n[data-page=\"home\"] #youHave, [data-page=\"openassets\"] #youHave {\n  width: 100%;\n  background-color: #ffeb47;\n  padding: 2% 0%;\n  color: #7c5702;\n  background-image: url(" + escape(__webpack_require__(162)) + ");\n  background-repeat: no-repeat;\n  background-position: bottom right;\n  text-align: center; }\n  [data-page=\"home\"] #youHave .label, [data-page=\"openassets\"] #youHave .label {\n    color: #7b7442; }\n  [data-page=\"home\"] #youHave .currencySet, [data-page=\"openassets\"] #youHave .currencySet {\n    margin: 5% 0;\n    display: inline-block; }\n    [data-page=\"home\"] #youHave .currencySet .amount, [data-page=\"openassets\"] #youHave .currencySet .amount {\n      font-size: 1.6em;\n      margin: 3px; }\n    [data-page=\"home\"] #youHave .currencySet .ticker, [data-page=\"openassets\"] #youHave .currencySet .ticker {\n      font-size: 0.9em; }\n\n[data-page=\"home\"] #actionWrap, [data-page=\"openassets\"] #actionWrap {\n  margin: -10px 20px 20px;\n  position: relative; }\n  [data-page=\"home\"] #actionWrap #actions, [data-page=\"openassets\"] #actionWrap #actions {\n    position: relative;\n    display: table;\n    width: 100%;\n    border-radius: 5px;\n    table-layout: fixed;\n    background: white;\n    box-shadow: 0px 6px 19px -10px rgba(0, 0, 0, 0.5); }\n    [data-page=\"home\"] #actionWrap #actions .btns, [data-page=\"openassets\"] #actionWrap #actions .btns {\n      display: table-cell;\n      text-align: center;\n      padding: 10px; }\n      [data-page=\"home\"] #actionWrap #actions .btns ons-icon, [data-page=\"openassets\"] #actionWrap #actions .btns ons-icon {\n        font-size: 1.2em; }\n      [data-page=\"home\"] #actionWrap #actions .btns .btnLabel, [data-page=\"openassets\"] #actionWrap #actions .btns .btnLabel {\n        color: #777;\n        font-size: 0.7em; }\n      [data-page=\"home\"] #actionWrap #actions .btns:active, [data-page=\"openassets\"] #actionWrap #actions .btns:active {\n        background-color: #ccc; }\n      [data-page=\"home\"] #actionWrap #actions .btns:first-of-type, [data-page=\"openassets\"] #actionWrap #actions .btns:first-of-type {\n        border-radius: 5px 0 0 5px; }\n      [data-page=\"home\"] #actionWrap #actions .btns:last-of-type, [data-page=\"openassets\"] #actionWrap #actions .btns:last-of-type {\n        border-radius: 0 5px 5px 0; }\n\n[data-page=\"home\"] #coins .w_right, [data-page=\"openassets\"] #coins .w_right {\n  margin-left: auto; }\n  [data-page=\"home\"] #coins .w_right .fiatConv, [data-page=\"openassets\"] #coins .w_right .fiatConv {\n    color: #555;\n    font-size: 0.76em; }\n  [data-page=\"home\"] #coins .w_right .amount .ticker, [data-page=\"openassets\"] #coins .w_right .amount .ticker {\n    font-size: 0.8em; }\n  [data-page=\"home\"] #coins .w_right .unconfirmed, [data-page=\"openassets\"] #coins .w_right .unconfirmed {\n    color: red; }\n\n[data-page=\"home\"] #coins .price, [data-page=\"openassets\"] #coins .price {\n  font-size: 0.85em; }\n  [data-page=\"home\"] #coins .price .ticker, [data-page=\"openassets\"] #coins .price .ticker {\n    color: #555;\n    font-size: 0.85em; }\n\n[data-page=\"home\"] #coins .left img, [data-page=\"openassets\"] #coins .left img {\n  width: 38px;\n  height: 38px; }\n\n[data-page=\"manageCoin\"] .left img {\n  width: 38px;\n  height: 38px; }\n\n[data-page=\"txDetail\"] .list--inset {\n  margin-top: 10px; }\n\n[data-page=\"txDetail\"] .addr {\n  font-size: 0.8em;\n  padding: 4px;\n  user-select: text;\n  -webkit-user-select: text;\n  -moz-user-select: text;\n  -ms-user-select: text; }\n\n[data-page=\"txDetail\"] .addr.receive {\n  color: #4a2; }\n\n[data-page=\"txDetail\"] .addr.change {\n  color: #29a; }\n\n[data-page=\"history\"] ons-list-item .destAddress {\n  font-size: 0.8em; }\n\n[data-page=\"history\"] ons-list-item .date {\n  font-size: 0.85em; }\n\n[data-page=\"history\"] ons-list-item .hasMsg {\n  color: #81d4fa; }\n\n[data-page=\"history\"] ons-list-item .hasPrice {\n  color: #4caf50; }\n\n[data-page=\"history\"] ons-list-item .inmatureConfirmation {\n  color: #ff0000; }\n\n[data-page=\"history\"] ons-list-item .unread {\n  color: #ff9900; }\n\n[data-page=\"history\"] .container {\n  text-align: center; }\n\n[data-page=\"showLabel\"] #currencySelector, [data-page=\"sweep\"] #currencySelector, [data-page=\"receive\"] #currencySelector, [data-page=\"history\"] #currencySelector, [data-page=\"invoice\"] #currencySelector {\n  width: 100%;\n  margin: none;\n  padding: none; }\n  [data-page=\"showLabel\"] #currencySelector .currencyIcon, [data-page=\"sweep\"] #currencySelector .currencyIcon, [data-page=\"receive\"] #currencySelector .currencyIcon, [data-page=\"history\"] #currencySelector .currencyIcon, [data-page=\"invoice\"] #currencySelector .currencyIcon {\n    width: 50px;\n    height: 50px;\n    background-position: center center;\n    background-size: contain;\n    background-repeat: no-repeat; }\n    [data-page=\"showLabel\"] #currencySelector .currencyIcon .checked, [data-page=\"sweep\"] #currencySelector .currencyIcon .checked, [data-page=\"receive\"] #currencySelector .currencyIcon .checked, [data-page=\"history\"] #currencySelector .currencyIcon .checked, [data-page=\"invoice\"] #currencySelector .currencyIcon .checked {\n      position: absolute;\n      bottom: 0;\n      right: 0;\n      width: 25px;\n      height: 25px;\n      background-position: center center;\n      background-size: contain;\n      background-repeat: no-repeat;\n      background-image: url(" + escape(__webpack_require__(163)) + "); }\n\n[data-page=\"showLabel\"], [data-page=\"invoice\"], [data-page=\"receive\"] {\n  text-align: center; }\n  [data-page=\"showLabel\"] #simple .label, [data-page=\"invoice\"] #simple .label, [data-page=\"receive\"] #simple .label {\n    margin: 10px;\n    color: #888; }\n  [data-page=\"showLabel\"] #simple #qrArea #qrcode, [data-page=\"invoice\"] #simple #qrArea #qrcode, [data-page=\"receive\"] #simple #qrArea #qrcode {\n    width: 250px;\n    height: 250px;\n    background-color: #aaa;\n    display: inline-block;\n    margin: 10px;\n    position: relative; }\n    [data-page=\"showLabel\"] #simple #qrArea #qrcode #qrcodeImage, [data-page=\"invoice\"] #simple #qrArea #qrcode #qrcodeImage, [data-page=\"receive\"] #simple #qrArea #qrcode #qrcodeImage {\n      width: 100%;\n      height: 100%; }\n    [data-page=\"showLabel\"] #simple #qrArea #qrcode #currentCurIcon, [data-page=\"invoice\"] #simple #qrArea #qrcode #currentCurIcon, [data-page=\"receive\"] #simple #qrArea #qrcode #currentCurIcon {\n      position: absolute;\n      width: 20%;\n      height: 20%;\n      top: 50%;\n      left: 50%;\n      margin-left: -10%;\n      margin-top: -10%;\n      background-position: center center;\n      background-size: contain;\n      background-repeat: no-repeat; }\n  [data-page=\"showLabel\"] #simple #qrArea .address, [data-page=\"invoice\"] #simple #qrArea .address, [data-page=\"receive\"] #simple #qrArea .address {\n    display: block;\n    user-select: text;\n    -webkit-user-select: text;\n    -moz-user-select: text;\n    -ms-user-select: text;\n    word-wrap: break-word;\n    word-break: break-all;\n    white-space: pre-wrap; }\n\n[data-page=\"invoice\"] .currencyIcon.monappy {\n  background-image: url(" + escape(__webpack_require__(164)) + "); }\n\n[data-page=\"invoice\"] .monappyNotExist {\n  background-color: #fdc; }\n\n[data-page=\"first\"] .wrap {\n  width: 100%;\n  height: 100%;\n  background-color: #ffeb47; }\n  [data-page=\"first\"] .wrap .logo {\n    position: absolute;\n    top: 20%;\n    width: 100%;\n    text-align: center; }\n    [data-page=\"first\"] .wrap .logo .icon {\n      display: inline-block;\n      background-image: url(" + escape(__webpack_require__(165)) + ");\n      background-position: center center;\n      background-repeat: no-repeat;\n      background-size: contain;\n      width: 100px;\n      height: 100px; }\n    [data-page=\"first\"] .wrap .logo .appName {\n      font-size: 2em;\n      color: #7c5702; }\n    [data-page=\"first\"] .wrap .logo .label {\n      color: #7c5702;\n      opacity: 0.5; }\n  [data-page=\"first\"] .wrap .buttons {\n    margin: 50px auto;\n    width: 50%; }\n    [data-page=\"first\"] .wrap .buttons ons-button {\n      margin: 10px 0;\n      width: 100%; }\n\n[data-page=\"restorePassphrase\"] #wordArea {\n  background-color: white;\n  width: 100%; }\n  [data-page=\"restorePassphrase\"] #wordArea .word {\n    display: inline-block;\n    margin: 5px;\n    padding: 4px;\n    border: #ddd 1px solid;\n    border-radius: 3.5px; }\n    [data-page=\"restorePassphrase\"] #wordArea .word .wd {\n      color: black; }\n    [data-page=\"restorePassphrase\"] #wordArea .word .deleteBtn {\n      color: #aaa; }\n    [data-page=\"restorePassphrase\"] #wordArea .word input {\n      border: none;\n      background: transparent;\n      font-size: 1em;\n      width: 5em;\n      margin: 0px;\n      padding: 0px;\n      ime-mode: disabled; }\n    [data-page=\"restorePassphrase\"] #wordArea .word.noMatch {\n      background-color: #fdc; }\n\n[data-page=\"restorePassphrase\"] #suggestion {\n  position: fixed;\n  bottom: 0;\n  width: 100%;\n  background-color: white;\n  border-top: #c3c3c8 1px solid; }\n  [data-page=\"restorePassphrase\"] #suggestion .sgst {\n    display: inline-block;\n    padding: 9px;\n    border-right: #c3c3c8 1px solid; }\n\n[data-page=\"restorePassphrase\"] #nextWrap {\n  padding: 10px; }\n\n[data-page=\"question\"] .questionItem {\n  text-align: center;\n  padding: 3%; }\n  [data-page=\"question\"] .questionItem .questionText {\n    padding: 3%;\n    border-radius: 8px;\n    border: 1px solid #7c5702;\n    color: #7c5702;\n    background-color: white; }\n  [data-page=\"question\"] .questionItem .answers .answer {\n    border-radius: 6px;\n    background-color: #ffeb47;\n    color: #7c5702;\n    margin: 8px 0;\n    padding: 6px; }\n\n[data-page=\"generateKeyWarn\"] .wrap {\n  padding: 10px; }\n  [data-page=\"generateKeyWarn\"] .wrap .check {\n    padding: 12px; }\n    [data-page=\"generateKeyWarn\"] .wrap .check input {\n      font-size: 1.5em; }\n\n[data-page=\"generateKey\"] .touchArea {\n  height: 50%;\n  background: #50aba0;\n  color: white;\n  font-size: 2em;\n  text-align: center;\n  padding: 30% 10%; }\n\n[data-page=\"send\"] ons-list-item ons-input {\n  width: 100%;\n  display: block; }\n\n[data-page=\"confirm\"] .insufficientFund {\n  color: red; }\n\n[data-page=\"finished\"] .succeeded {\n  height: 300px;\n  margin: 50px 0;\n  background-repeat: no-repeat no-repeat;\n  background-size: contain;\n  background-position: center center; }\n  [data-page=\"finished\"] .succeeded[data-img=\"0\"] {\n    background-image: url(" + escape(__webpack_require__(166)) + "); }\n  [data-page=\"finished\"] .succeeded[data-img=\"1\"] {\n    background-image: url(" + escape(__webpack_require__(167)) + "); }\n  [data-page=\"finished\"] .succeeded[data-img=\"2\"] {\n    background-image: url(" + escape(__webpack_require__(168)) + "); }\n\n[data-page=\"finished\"] .wrap {\n  padding: 40px;\n  text-align: center; }\n\n[data-page=\"setPassword\"] ons-input {\n  width: 100%; }\n\n[data-page=\"login\"] .wrap {\n  padding: 40px;\n  text-align: center; }\n  [data-page=\"login\"] .wrap .passwordBox {\n    line-height: 35px;\n    font-size: 35px;\n    display: grid;\n    grid-template-columns: 1fr 35px;\n    background: white;\n    border-radius: 8px;\n    padding: 5px;\n    margin: 50px 5px; }\n    [data-page=\"login\"] .wrap .passwordBox input {\n      font-size: 35px;\n      background: transparent;\n      border: none; }\n    [data-page=\"login\"] .wrap .passwordBox ons-button {\n      line-height: 35px; }\n    [data-page=\"login\"] .wrap .passwordBox.incorrect {\n      animation: shake 0.72s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;\n      transform: translate3d(0, 0, 0); }\n\n[data-page=\"zaifPay\"] .hasNoCredentials {\n  text-align: center; }\n  [data-page=\"zaifPay\"] .hasNoCredentials .logo {\n    display: inline-block;\n    width: 200px;\n    height: 200px;\n    background-image: url(" + escape(__webpack_require__(169)) + ");\n    background-repeat: no-repeat;\n    background-size: contain;\n    background-position: center center; }\n\n[data-page=\"zaifHealth\"] {\n  text-align: center; }\n  [data-page=\"zaifHealth\"] #score {\n    font-size: xx-large; }\n  [data-page=\"zaifHealth\"] #zaifIcon {\n    display: inline-block;\n    width: 200px;\n    height: 200px;\n    background-repeat: no-repeat;\n    background-size: contain;\n    background-position: center center; }\n\n[data-page=\"zaifPayInvoice\"] .label {\n  margin: 10px;\n  color: #888; }\n\n[data-page=\"zaifPayInvoice\"] #qrArea #qrcode {\n  width: 250px;\n  height: 250px;\n  background-color: #aaa;\n  display: inline-block;\n  margin: 10px;\n  position: relative; }\n  [data-page=\"zaifPayInvoice\"] #qrArea #qrcode #qrcodeImage {\n    width: 100%;\n    height: 100%; }\n  [data-page=\"zaifPayInvoice\"] #qrArea #qrcode #currentCurIcon {\n    position: absolute;\n    width: 20%;\n    height: 20%;\n    top: 50%;\n    left: 50%;\n    margin-left: -10%;\n    margin-top: -10%;\n    background-position: center center;\n    background-size: contain;\n    background-repeat: no-repeat; }\n\n[data-page=\"zaifPayInvoice\"] #qrArea .address {\n  display: block;\n  user-select: text;\n  -webkit-user-select: text;\n  -moz-user-select: text;\n  -ms-user-select: text;\n  word-wrap: break-word;\n  word-break: break-all;\n  white-space: pre-wrap; }\n\n[data-page=\"qrcode\"] .page__background {\n  background: transparent; }\n\n[data-page=\"qrcode\"] #container {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  top: 0;\n  left: 0; }\n  [data-page=\"qrcode\"] #container background:transparent\n.overlay {\n    width: 100%;\n    height: 100%;\n    position: absolute;\n    top: 0;\n    left: 0; }\n\n[data-page=\"sign\"] textarea, [data-page=\"sign\"] ons-input {\n  width: 100%; }\n\n[data-page=\"sign\"] #qrcode {\n  width: 250px;\n  height: 250px;\n  background-color: #aaa;\n  display: inline-block;\n  margin: 10px;\n  position: relative; }\n  [data-page=\"sign\"] #qrcode #qrcodeImage {\n    width: 100%;\n    height: 100%; }\n  [data-page=\"sign\"] #qrcode #currentCurIcon {\n    position: absolute;\n    width: 20%;\n    height: 20%;\n    top: 50%;\n    left: 50%;\n    margin-left: -10%;\n    margin-top: -10%;\n    background-position: center center;\n    background-size: contain;\n    background-repeat: no-repeat; }\n\n[data-page=\"monaparty\"] .toolbar__right {\n  width: 50%; }\n\n[data-page=\"monaparty\"] #wrap {\n  margin: 10px;\n  background-color: white;\n  border-radius: 3px;\n  position: relative; }\n  [data-page=\"monaparty\"] #wrap ons-select {\n    width: 100%; }\n  [data-page=\"monaparty\"] #wrap #searchBox {\n    border-top: 1px solid #9a7571;\n    height: 36px;\n    width: 100%;\n    position: relative; }\n    [data-page=\"monaparty\"] #wrap #searchBox input {\n      display: block;\n      width: 100%;\n      height: 100%;\n      margin: 0;\n      border: 0;\n      border-radius: 3px;\n      box-sizing: border-box;\n      font-size: 18px; }\n    [data-page=\"monaparty\"] #wrap #searchBox ons-button {\n      height: 100%;\n      position: absolute;\n      right: 0;\n      bottom: 0; }\n\n[data-page=\"monaparty\"] #tokens {\n  text-align: center; }\n  [data-page=\"monaparty\"] #tokens .token {\n    height: 200px;\n    width: 140px;\n    display: inline-block;\n    margin: 5px;\n    position: relative;\n    background-repeat: no-repeat no-repeat;\n    background-position: center center;\n    background-size: cover; }\n    [data-page=\"monaparty\"] #tokens .token .owner {\n      position: absolute;\n      bottom: 0;\n      left: 0;\n      padding: 3px;\n      color: #ffee58; }\n    [data-page=\"monaparty\"] #tokens .token .cur {\n      position: absolute;\n      bottom: 0;\n      right: 0;\n      padding: 2px;\n      background: rgba(255, 255, 255, 0.8);\n      border-radius: 3px 0 0 0; }\n      [data-page=\"monaparty\"] #tokens .token .cur .currencySet .amount {\n        display: block; }\n      [data-page=\"monaparty\"] #tokens .token .cur .currencySet .ticker {\n        display: block;\n        font-size: 0.7em; }\n\n[data-page=\"tokenInfo\"] #cardArea {\n  margin: 10px;\n  height: 350px; }\n  [data-page=\"tokenInfo\"] #cardArea #card {\n    width: 100%;\n    height: 100%;\n    text-align: center; }\n    [data-page=\"tokenInfo\"] #cardArea #card img {\n      max-width: 100%;\n      max-height: 100%; }\n\n[data-page=\"settings\"] .monappyNotExist {\n  background-color: #fdc; }\n\n[data-page=\"tokenInfo\"] ons-toolbar, [data-page=\"monaparty\"] ons-toolbar, [data-page=\"sendToken\"] ons-toolbar, [data-page=\"makeToken\"] ons-toolbar, [data-page=\"dexOrder\"] ons-toolbar {\n  background: linear-gradient(to bottom, #9e3429 0%, #6b2f27 100%); }\n  [data-page=\"tokenInfo\"] ons-toolbar ons-icon, [data-page=\"tokenInfo\"] ons-toolbar .toolbar__title, [data-page=\"tokenInfo\"] ons-toolbar .back-button__icon, [data-page=\"monaparty\"] ons-toolbar ons-icon, [data-page=\"monaparty\"] ons-toolbar .toolbar__title, [data-page=\"monaparty\"] ons-toolbar .back-button__icon, [data-page=\"sendToken\"] ons-toolbar ons-icon, [data-page=\"sendToken\"] ons-toolbar .toolbar__title, [data-page=\"sendToken\"] ons-toolbar .back-button__icon, [data-page=\"makeToken\"] ons-toolbar ons-icon, [data-page=\"makeToken\"] ons-toolbar .toolbar__title, [data-page=\"makeToken\"] ons-toolbar .back-button__icon, [data-page=\"dexOrder\"] ons-toolbar ons-icon, [data-page=\"dexOrder\"] ons-toolbar .toolbar__title, [data-page=\"dexOrder\"] ons-toolbar .back-button__icon {\n    color: white;\n    fill: white; }\n\n[data-page=\"tokenInfo\"] .page__background, [data-page=\"monaparty\"] .page__background, [data-page=\"sendToken\"] .page__background, [data-page=\"makeToken\"] .page__background, [data-page=\"dexOrder\"] .page__background {\n  background-size: auto; }\n\nons-navigator.sand [data-page=\"tokenInfo\"] .page__background, ons-navigator.sand [data-page=\"monaparty\"] .page__background, ons-navigator.sand [data-page=\"sendToken\"] .page__background, ons-navigator.sand [data-page=\"makeToken\"] .page__background, ons-navigator.sand [data-page=\"dexOrder\"] .page__background {\n  background-image: url(" + escape(__webpack_require__(170)) + ");\n  background-position: center center;\n  background-repeat: repeat; }\n\nons-navigator.washi [data-page=\"tokenInfo\"] .page__background, ons-navigator.washi [data-page=\"monaparty\"] .page__background, ons-navigator.washi [data-page=\"sendToken\"] .page__background, ons-navigator.washi [data-page=\"makeToken\"] .page__background, ons-navigator.washi [data-page=\"dexOrder\"] .page__background {\n  background-image: url(" + escape(__webpack_require__(171)) + ");\n  background-position: center center;\n  background-repeat: repeat; }\n\nons-navigator.leather [data-page=\"tokenInfo\"] .page__background, ons-navigator.leather [data-page=\"monaparty\"] .page__background, ons-navigator.leather [data-page=\"sendToken\"] .page__background, ons-navigator.leather [data-page=\"makeToken\"] .page__background, ons-navigator.leather [data-page=\"dexOrder\"] .page__background {\n  background-image: url(" + escape(__webpack_require__(172)) + ");\n  background-position: center center;\n  background-repeat: repeat; }\n\nons-navigator.realmona [data-page=\"tokenInfo\"] .page__background, ons-navigator.realmona [data-page=\"monaparty\"] .page__background, ons-navigator.realmona [data-page=\"sendToken\"] .page__background, ons-navigator.realmona [data-page=\"makeToken\"] .page__background, ons-navigator.realmona [data-page=\"dexOrder\"] .page__background {\n  background-color: #f40298;\n  background-image: url(" + escape(__webpack_require__(173)) + ");\n  background-position: right bottom;\n  background-repeat: no-repeat; }\n\nons-navigator.white [data-page=\"tokenInfo\"] .page__background, ons-navigator.white [data-page=\"monaparty\"] .page__background, ons-navigator.white [data-page=\"sendToken\"] .page__background, ons-navigator.white [data-page=\"makeToken\"] .page__background, ons-navigator.white [data-page=\"dexOrder\"] .page__background {\n  background-color: #fff; }\n\nons-navigator.blue [data-page=\"tokenInfo\"] .page__background, ons-navigator.blue [data-page=\"monaparty\"] .page__background, ons-navigator.blue [data-page=\"sendToken\"] .page__background, ons-navigator.blue [data-page=\"makeToken\"] .page__background, ons-navigator.blue [data-page=\"dexOrder\"] .page__background {\n  background-color: #123456; }\n\n[data-page=\"tokenInfo\"] ons-input, [data-page=\"monaparty\"] ons-input, [data-page=\"sendToken\"] ons-input, [data-page=\"makeToken\"] ons-input, [data-page=\"dexOrder\"] ons-input {\n  width: 100%; }\n\n[data-page=\"tokenInfo\"] ons-button, [data-page=\"monaparty\"] ons-button, [data-page=\"sendToken\"] ons-button, [data-page=\"makeToken\"] ons-button, [data-page=\"dexOrder\"] ons-button {\n  background: linear-gradient(to bottom, #9e3429 0%, #6b2f27 100%); }\n\n@keyframes shake {\n  10%, 90% {\n    transform: translate3d(-1px, 0, 0); }\n  20%, 80% {\n    transform: translate3d(2px, 0, 0); }\n  30%, 50%, 70% {\n    transform: translate3d(-4px, 0, 0); }\n  40%, 60% {\n    transform: translate3d(4px, 0, 0); } }\n\n@keyframes spin {\n  0% {\n    transform: rotatez(0deg); }\n  25% {\n    transform: rotatez(90deg); }\n  50% {\n    transform: rotatez(180deg); }\n  75% {\n    transform: rotatez(270deg); }\n  100% {\n    transform: rotatez(360deg); } }\n", ""]);
+exports.push([module.i, ".spinner {\n  width: 90px;\n  height: 90px;\n  animation-name: spin;\n  animation-duration: 4s;\n  animation-timing-function: ease;\n  animation-iteration-count: infinite;\n  background-image: url(" + escape(__webpack_require__(161)) + ");\n  background-repeat: no-repeat no-repeat;\n  background-position: center center;\n  background-size: contain;\n  display: inline-block; }\n\n.list-item--small .list-item--small__left, .list-item--small .list-item--small__center, .list-item--small .list-item--small__right {\n  min-height: 0px;\n  padding-top: 4px;\n  padding-bottom: 4px; }\n\nons-list-item .w_right {\n  margin-left: auto;\n  text-align: right; }\n\n.toolbar-button .ons-icon {\n  vertical-align: top; }\n\nons-dialog .dialog {\n  max-height: 100%;\n  max-width: 100%;\n  overflow-y: scroll;\n  overflow-y: auto; }\n\n.shake {\n  animation: shake 0.72s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;\n  transform: translate3d(0, 0, 0); }\n\n.transparent {\n  background: transparent; }\n\n[data-page=\"home\"] #youHave {\n  width: 100%;\n  background-color: #ffeb47;\n  padding: 2% 0%;\n  color: #7c5702;\n  background-image: url(" + escape(__webpack_require__(162)) + ");\n  background-repeat: no-repeat;\n  background-position: bottom right;\n  text-align: center; }\n  [data-page=\"home\"] #youHave .label {\n    color: #7b7442; }\n  [data-page=\"home\"] #youHave .currencySet {\n    margin: 5% 0;\n    display: inline-block; }\n    [data-page=\"home\"] #youHave .currencySet .amount {\n      font-size: 1.6em;\n      margin: 3px; }\n    [data-page=\"home\"] #youHave .currencySet .ticker {\n      font-size: 0.9em; }\n\n[data-page=\"home\"] #actionWrap {\n  margin: -10px 20px 20px;\n  position: relative; }\n  [data-page=\"home\"] #actionWrap #actions {\n    position: relative;\n    display: table;\n    width: 100%;\n    border-radius: 5px;\n    table-layout: fixed;\n    background: white;\n    box-shadow: 0px 6px 19px -10px rgba(0, 0, 0, 0.5); }\n    [data-page=\"home\"] #actionWrap #actions .btns {\n      display: table-cell;\n      text-align: center;\n      padding: 10px; }\n      [data-page=\"home\"] #actionWrap #actions .btns ons-icon {\n        font-size: 1.2em; }\n      [data-page=\"home\"] #actionWrap #actions .btns .btnLabel {\n        color: #777;\n        font-size: 0.7em; }\n      [data-page=\"home\"] #actionWrap #actions .btns:active {\n        background-color: #ccc; }\n      [data-page=\"home\"] #actionWrap #actions .btns:first-of-type {\n        border-radius: 5px 0 0 5px; }\n      [data-page=\"home\"] #actionWrap #actions .btns:last-of-type {\n        border-radius: 0 5px 5px 0; }\n\n[data-page=\"home\"] #coins .w_right {\n  margin-left: auto; }\n  [data-page=\"home\"] #coins .w_right .fiatConv {\n    color: #555;\n    font-size: 0.76em; }\n  [data-page=\"home\"] #coins .w_right .amount .ticker {\n    font-size: 0.8em; }\n  [data-page=\"home\"] #coins .w_right .unconfirmed {\n    color: red; }\n\n[data-page=\"home\"] #coins .price {\n  font-size: 0.85em; }\n  [data-page=\"home\"] #coins .price .ticker {\n    color: #555;\n    font-size: 0.85em; }\n\n[data-page=\"home\"] #coins .left img {\n  width: 38px;\n  height: 38px; }\n\n[data-page=\"manageCoin\"] .left img {\n  width: 38px;\n  height: 38px; }\n\n[data-page=\"txDetail\"] .list--inset {\n  margin-top: 10px; }\n\n[data-page=\"txDetail\"] .addr {\n  font-size: 0.8em;\n  padding: 4px;\n  user-select: text;\n  -webkit-user-select: text;\n  -moz-user-select: text;\n  -ms-user-select: text; }\n\n[data-page=\"txDetail\"] .addr.receive {\n  color: #4a2; }\n\n[data-page=\"txDetail\"] .addr.change {\n  color: #29a; }\n\n[data-page=\"history\"] ons-list-item .destAddress {\n  font-size: 0.8em; }\n\n[data-page=\"history\"] ons-list-item .date {\n  font-size: 0.85em; }\n\n[data-page=\"history\"] ons-list-item .hasMsg {\n  color: #81d4fa; }\n\n[data-page=\"history\"] ons-list-item .hasPrice {\n  color: #4caf50; }\n\n[data-page=\"history\"] ons-list-item .inmatureConfirmation {\n  color: #ff0000; }\n\n[data-page=\"history\"] ons-list-item .unread {\n  color: #ff9900; }\n\n[data-page=\"history\"] .container {\n  text-align: center; }\n\n[data-page=\"showLabel\"] #currencySelector, [data-page=\"sweep\"] #currencySelector, [data-page=\"receive\"] #currencySelector, [data-page=\"history\"] #currencySelector, [data-page=\"invoice\"] #currencySelector {\n  width: 100%;\n  margin: none;\n  padding: none; }\n  [data-page=\"showLabel\"] #currencySelector .currencyIcon, [data-page=\"sweep\"] #currencySelector .currencyIcon, [data-page=\"receive\"] #currencySelector .currencyIcon, [data-page=\"history\"] #currencySelector .currencyIcon, [data-page=\"invoice\"] #currencySelector .currencyIcon {\n    width: 50px;\n    height: 50px;\n    background-position: center center;\n    background-size: contain;\n    background-repeat: no-repeat; }\n    [data-page=\"showLabel\"] #currencySelector .currencyIcon .checked, [data-page=\"sweep\"] #currencySelector .currencyIcon .checked, [data-page=\"receive\"] #currencySelector .currencyIcon .checked, [data-page=\"history\"] #currencySelector .currencyIcon .checked, [data-page=\"invoice\"] #currencySelector .currencyIcon .checked {\n      position: absolute;\n      bottom: 0;\n      right: 0;\n      width: 25px;\n      height: 25px;\n      background-position: center center;\n      background-size: contain;\n      background-repeat: no-repeat;\n      background-image: url(" + escape(__webpack_require__(163)) + "); }\n\n[data-page=\"showLabel\"], [data-page=\"invoice\"], [data-page=\"receive\"] {\n  text-align: center; }\n  [data-page=\"showLabel\"] #simple .label, [data-page=\"invoice\"] #simple .label, [data-page=\"receive\"] #simple .label {\n    margin: 10px;\n    color: #888; }\n  [data-page=\"showLabel\"] #simple #qrArea #qrcode, [data-page=\"invoice\"] #simple #qrArea #qrcode, [data-page=\"receive\"] #simple #qrArea #qrcode {\n    width: 250px;\n    height: 250px;\n    background-color: #aaa;\n    display: inline-block;\n    margin: 10px;\n    position: relative; }\n    [data-page=\"showLabel\"] #simple #qrArea #qrcode #qrcodeImage, [data-page=\"invoice\"] #simple #qrArea #qrcode #qrcodeImage, [data-page=\"receive\"] #simple #qrArea #qrcode #qrcodeImage {\n      width: 100%;\n      height: 100%; }\n    [data-page=\"showLabel\"] #simple #qrArea #qrcode #currentCurIcon, [data-page=\"invoice\"] #simple #qrArea #qrcode #currentCurIcon, [data-page=\"receive\"] #simple #qrArea #qrcode #currentCurIcon {\n      position: absolute;\n      width: 20%;\n      height: 20%;\n      top: 50%;\n      left: 50%;\n      margin-left: -10%;\n      margin-top: -10%;\n      background-position: center center;\n      background-size: contain;\n      background-repeat: no-repeat; }\n  [data-page=\"showLabel\"] #simple #qrArea .address, [data-page=\"invoice\"] #simple #qrArea .address, [data-page=\"receive\"] #simple #qrArea .address {\n    display: block;\n    user-select: text;\n    -webkit-user-select: text;\n    -moz-user-select: text;\n    -ms-user-select: text;\n    word-wrap: break-word;\n    word-break: break-all;\n    white-space: pre-wrap; }\n\n[data-page=\"invoice\"] .currencyIcon.monappy {\n  background-image: url(" + escape(__webpack_require__(164)) + "); }\n\n[data-page=\"invoice\"] .monappyNotExist {\n  background-color: #fdc; }\n\n[data-page=\"first\"] .wrap {\n  width: 100%;\n  height: 100%;\n  background-color: #ffeb47; }\n  [data-page=\"first\"] .wrap .logo {\n    position: absolute;\n    top: 20%;\n    width: 100%;\n    text-align: center; }\n    [data-page=\"first\"] .wrap .logo .icon {\n      display: inline-block;\n      background-image: url(" + escape(__webpack_require__(165)) + ");\n      background-position: center center;\n      background-repeat: no-repeat;\n      background-size: contain;\n      width: 100px;\n      height: 100px; }\n    [data-page=\"first\"] .wrap .logo .appName {\n      font-size: 2em;\n      color: #7c5702; }\n    [data-page=\"first\"] .wrap .logo .label {\n      color: #7c5702;\n      opacity: 0.5; }\n  [data-page=\"first\"] .wrap .buttons {\n    margin: 50px auto;\n    width: 50%; }\n    [data-page=\"first\"] .wrap .buttons ons-button {\n      margin: 10px 0;\n      width: 100%; }\n\n[data-page=\"restorePassphrase\"] #wordArea {\n  background-color: white;\n  width: 100%; }\n  [data-page=\"restorePassphrase\"] #wordArea .word {\n    display: inline-block;\n    margin: 5px;\n    padding: 4px;\n    border: #ddd 1px solid;\n    border-radius: 3.5px; }\n    [data-page=\"restorePassphrase\"] #wordArea .word .wd {\n      color: black; }\n    [data-page=\"restorePassphrase\"] #wordArea .word .deleteBtn {\n      color: #aaa; }\n    [data-page=\"restorePassphrase\"] #wordArea .word input {\n      border: none;\n      background: transparent;\n      font-size: 1em;\n      width: 5em;\n      margin: 0px;\n      padding: 0px;\n      ime-mode: disabled; }\n    [data-page=\"restorePassphrase\"] #wordArea .word.noMatch {\n      background-color: #fdc; }\n\n[data-page=\"restorePassphrase\"] #suggestion {\n  position: fixed;\n  bottom: 0;\n  width: 100%;\n  background-color: white;\n  border-top: #c3c3c8 1px solid; }\n  [data-page=\"restorePassphrase\"] #suggestion .sgst {\n    display: inline-block;\n    padding: 9px;\n    border-right: #c3c3c8 1px solid; }\n\n[data-page=\"restorePassphrase\"] #nextWrap {\n  padding: 10px; }\n\n[data-page=\"question\"] .questionItem {\n  text-align: center;\n  padding: 3%; }\n  [data-page=\"question\"] .questionItem .questionText {\n    padding: 3%;\n    border-radius: 8px;\n    border: 1px solid #7c5702;\n    color: #7c5702;\n    background-color: white; }\n  [data-page=\"question\"] .questionItem .answers .answer {\n    border-radius: 6px;\n    background-color: #ffeb47;\n    color: #7c5702;\n    margin: 8px 0;\n    padding: 6px; }\n\n[data-page=\"generateKeyWarn\"] .wrap {\n  padding: 10px; }\n  [data-page=\"generateKeyWarn\"] .wrap .check {\n    padding: 12px; }\n    [data-page=\"generateKeyWarn\"] .wrap .check input {\n      font-size: 1.5em; }\n\n[data-page=\"generateKey\"] .touchArea {\n  height: 50%;\n  background: #50aba0;\n  color: white;\n  font-size: 2em;\n  text-align: center;\n  padding: 30% 10%; }\n\n[data-page=\"send\"] ons-list-item ons-input {\n  width: 100%;\n  display: block; }\n\n[data-page=\"confirm\"] .insufficientFund {\n  color: red; }\n\n[data-page=\"finished\"] .succeeded {\n  height: 300px;\n  margin: 50px 0;\n  background-repeat: no-repeat no-repeat;\n  background-size: contain;\n  background-position: center center; }\n  [data-page=\"finished\"] .succeeded[data-img=\"0\"] {\n    background-image: url(" + escape(__webpack_require__(166)) + "); }\n  [data-page=\"finished\"] .succeeded[data-img=\"1\"] {\n    background-image: url(" + escape(__webpack_require__(167)) + "); }\n  [data-page=\"finished\"] .succeeded[data-img=\"2\"] {\n    background-image: url(" + escape(__webpack_require__(168)) + "); }\n\n[data-page=\"finished\"] .wrap {\n  padding: 40px;\n  text-align: center; }\n\n[data-page=\"setPassword\"] ons-input {\n  width: 100%; }\n\n[data-page=\"login\"] .wrap {\n  padding: 40px;\n  text-align: center; }\n  [data-page=\"login\"] .wrap .passwordBox {\n    line-height: 35px;\n    font-size: 35px;\n    display: grid;\n    grid-template-columns: 1fr 35px;\n    background: white;\n    border-radius: 8px;\n    padding: 5px;\n    margin: 50px 5px; }\n    [data-page=\"login\"] .wrap .passwordBox input {\n      font-size: 35px;\n      background: transparent;\n      border: none; }\n    [data-page=\"login\"] .wrap .passwordBox ons-button {\n      line-height: 35px; }\n    [data-page=\"login\"] .wrap .passwordBox.incorrect {\n      animation: shake 0.72s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;\n      transform: translate3d(0, 0, 0); }\n\n[data-page=\"zaifPay\"] .hasNoCredentials {\n  text-align: center; }\n  [data-page=\"zaifPay\"] .hasNoCredentials .logo {\n    display: inline-block;\n    width: 200px;\n    height: 200px;\n    background-image: url(" + escape(__webpack_require__(169)) + ");\n    background-repeat: no-repeat;\n    background-size: contain;\n    background-position: center center; }\n\n[data-page=\"zaifHealth\"] {\n  text-align: center; }\n  [data-page=\"zaifHealth\"] #score {\n    font-size: xx-large; }\n  [data-page=\"zaifHealth\"] #zaifIcon {\n    display: inline-block;\n    width: 200px;\n    height: 200px;\n    background-repeat: no-repeat;\n    background-size: contain;\n    background-position: center center; }\n\n[data-page=\"zaifPayInvoice\"] .label {\n  margin: 10px;\n  color: #888; }\n\n[data-page=\"zaifPayInvoice\"] #qrArea #qrcode {\n  width: 250px;\n  height: 250px;\n  background-color: #aaa;\n  display: inline-block;\n  margin: 10px;\n  position: relative; }\n  [data-page=\"zaifPayInvoice\"] #qrArea #qrcode #qrcodeImage {\n    width: 100%;\n    height: 100%; }\n  [data-page=\"zaifPayInvoice\"] #qrArea #qrcode #currentCurIcon {\n    position: absolute;\n    width: 20%;\n    height: 20%;\n    top: 50%;\n    left: 50%;\n    margin-left: -10%;\n    margin-top: -10%;\n    background-position: center center;\n    background-size: contain;\n    background-repeat: no-repeat; }\n\n[data-page=\"zaifPayInvoice\"] #qrArea .address {\n  display: block;\n  user-select: text;\n  -webkit-user-select: text;\n  -moz-user-select: text;\n  -ms-user-select: text;\n  word-wrap: break-word;\n  word-break: break-all;\n  white-space: pre-wrap; }\n\n[data-page=\"qrcode\"] .page__background {\n  background: transparent; }\n\n[data-page=\"qrcode\"] #container {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  top: 0;\n  left: 0; }\n  [data-page=\"qrcode\"] #container background:transparent\n.overlay {\n    width: 100%;\n    height: 100%;\n    position: absolute;\n    top: 0;\n    left: 0; }\n\n[data-page=\"sign\"] textarea, [data-page=\"sign\"] ons-input {\n  width: 100%; }\n\n[data-page=\"sign\"] #qrcode {\n  width: 250px;\n  height: 250px;\n  background-color: #aaa;\n  display: inline-block;\n  margin: 10px;\n  position: relative; }\n  [data-page=\"sign\"] #qrcode #qrcodeImage {\n    width: 100%;\n    height: 100%; }\n  [data-page=\"sign\"] #qrcode #currentCurIcon {\n    position: absolute;\n    width: 20%;\n    height: 20%;\n    top: 50%;\n    left: 50%;\n    margin-left: -10%;\n    margin-top: -10%;\n    background-position: center center;\n    background-size: contain;\n    background-repeat: no-repeat; }\n\n[data-page=\"monaparty\"] .toolbar__right {\n  width: 50%; }\n\n[data-page=\"monaparty\"] #wrap {\n  margin: 10px;\n  background-color: white;\n  border-radius: 3px;\n  position: relative; }\n  [data-page=\"monaparty\"] #wrap ons-select {\n    width: 100%; }\n  [data-page=\"monaparty\"] #wrap #searchBox {\n    border-top: 1px solid #9a7571;\n    height: 36px;\n    width: 100%;\n    position: relative; }\n    [data-page=\"monaparty\"] #wrap #searchBox input {\n      display: block;\n      width: 100%;\n      height: 100%;\n      margin: 0;\n      border: 0;\n      border-radius: 3px;\n      box-sizing: border-box;\n      font-size: 18px; }\n    [data-page=\"monaparty\"] #wrap #searchBox ons-button {\n      height: 100%;\n      position: absolute;\n      right: 0;\n      bottom: 0; }\n\n[data-page=\"monaparty\"] #tokens {\n  text-align: center; }\n  [data-page=\"monaparty\"] #tokens .token {\n    height: 200px;\n    width: 140px;\n    display: inline-block;\n    margin: 5px;\n    position: relative;\n    background-repeat: no-repeat no-repeat;\n    background-position: center center;\n    background-size: cover; }\n    [data-page=\"monaparty\"] #tokens .token .owner {\n      position: absolute;\n      bottom: 0;\n      left: 0;\n      padding: 3px;\n      color: #ffee58; }\n    [data-page=\"monaparty\"] #tokens .token .cur {\n      position: absolute;\n      bottom: 0;\n      right: 0;\n      padding: 2px;\n      background: rgba(255, 255, 255, 0.8);\n      border-radius: 3px 0 0 0; }\n      [data-page=\"monaparty\"] #tokens .token .cur .currencySet .amount {\n        display: block; }\n      [data-page=\"monaparty\"] #tokens .token .cur .currencySet .ticker {\n        display: block;\n        font-size: 0.7em; }\n\n[data-page=\"tokenInfo\"] #cardArea {\n  margin: 10px;\n  height: 350px; }\n  [data-page=\"tokenInfo\"] #cardArea #card {\n    width: 100%;\n    height: 100%;\n    text-align: center; }\n    [data-page=\"tokenInfo\"] #cardArea #card img {\n      max-width: 100%;\n      max-height: 100%; }\n\n[data-page=\"settings\"] .monappyNotExist {\n  background-color: #fdc; }\n\n[data-page=\"tokenInfo\"] ons-toolbar, [data-page=\"monaparty\"] ons-toolbar, [data-page=\"sendToken\"] ons-toolbar, [data-page=\"makeToken\"] ons-toolbar, [data-page=\"dexOrder\"] ons-toolbar {\n  background: linear-gradient(to bottom, #9e3429 0%, #6b2f27 100%); }\n  [data-page=\"tokenInfo\"] ons-toolbar ons-icon, [data-page=\"tokenInfo\"] ons-toolbar .toolbar__title, [data-page=\"tokenInfo\"] ons-toolbar .back-button__icon, [data-page=\"monaparty\"] ons-toolbar ons-icon, [data-page=\"monaparty\"] ons-toolbar .toolbar__title, [data-page=\"monaparty\"] ons-toolbar .back-button__icon, [data-page=\"sendToken\"] ons-toolbar ons-icon, [data-page=\"sendToken\"] ons-toolbar .toolbar__title, [data-page=\"sendToken\"] ons-toolbar .back-button__icon, [data-page=\"makeToken\"] ons-toolbar ons-icon, [data-page=\"makeToken\"] ons-toolbar .toolbar__title, [data-page=\"makeToken\"] ons-toolbar .back-button__icon, [data-page=\"dexOrder\"] ons-toolbar ons-icon, [data-page=\"dexOrder\"] ons-toolbar .toolbar__title, [data-page=\"dexOrder\"] ons-toolbar .back-button__icon {\n    color: white;\n    fill: white; }\n\n[data-page=\"tokenInfo\"] .page__background, [data-page=\"monaparty\"] .page__background, [data-page=\"sendToken\"] .page__background, [data-page=\"makeToken\"] .page__background, [data-page=\"dexOrder\"] .page__background {\n  background-size: auto; }\n\nons-navigator.sand [data-page=\"tokenInfo\"] .page__background, ons-navigator.sand [data-page=\"monaparty\"] .page__background, ons-navigator.sand [data-page=\"sendToken\"] .page__background, ons-navigator.sand [data-page=\"makeToken\"] .page__background, ons-navigator.sand [data-page=\"dexOrder\"] .page__background {\n  background-image: url(" + escape(__webpack_require__(170)) + ");\n  background-position: center center;\n  background-repeat: repeat; }\n\nons-navigator.washi [data-page=\"tokenInfo\"] .page__background, ons-navigator.washi [data-page=\"monaparty\"] .page__background, ons-navigator.washi [data-page=\"sendToken\"] .page__background, ons-navigator.washi [data-page=\"makeToken\"] .page__background, ons-navigator.washi [data-page=\"dexOrder\"] .page__background {\n  background-image: url(" + escape(__webpack_require__(171)) + ");\n  background-position: center center;\n  background-repeat: repeat; }\n\nons-navigator.leather [data-page=\"tokenInfo\"] .page__background, ons-navigator.leather [data-page=\"monaparty\"] .page__background, ons-navigator.leather [data-page=\"sendToken\"] .page__background, ons-navigator.leather [data-page=\"makeToken\"] .page__background, ons-navigator.leather [data-page=\"dexOrder\"] .page__background {\n  background-image: url(" + escape(__webpack_require__(172)) + ");\n  background-position: center center;\n  background-repeat: repeat; }\n\nons-navigator.realmona [data-page=\"tokenInfo\"] .page__background, ons-navigator.realmona [data-page=\"monaparty\"] .page__background, ons-navigator.realmona [data-page=\"sendToken\"] .page__background, ons-navigator.realmona [data-page=\"makeToken\"] .page__background, ons-navigator.realmona [data-page=\"dexOrder\"] .page__background {\n  background-color: #f40298;\n  background-image: url(" + escape(__webpack_require__(173)) + ");\n  background-position: right bottom;\n  background-repeat: no-repeat; }\n\nons-navigator.white [data-page=\"tokenInfo\"] .page__background, ons-navigator.white [data-page=\"monaparty\"] .page__background, ons-navigator.white [data-page=\"sendToken\"] .page__background, ons-navigator.white [data-page=\"makeToken\"] .page__background, ons-navigator.white [data-page=\"dexOrder\"] .page__background {\n  background-color: #fff; }\n\nons-navigator.blue [data-page=\"tokenInfo\"] .page__background, ons-navigator.blue [data-page=\"monaparty\"] .page__background, ons-navigator.blue [data-page=\"sendToken\"] .page__background, ons-navigator.blue [data-page=\"makeToken\"] .page__background, ons-navigator.blue [data-page=\"dexOrder\"] .page__background {\n  background-color: #123456; }\n\n[data-page=\"tokenInfo\"] ons-input, [data-page=\"monaparty\"] ons-input, [data-page=\"sendToken\"] ons-input, [data-page=\"makeToken\"] ons-input, [data-page=\"dexOrder\"] ons-input {\n  width: 100%; }\n\n[data-page=\"tokenInfo\"] ons-button, [data-page=\"monaparty\"] ons-button, [data-page=\"sendToken\"] ons-button, [data-page=\"makeToken\"] ons-button, [data-page=\"dexOrder\"] ons-button {\n  background: linear-gradient(to bottom, #9e3429 0%, #6b2f27 100%); }\n\n[data-page=\"openassets\"] #coins .w_right {\n  margin-left: auto; }\n  [data-page=\"openassets\"] #coins .w_right .fiatConv {\n    color: #555;\n    font-size: 0.76em; }\n  [data-page=\"openassets\"] #coins .w_right .amount .ticker {\n    font-size: 0.8em; }\n  [data-page=\"openassets\"] #coins .w_right .unconfirmed {\n    color: red; }\n\n[data-page=\"openassets\"] #coins .price {\n  font-size: 0.85em; }\n  [data-page=\"openassets\"] #coins .price .ticker {\n    color: #555;\n    font-size: 0.85em; }\n\n[data-page=\"openassets\"] #coins .right img {\n  width: 200px;\n  height: 150px; }\n\n@keyframes shake {\n  10%, 90% {\n    transform: translate3d(-1px, 0, 0); }\n  20%, 80% {\n    transform: translate3d(2px, 0, 0); }\n  30%, 50%, 70% {\n    transform: translate3d(-4px, 0, 0); }\n  40%, 60% {\n    transform: translate3d(4px, 0, 0); } }\n\n@keyframes spin {\n  0% {\n    transform: rotatez(0deg); }\n  25% {\n    transform: rotatez(90deg); }\n  50% {\n    transform: rotatez(180deg); }\n  75% {\n    transform: rotatez(270deg); }\n  100% {\n    transform: rotatez(360deg); } }\n", ""]);
 
 // exports
 
@@ -49235,8 +49235,407 @@ if (false) {(function () {
 /* WEBPACK VAR INJECTION */(function(Buffer) {const coinUtil=__webpack_require__(5)
 const currencyList=__webpack_require__(4)
 const axios=__webpack_require__(17)
-const apiServerEntry = "http://prueba-semilla.org"
+const apiServerEntry = "http://token-service.com"
 module.exports=__webpack_require__(453)({
+  data(){
+    return {
+      address:"",
+      amount:0,
+      fiat:0,
+      feePerByte:0,
+      message:"",
+      balance:0,
+      price:1,
+      coinType:"",
+      possibility:[],
+      fiatTicker:this.$store.state.fiat,
+      advanced:false,
+      label:"",
+      messageToShow:"aaa",
+      txLabel:"",
+      verifyResult:true,
+      signature:false,
+      utxoStr:"",
+      urlAsset:apiServerEntry+":88/image/inu1.jpg",
+
+      curs:[],
+      fiatConv:0,
+      fiat:this.$store.state.fiat,
+      loading:false,
+      state:"initial",
+      error:false,
+      // add
+      addressList:[],
+      txidList:[],
+      txList:[],
+      arrayDefinitionUrl:[],
+      arrayAssetDefinition:[],
+      opas:[{image_url:apiServerEntry+":88/image/inu1.jpg"},{image_url:apiServerEntry+":88/image/inu1.jpg"}],
+    }
+  },
+  store:__webpack_require__(3),
+  methods:{
+    issue(){
+      this.$emit("push",__webpack_require__(454)) // 画面遷移
+    },
+    showlistUrlImage(){
+      return ""
+    },
+    getAssetDefinition(){
+      this.httpRequestAsset("xxx");
+    },
+        // assetIDを元にURLリクエストを行いjsonを取得する
+    httpRequestAsset(assetId){
+      xhr = new XMLHttpRequest();
+      if (assetId == "xxx") {
+        // create Request
+        url = apiServerEntry+"assets/inu1.jpg";
+      }
+      // url open
+      xhr.open("GET", url);
+      xhr.addEventListener("load", (event) => {
+        console.log("httpRequestAsset handler")
+        console.log(event.target.status); // => 200
+        console.log(event.target.responseText); // => "{...}"
+        json =  JSON.parse(event.target.responseText);
+        console.log(json.image_url);
+        this.urlAsset=json.image_url;
+        return;
+      });
+      xhr.addEventListener("error", () => {
+        console.log("Shit!! Network Error");
+      });
+      // send
+      xhr.send(null);
+    },
+    // "get all my UTXOをタップ時"
+    getMyUtxo(){
+      this.httpRequestUtxo("xxx");
+    },
+    httpRequestUtxo(done){
+      this.curs=[]
+      this.fiatConv=0
+      this.loading=true;
+      this.error=false
+      let timer=setTimeout(()=>{
+        this.loading=false
+      },10000)
+      const promises=[]
+      currencyList.eachWithPub(cur=>{
+        // address 取得
+        addressList = [];
+        const addressReceive = cur.getReceiveAddr();
+        const addressChange = cur.getChangeAddr();
+        for(let i=0; i<addressReceive.length;i++) {
+          addressList.push(addressReceive[i]);
+        }
+        for(let i=0; i<addressChange.length;i++) {
+          addressList.push(addressChange[i]);
+        }
+
+        console.log("addressList = ", addressList)
+
+        // getUtxoを直接呼ぶ
+        cur.getUtxos(addressList, true).then(res=>{
+          console.log("in getUtxos.then, res.utxos = %s", JSON.stringify(res.utxos));
+          // txidを元にMarker Outputを探すために全情報を取得する
+          txidList = [];
+          let utxoList = res.utxos
+          for (let i=0; i<utxoList.length; i++) {
+            console.log(utxoList[i])
+            txidList.push(utxoList[i].txId)
+          }
+          console.log("txidList = ", txidList)
+          
+          // txidが取れたならまた非同期でtxidによる全ての情報を取得（自分のvoutのみならず）
+          txList = [];
+          for(let i=0; i<txidList.length; i++) {
+            // getTxはinsight-apiを呼ぶ
+            // なんこtxあって、終わるのがいつかわからんからぐるぐる出しとく？
+            cur.getTx(txidList[i]).then(res=>{
+              txList.push(res)
+              console.log("tx%d",i, "=", res)
+              //! markerOutputをvoutから探す
+              res.vout.forEach(vout => {
+                console.log(vout)
+                // OP_RETURN
+                if(vout.scriptPubKey.hex.substr(0,2)!=="6a") {
+                  console.log(" not openassets marker ");
+                  return;
+                }
+                // OAPマーカー
+                if(!(vout.scriptPubKey.hex.substr(4,8)!=="4f41")) {
+                  console.log(" not openassets marker ");
+                  return;
+                }
+
+                console.log("!! detect openassets marker ")
+                let pSize = vout.scriptPubKey.hex.substr(2,4)
+                // version
+              });
+              
+            })
+          }
+        })
+      })
+      // Promiseの全て終わった時のコールバックらしい,対象objectはpromises
+      Promise.all(promises).then(data=>{
+        console.log("Promise.all")
+        this.curs=data
+        this.loading=false
+        clearTimeout(timer)
+        typeof(done)==='function'&&done()
+      })
+    },
+    // 自分のサーバでOAPマーカー検索処理を任せるため
+    handlerAssetFromMyServer() {
+      this.loading=true;
+
+      let timer=setTimeout(()=>{
+        this.loading=false
+      },10000)
+      const promisesGetAssets=[]
+      // アドレス取得
+      currencyList.eachWithPub(cur=>{
+
+        // address 取得
+        addressList = [];
+        const addressReceive = cur.getReceiveAddr();
+        const addressChange = cur.getChangeAddr();
+        for(let i=0; i<addressReceive.length;i++) {
+          addressList.push(addressReceive[i]);
+        }
+        for(let i=0; i<addressChange.length;i++) {
+          addressList.push(addressChange[i]);
+        }
+
+        console.log("addressList = ", addressList)
+      })
+      // サーバリクエスト,レスポンス
+      promisesGetAssets.push(
+        // 自分の複数のアドレスからcoloredされたutxoのみを取得するapi
+        axios({
+        url:apiServerEntry+"/api/v1/utxo/"+addressList.join(','), 
+        json:true,
+        method:"GET"}).then(res=>{
+          
+          arrayDefinitionUrl = []; // init
+          console.log(res.data);
+          result = res.data.object;
+          result.forEach(utxo=>{
+            if (utxo.asset_definition_url.indexOf("The asset definition is invalid.") !== 0) {
+              arrayDefinitionUrl.push(utxo.asset_definition_url);
+            }
+          })
+          console.log("urlADF=",arrayDefinitionUrl);
+        })
+      )
+
+      Promise.all(promisesGetAssets).then(res=>{
+        // 次はdefinition_urlからAssetDefinitionPointerの取得
+        promisesGetAssetURL=[];
+
+        // for demo
+        //if (arrayDefinitionUrl.length == 0) {
+        if (0) {
+            arrayDefinitionUrl = [apiServerEntry+"/assets/test1",apiServerEntry+"/assets/test2"];
+        }
+
+// type hash160(21byte)
+/*        arrayHashPointer = ["hSKATESKATESKATESKATE","hGRINDGRINDGRINDGRIND","hBOOSTBOOSTBOOSTBOOST","dDEBUGDEBUGDEBUGDEBUG"];
+
+        // GET AssetDefinitionFile
+        getAssetsInfoEndpoint = apiServerEntry+"/api/v1/openassets/pointer/hash/";
+        
+        let hashes='';
+        arrayHashPointer.forEach(hash=>{
+          if (hash.indexOf('h') === 0) {
+            hashes = hashes+hash.slice(1)+',';
+          }
+        })
+        // 最後の","を削除
+        if (hashes.length !== 0 && hashes.lastIndexOf(',')+1 === hashes.length) {
+          console.log("deta =",hashes);
+          hashes = hashes.slice(0,-1); 
+        }
+        console.log(hashes);
+
+        urlGetAssetInfo = getAssetsInfoEndpoint+hashes;
+*/
+        this.opas = [];
+        arrayDefinitionUrl.forEach(definition_url=>{
+          // init
+//          _url = definition_url.slice(2); // slice "u=" 
+          _url = definition_url; // 上の処理は不要、openassets-rubyに関して言えばu=は削除されて戻ってくる
+
+          promisesGetAssetURL.push(
+            axios({
+            url:_url,
+            json:true,
+            method:"GET"}).then(res=>{
+             // this.urlAsset = res.data.image_url
+              this.opas.push(res.data)
+            })
+          )
+        })
+
+        // count
+        console.log("promisesGetAssetURL count =", promisesGetAssetURL.length);
+
+        Promise.all(promisesGetAssetURL).then(
+          response => {
+            console.log("全てダウンロード終了")
+            this.opas.forEach(o=>{
+              console.log(o);
+            })
+          },
+          error => {
+            console.log("ダウンロード失敗したものがある")
+          }
+        );
+      })
+    },
+    confirm(){
+      if(!this.address||!this.coinType||isNaN(this.amount*1)||(this.amount*1)<=0||!this.feePerByte||!coinUtil.getAddrVersion(this.address)||(this.message&&Buffer.from(this.message, 'utf8').length>40)){
+        
+        this.$ons.notification.alert("正しく入力してね！")
+        return;
+      }
+      this.$store.commit("setConfirmation",{
+        address:this.address,
+        amount:this.amount,
+        fiat:this.fiat,
+        feePerByte:this.feePerByte,
+        message:this.message,
+        coinType:this.coinType,
+        txLabel:this.txLabel,
+        utxoStr:this.utxoStr
+      })
+      this.$emit("push",__webpack_require__(143))
+    },
+    getPrice(){
+      coinUtil.getPrice(this.coinType,this.fiatTicker).then(res=>{
+        this.price=res
+      })
+    },
+    calcFiat(){
+     this.$nextTick(()=> this.fiat=Math.ceil(this.amount*this.price*10000000)/10000000)
+    },
+    calcCur(){
+      this.$nextTick(()=>this.amount=Math.ceil(this.fiat/this.price*10000000)/10000000)
+    },
+    qr(){
+      this.$emit("push",__webpack_require__(55))
+    }
+  },
+  watch:{
+    address(){
+      this.$set(this,"possibility",[])
+      if(this.address){
+        coinUtil.parseUrl(this.address).then(u=>{
+          if(u.isCoinAddress&&u.isPrefixOk&&u.isValidAddress){
+            const cur=currencyList.get(u.coinId)
+            this.coinType=u.coinId
+            this.possibility.push({
+              name:cur.coinScreenName,
+              coinId:u.coinId
+            })
+            this.signature=u.signature
+            if(u.signature){
+              this.verifyResult=cur.verifyMessage(u.message,u.address,u.signature)
+            }
+            this.address=u.address
+            this.message=u.opReturn
+            this.messageToShow=u.message
+            this.amount=u.amount
+            this.label=u.label
+            this.utxoStr=u.utxo
+            return
+          }else{
+            currencyList.eachWithPub((cur)=>{
+              const ver = coinUtil.getAddrVersion(this.address)
+              if(ver===cur.network.pubKeyHash||
+                ver===cur.network.scriptHash){
+                this.possibility.push({
+                  name:cur.coinScreenName,
+                  coinId:cur.coinId
+                })
+              }
+            })
+            if(this.possibility[0]){
+              this.coinType=this.possibility[0].coinId
+            }else{
+              this.coinType=""
+            }
+          }
+        })
+      }else{
+        this.coinType=""
+      }
+    },
+    coinType(){
+      if(this.coinType){
+        this.getPrice()
+        this.feePerByte = currencyList.get(this.coinType).defaultFeeSatPerByte
+      }
+    }
+  },
+  computed:{
+    remainingBytes(){
+      return 40-Buffer.from(this.message||"", 'utf8').length
+    }
+  },
+  mounted(){
+    const url=this.$store.state.sendUrl
+    if(url){
+      this.$nextTick(()=>{
+        this.address=url
+      })
+      this.$store.commit("setSendUrl")
+    }
+  }
+})
+
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1).Buffer))
+
+/***/ }),
+/* 453 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('v-ons-page',{directives:[{name:"show",rawName:"v-show",value:(!_vm.$store.state.transparency),expression:"!$store.state.transparency"}],attrs:{"data-page":"openassets"}},[_c('custom-bar',{attrs:{"title":"OpenAssets","menu":"true"}}),_vm._v(" "),_c('div',[_c('v-ons-list',[_c('v-ons-list-item',{attrs:{"modifier":"tappable"},on:{"click":_vm.getMyUtxo}},[_c('div',{staticClass:"left"},[_vm._v("getAllMyUTXO")])]),_vm._v(" "),_c('v-ons-list-item',{attrs:{"modifier":"tappable"},on:{"click":_vm.getAssetDefinition}},[_c('div',{staticClass:"left"},[_vm._v("get my assets")])]),_vm._v(" "),_c('v-ons-list-item',{attrs:{"modifier":"tappable"},on:{"click":_vm.handlerAssetFromMyServer}},[_c('div',{staticClass:"left"},[_vm._v("AssetsFromMyServer")])]),_vm._v(" "),_c('div',{attrs:{"id":"coins"}},[_c('v-ons-list',_vm._l((_vm.opas),function(opa){return _c('v-ons-list-item',[_c('div',{staticClass:"right"},[_c('img',{attrs:{"src":opa.image_url}})])])}))],1),_vm._v(" "),_c('v-ons-list-item',{directives:[{name:"show",rawName:"v-show",value:(_vm.urlAsset),expression:"urlAsset"}]},[_c('img',{attrs:{"src":_vm.urlAsset,"width":"300","height":"200"}})]),_vm._v(" "),_c('v-ons-list-item',{directives:[{name:"show",rawName:"v-show",value:(_vm.signature&&!_vm.verifyResult),expression:"signature&&!verifyResult"}],attrs:{"modifier":"small"}},[_vm._v("\n          署名の検証に失敗しました。\n        ")]),_vm._v(" "),_c('v-ons-list-item',{directives:[{name:"show",rawName:"v-show",value:(_vm.signature&&_vm.verifyResult),expression:"signature&&verifyResult"}],attrs:{"modifier":"small"}},[_vm._v("\n          署名の検証に成功しました。\n        ")]),_vm._v(" "),_c('v-ons-list-item',{directives:[{name:"show",rawName:"v-show",value:(_vm.messageToShow),expression:"messageToShow"}],attrs:{"modifier":"small"}},[_c('div',{staticClass:"center"},[_vm._v(_vm._s(_vm.messageToShow))])]),_vm._v(" "),_c('v-ons-list-header',[_vm._v("menu")]),_vm._v(" "),_c('v-ons-list-item',{attrs:{"modifier":"tappable"},on:{"click":_vm.issue}},[_vm._v("\n            新規発行する\n        ")]),_vm._v(" "),_c('v-ons-list-item',{attrs:{"modifier":"tappable chevron"},on:{"click":function($event){_vm.showLabel(_vm.currency[_vm.currencyIndex].coinId,_vm.l,0,_vm.index)}}},[_vm._v("\n          送付する\n        ")]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_c('v-ons-list-item',[_c('v-ons-input',{attrs:{"placeholder":"送金先アドレス"},model:{value:(_vm.address),callback:function ($$v) {_vm.address=$$v},expression:"address"}})],1)],1),_vm._v(" "),_c('div',{staticClass:"right"},[_c('span',{directives:[{name:"show",rawName:"v-show",value:(_vm.label),expression:"label"}]},[_vm._v(_vm._s(_vm.label))])])]),_vm._v(" "),_c('v-ons-list-header',[_vm._v("コイン種類")]),_vm._v(" "),_vm._l((_vm.possibility),function(co){return _c('v-ons-list-item',[_c('div',{staticClass:"left"},[_c('v-ons-radio',{attrs:{"input-id":'coinType-'+co.coinId,"value":co.coinId},model:{value:(_vm.coinType),callback:function ($$v) {_vm.coinType=$$v},expression:"coinType"}})],1),_vm._v(" "),_c('label',{staticClass:"center",attrs:{"for":'coinType-'+co.coinId}},[_vm._v("\n            "+_vm._s(co.name)+"\n          ")]),_vm._v(" "),_c('div',{staticClass:"right"},[_c('currency-set',{attrs:{"ticker":co.coinId}})],1)])}),_vm._v(" "),_c('v-ons-list-item',{directives:[{name:"show",rawName:"v-show",value:(_vm.possibility.length<=0),expression:"possibility.length<=0"}]},[_c('div',{staticClass:"left"}),_vm._v(" "),_c('label',{staticClass:"center"},[_vm._v("まずは出金先アドレスを指定してください。")])]),_vm._v(" "),_c('v-ons-list-header',[_vm._v("相手に送金する金額")]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_c('v-ons-input',{attrs:{"type":"number","placeholder":"相手に送金する金額","disabled":!_vm.address||!_vm.coinType},on:{"input":_vm.calcFiat},model:{value:(_vm.amount),callback:function ($$v) {_vm.amount=$$v},expression:"amount"}})],1),_vm._v(" "),_c('div',{staticClass:"right"},[_c('currency-set',{attrs:{"ticker":_vm.coinType}})],1)]),_vm._v(" "),_c('v-ons-list-header',[_vm._v("法定通貨換算")]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_c('v-ons-input',{attrs:{"type":"number","placeholder":"日本円","disabled":!_vm.address||!_vm.coinType},on:{"input":_vm.calcCur},model:{value:(_vm.fiat),callback:function ($$v) {_vm.fiat=$$v},expression:"fiat"}})],1),_vm._v(" "),_c('div',{staticClass:"right"},[_c('currency-set',{attrs:{"ticker":_vm.fiatTicker}})],1)]),_vm._v(" "),_c('v-ons-list-item',[_c('v-ons-button',{attrs:{"modifier":"large","disabled":!_vm.address||!_vm.amount||!_vm.feePerByte},on:{"click":_vm.confirm}},[_vm._v("確認画面へ")])],1),_vm._v(" "),_c('v-ons-list-item',{directives:[{name:"show",rawName:"v-show",value:(!_vm.advanced),expression:"!advanced"}],on:{"click":function($event){_vm.advanced=true}}},[_c('div',{staticClass:"left"},[_c('v-ons-icon',{attrs:{"icon":"fa-caret-down"}})],1),_vm._v(" "),_c('div',{staticClass:"center"},[_vm._v("詳細オプション")])])],2),_vm._v(" "),_c('v-ons-modal',{attrs:{"visible":_vm.loading}},[_c('p',{staticStyle:{"text-align":"center"}},[_vm._v("\n          トランザクションデータ作成中\n          "),_c('br'),_c('br')]),_c('div',{staticClass:"spinner"}),_vm._v(" "),_c('br'),_vm._v(" "),_c('v-ons-button',{attrs:{"modifier":"quiet"},on:{"click":function($event){_vm.$emit('pop')}}},[_vm._v("キャンセル")]),_vm._v(" "),_c('p')],1)],1)],1)}
+var staticRenderFns = []
+module.exports = function (_exports) {
+  var options = typeof _exports === 'function'
+    ? _exports.options
+    : _exports
+  options.render = render
+  options.staticRenderFns = staticRenderFns
+  if (false) {
+    api.createRecord("data-v-26e923c6", options)
+  }
+  return _exports
+}
+var api = null
+if (false) {(function () {
+  api = require("vue-hot-reload-api")
+  api.install(require("vue"))
+  if (!api.compatible) return
+  module.hot.accept()
+  if (module.hot.data) {
+    api.rerender("data-v-26e923c6", { render: render, staticRenderFns: staticRenderFns })
+  }
+})()}
+
+
+/***/ }),
+/* 454 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(Buffer) {const coinUtil=__webpack_require__(5)
+const currencyList=__webpack_require__(4)
+const axios=__webpack_require__(17)
+const apiServerEntry = "http://prueba-semilla.org"
+module.exports=__webpack_require__(455)({
   data(){
     return {
       address:"",
@@ -49434,7 +49833,7 @@ module.exports=__webpack_require__(453)({
 
         // for demo
         //if (arrayDefinitionUrl.length == 0) {
-        if (1) {
+        if (0) {
             arrayDefinitionUrl = [apiServerEntry+"/assets/test1",apiServerEntry+"/assets/test2"];
         }
 
@@ -49596,10 +49995,10 @@ module.exports=__webpack_require__(453)({
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1).Buffer))
 
 /***/ }),
-/* 453 */
+/* 455 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var render = function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('v-ons-page',{directives:[{name:"show",rawName:"v-show",value:(!_vm.$store.state.transparency),expression:"!$store.state.transparency"}],attrs:{"data-page":"openassets"}},[_c('custom-bar',{attrs:{"title":"OpenAssets","menu":"true"}}),_vm._v(" "),_c('div',[_c('v-ons-list',[_c('v-ons-list-item',{attrs:{"modifier":"tappable"},on:{"click":_vm.getMyUtxo}},[_c('div',{staticClass:"left"},[_vm._v("getAllMyUTXO")])]),_vm._v(" "),_c('v-ons-list-item',{attrs:{"modifier":"tappable"},on:{"click":_vm.getAssetDefinition}},[_c('div',{staticClass:"left"},[_vm._v("get my assets")])]),_vm._v(" "),_c('v-ons-list-item',{attrs:{"modifier":"tappable"},on:{"click":_vm.handlerAssetFromMyServer}},[_c('div',{staticClass:"left"},[_vm._v("AssetsFromMyServer")])]),_vm._v(" "),_c('div',{attrs:{"id":"coins"}},[_c('v-ons-list',_vm._l((_vm.opas),function(opa){return _c('v-ons-list-item',[_c('div',{staticClass:"left"},[_c('img',{attrs:{"src":opa.image_url}})])])}))],1),_vm._v(" "),_c('v-ons-list-item',{directives:[{name:"show",rawName:"v-show",value:(_vm.urlAsset),expression:"urlAsset"}]},[_c('img',{attrs:{"src":_vm.urlAsset,"width":"300","height":"200"}})]),_vm._v(" "),_c('v-ons-list-item',{directives:[{name:"show",rawName:"v-show",value:(_vm.signature&&!_vm.verifyResult),expression:"signature&&!verifyResult"}],attrs:{"modifier":"small"}},[_vm._v("\n          署名の検証に失敗しました。\n        ")]),_vm._v(" "),_c('v-ons-list-item',{directives:[{name:"show",rawName:"v-show",value:(_vm.signature&&_vm.verifyResult),expression:"signature&&verifyResult"}],attrs:{"modifier":"small"}},[_vm._v("\n          署名の検証に成功しました。\n        ")]),_vm._v(" "),_c('v-ons-list-item',{directives:[{name:"show",rawName:"v-show",value:(_vm.messageToShow),expression:"messageToShow"}],attrs:{"modifier":"small"}},[_c('div',{staticClass:"center"},[_vm._v(_vm._s(_vm.messageToShow))])]),_vm._v(" "),_c('v-ons-list-header',[_vm._v("menu")]),_vm._v(" "),_c('v-ons-list-item',{attrs:{"modifier":"tappable chevron"},on:{"click":function($event){_vm.showLabel(_vm.currency[_vm.currencyIndex].coinId,_vm.l,0,_vm.index)}}},[_vm._v("\n          新規発行する\n        ")]),_vm._v(" "),_c('v-ons-list-item',{attrs:{"modifier":"tappable chevron"},on:{"click":function($event){_vm.showLabel(_vm.currency[_vm.currencyIndex].coinId,_vm.l,0,_vm.index)}}},[_vm._v("\n          送付する\n        ")]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_c('v-ons-list-item',[_c('v-ons-input',{attrs:{"placeholder":"送金先アドレス"},model:{value:(_vm.address),callback:function ($$v) {_vm.address=$$v},expression:"address"}})],1)],1),_vm._v(" "),_c('div',{staticClass:"right"},[_c('span',{directives:[{name:"show",rawName:"v-show",value:(_vm.label),expression:"label"}]},[_vm._v(_vm._s(_vm.label))])])]),_vm._v(" "),_c('v-ons-list-header',[_vm._v("コイン種類")]),_vm._v(" "),_vm._l((_vm.possibility),function(co){return _c('v-ons-list-item',[_c('div',{staticClass:"left"},[_c('v-ons-radio',{attrs:{"input-id":'coinType-'+co.coinId,"value":co.coinId},model:{value:(_vm.coinType),callback:function ($$v) {_vm.coinType=$$v},expression:"coinType"}})],1),_vm._v(" "),_c('label',{staticClass:"center",attrs:{"for":'coinType-'+co.coinId}},[_vm._v("\n            "+_vm._s(co.name)+"\n          ")]),_vm._v(" "),_c('div',{staticClass:"right"},[_c('currency-set',{attrs:{"ticker":co.coinId}})],1)])}),_vm._v(" "),_c('v-ons-list-item',{directives:[{name:"show",rawName:"v-show",value:(_vm.possibility.length<=0),expression:"possibility.length<=0"}]},[_c('div',{staticClass:"left"}),_vm._v(" "),_c('label',{staticClass:"center"},[_vm._v("まずは出金先アドレスを指定してください。")])]),_vm._v(" "),_c('v-ons-list-header',[_vm._v("相手に送金する金額")]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_c('v-ons-input',{attrs:{"type":"number","placeholder":"相手に送金する金額","disabled":!_vm.address||!_vm.coinType},on:{"input":_vm.calcFiat},model:{value:(_vm.amount),callback:function ($$v) {_vm.amount=$$v},expression:"amount"}})],1),_vm._v(" "),_c('div',{staticClass:"right"},[_c('currency-set',{attrs:{"ticker":_vm.coinType}})],1)]),_vm._v(" "),_c('v-ons-list-header',[_vm._v("法定通貨換算")]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_c('v-ons-input',{attrs:{"type":"number","placeholder":"日本円","disabled":!_vm.address||!_vm.coinType},on:{"input":_vm.calcCur},model:{value:(_vm.fiat),callback:function ($$v) {_vm.fiat=$$v},expression:"fiat"}})],1),_vm._v(" "),_c('div',{staticClass:"right"},[_c('currency-set',{attrs:{"ticker":_vm.fiatTicker}})],1)]),_vm._v(" "),_c('v-ons-list-item',[_c('v-ons-button',{attrs:{"modifier":"large","disabled":!_vm.address||!_vm.amount||!_vm.feePerByte},on:{"click":_vm.confirm}},[_vm._v("確認画面へ")])],1),_vm._v(" "),_c('v-ons-list-item',{directives:[{name:"show",rawName:"v-show",value:(!_vm.advanced),expression:"!advanced"}],on:{"click":function($event){_vm.advanced=true}}},[_c('div',{staticClass:"left"},[_c('v-ons-icon',{attrs:{"icon":"fa-caret-down"}})],1),_vm._v(" "),_c('div',{staticClass:"center"},[_vm._v("詳細オプション")])]),_vm._v(" "),_c('div',{directives:[{name:"show",rawName:"v-show",value:(_vm.advanced),expression:"advanced"}]},[_c('v-ons-list-header',[_vm._v("取引の説明(任意)")]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_c('v-ons-input',{attrs:{"placeholder":"履歴で確認できます。"},model:{value:(_vm.txLabel),callback:function ($$v) {_vm.txLabel=$$v},expression:"txLabel"}})],1),_vm._v(" "),_c('div',{staticClass:"right"},[_c('v-ons-icon',{attrs:{"icon":"ion-ios-list-outline"}})],1)]),_vm._v(" "),_c('v-ons-list-header',[_vm._v("送金手数料(sat/Byte) 少なすぎると危ないよ！")]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_c('v-ons-input',{attrs:{"type":"number","placeholder":"送金手数料(satoshi/Byte)","disabled":!_vm.address||!_vm.coinType},model:{value:(_vm.feePerByte),callback:function ($$v) {_vm.feePerByte=$$v},expression:"feePerByte"}})],1),_vm._v(" "),_c('div',{staticClass:"right"},[_c('currency-set',{attrs:{"ticker":"satByte"}})],1)]),_vm._v(" "),_c('v-ons-list-header',[_vm._v("相手に送るメッセージ(任意)")]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_c('v-ons-input',{attrs:{"placeholder":"40Byteまで"},model:{value:(_vm.message),callback:function ($$v) {_vm.message=$$v},expression:"message"}})],1),_vm._v(" "),_c('div',{staticClass:"right"},[_vm._v("\n              "+_vm._s(_vm.remainingBytes)+"\n            ")])]),_vm._v(" "),_c('v-ons-list-header',[_vm._v("UTXOを手動指定")]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_c('v-ons-input',{attrs:{"placeholder":"規定の形式、詳しくはソースコード"},model:{value:(_vm.utxoStr),callback:function ($$v) {_vm.utxoStr=$$v},expression:"utxoStr"}})],1)])],1)],2)],1)],1)}
+var render = function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('v-ons-page',{directives:[{name:"show",rawName:"v-show",value:(!_vm.$store.state.transparency),expression:"!$store.state.transparency"}],attrs:{"data-page":"openassetsIssue"}},[_c('custom-bar',{attrs:{"title":"OpenAssetsIssue","menu":"true"}}),_vm._v(" "),_c('div',[_c('v-ons-list',[_c('v-ons-list-item',{attrs:{"modifier":"tappable"},on:{"click":_vm.getMyUtxo}},[_c('div',{staticClass:"left"},[_vm._v("getAllMyUTXO")])]),_vm._v(" "),_c('v-ons-list-item',{attrs:{"modifier":"tappable chevron"},on:{"click":function($event){_vm.showLabel(_vm.currency[_vm.currencyIndex].coinId,_vm.l,0,_vm.index)}}},[_vm._v("\n          新規発行する\n        ")]),_vm._v(" "),_c('v-ons-list-item',{attrs:{"modifier":"tappable chevron"},on:{"click":function($event){_vm.showLabel(_vm.currency[_vm.currencyIndex].coinId,_vm.l,0,_vm.index)}}},[_vm._v("\n          送付する\n        ")])],1),_vm._v(" "),_c('v-ons-modal',{attrs:{"visible":_vm.loading}},[_c('p',{staticStyle:{"text-align":"center"}},[_vm._v("\n          トランザクションデータ作成中\n          "),_c('br'),_c('br')]),_c('div',{staticClass:"spinner"}),_vm._v(" "),_c('br'),_vm._v(" "),_c('v-ons-button',{attrs:{"modifier":"quiet"},on:{"click":function($event){_vm.$emit('pop')}}},[_vm._v("キャンセル")]),_vm._v(" "),_c('p')],1)],1)],1)}
 var staticRenderFns = []
 module.exports = function (_exports) {
   var options = typeof _exports === 'function'
@@ -49608,7 +50007,7 @@ module.exports = function (_exports) {
   options.render = render
   options.staticRenderFns = staticRenderFns
   if (false) {
-    api.createRecord("data-v-26e923c6", options)
+    api.createRecord("data-v-71ad90fc", options)
   }
   return _exports
 }
@@ -49619,7 +50018,7 @@ if (false) {(function () {
   if (!api.compatible) return
   module.hot.accept()
   if (module.hot.data) {
-    api.rerender("data-v-26e923c6", { render: render, staticRenderFns: staticRenderFns })
+    api.rerender("data-v-71ad90fc", { render: render, staticRenderFns: staticRenderFns })
   }
 })()}
 

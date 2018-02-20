@@ -50,7 +50,7 @@ ons-dialog .dialog{
   background:transparent;
 }
 
-[data-page="home"],[data-page="openassets"]{
+[data-page="home"]{
   #youHave{
     width:100%;
     background-color: $baseColor;
@@ -741,6 +741,37 @@ $zaifPayLogoSize:200px;
   }
 }
 
+[data-page="openassets"]{
+  #coins{
+    .w_right{
+      margin-left:auto;
+      .fiatConv{
+        color:#555;
+        font-size:0.76em;
+      }
+      .amount .ticker{
+        font-size:0.8em;
+      }
+      .unconfirmed{
+        color:red;
+      }
+    }
+    .price{
+      font-size:0.85em;
+      .ticker{
+        color:#555;
+        font-size:0.85em;
+      }
+    }
+    .right{
+      img{
+        width:200px;
+        height:150px;
+      }
+    }
+  }
+
+}
 
 @keyframes shake {
   10%, 90% {

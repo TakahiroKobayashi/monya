@@ -1,8 +1,8 @@
 const coinUtil=require("../js/coinUtil")
 const currencyList=require("../js/currencyList")
 const axios=require("axios")
-const apiServerEntry = "http://token-service.com"
-module.exports=require("./openassets.html")({
+const apiServerEntry = "http://prueba-semilla.org"
+module.exports=require("./openassetsIssue.html")({
   data(){
     return {
       address:"",
@@ -41,9 +41,6 @@ module.exports=require("./openassets.html")({
   },
   store:require("../js/store.js"),
   methods:{
-    issue(){
-      this.$emit("push",require("./openassetsIssue.js")) // 画面遷移
-    },
     showlistUrlImage(){
       return ""
     },
@@ -181,7 +178,7 @@ module.exports=require("./openassets.html")({
       promisesGetAssets.push(
         // 自分の複数のアドレスからcoloredされたutxoのみを取得するapi
         axios({
-        url:apiServerEntry+"/api/v1/utxo/"+addressList.join(','), 
+        url:apiServerEntry+"/api/v1/openassets/addrs/"+addressList.join(','),
         json:true,
         method:"GET"}).then(res=>{
           
