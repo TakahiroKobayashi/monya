@@ -742,7 +742,12 @@ $zaifPayLogoSize:200px;
 }
 
 [data-page="openassets"]{
-  #coins{
+  #cards{
+    .card{
+      animation-name:     fade-in;
+      animation-duration: 1.0s;
+      background-color: whitesmoke;
+    }
     .w_right{
       margin-left:auto;
       .fiatConv{
@@ -769,8 +774,51 @@ $zaifPayLogoSize:200px;
         height:150px;
       }
     }
+    .left{
+      font-size:1.20em;
+      color: black;
+    }
   }
-
+}
+[data-page="openassetsIssue"]{
+  #cards{
+    .card{
+      animation-name:     fade-in;
+      animation-duration: 0.4s;
+      background-color: beige;
+    }
+    .w_right{
+      margin-left:auto;
+      .fiatConv{
+        color:#555;
+        font-size:0.76em;
+      }
+      .amount .ticker{
+        font-size:0.8em;
+      }
+      .unconfirmed{
+        color:red;
+      }
+    }
+    .price{
+      font-size:0.85em;
+      .ticker{
+        color:#555;
+        font-size:0.85em;
+      }
+    }
+    .right{
+      img{
+        width:200px;
+        height:150px;
+      }
+      background-color: red;
+    }
+    .left{
+      font-size:1.20em;
+      color: grey;
+    }
+  }
 }
 
 @keyframes shake {
@@ -808,6 +856,14 @@ $zaifPayLogoSize:200px;
   }
   100% {
     transform: rotatez(360deg);
+  }
+}
+@keyframes fade-in{
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
   }
 }
 

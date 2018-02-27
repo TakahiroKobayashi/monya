@@ -17,39 +17,30 @@
         <v-ons-list-item modifier="tappable" @click="handlerAssetFromMyServer">
           <div class="left">AssetsFromMyServer</div>
         </v-ons-list-item>
-        <div id="coins">
+
+        <div id="cards">
           <v-ons-list>
-            <v-ons-list-item v-for="opa in opas">
-              <div class="right">
-                <img :src="opa.image_url"/>
-              </div>
-              <!-- <div >
-                <div class="screenName">{{c.screenName||"取得失敗"}}</div>
-                <div class="price">
-                  <currency-set :amount="c.price" :ticker="c.coinId" :fiatTicker="fiat"></currency-set>
-                </div>
-              </div>
-              <div class="w_right">
-                <div class="amount" :class='{unconfirmed:c.unconfirmed}'><currency-set :amount="c.balance" :ticker="c.coinId"></currency-set><span v-show="c.unconfirmed">+{{c.unconfirmed}}待機中</span></div>
-                <div class="fiatConv"><currency-set :amount="c.balance*c.price" :ticker="fiat" :easy="isEasy"></currency-set></div>
-              </div> -->
-            </v-ons-list-item>
+              <v-ons-list-item v-for="utxo in utxos">
+                  <v-ons-card>
+                    <div class="left">
+                    amount:{{utxo.amount}}
+                    asset_quantity:{{utxo.asset_quantity}}
+                    </div>
+                    <div class="right">
+                      <img v-bind:src="utxo.image_url"/>
+                    </div>
+                </v-ons-card>
+              </v-ons-list-item>
           </v-ons-list>
         </div>
-        <v-ons-list-item v-show="urlAsset">
+        <!-- <v-ons-list-item v-show="urlAsset">
           <img v-bind:src="urlAsset"
             width="300" 
             height="200">
-        </v-ons-list-item>    
-        <v-ons-list-item modifier="small" v-show="signature&&!verifyResult">
-          署名の検証に失敗しました。
-        </v-ons-list-item>
-        <v-ons-list-item modifier="small" v-show="signature&&verifyResult">
-          署名の検証に成功しました。
-        </v-ons-list-item>
-        <v-ons-list-item modifier="small" v-show="messageToShow">
+        </v-ons-list-item>     -->
+        <!-- <v-ons-list-item modifier="small" v-show="messageToShow">
           <div class="center">{{messageToShow}}</div>
-        </v-ons-list-item>
+        </v-ons-list-item> -->
         <v-ons-list-header>menu</v-ons-list-header>
         <v-ons-list-item modifier="tappable" @click="issue">
             新規発行する
@@ -57,59 +48,7 @@
         <v-ons-list-item modifier="tappable chevron" @click="showLabel(currency[currencyIndex].coinId,l,0,index)">
           送付する
         </v-ons-list-item>
-
-        <v-ons-list-item>
-          <div class="center">
-            <v-ons-list-item><v-ons-input v-model="address" placeholder="送金先アドレス"></v-ons-input></v-ons-list-item>
-          </div>
-          <div class="right">
-            <span v-show="label">{{label}}</span>
-          </div>
-        </v-ons-list-item>
-        <v-ons-list-header>コイン種類</v-ons-list-header>
-        <v-ons-list-item v-for="co in possibility">
-          <div class="left">
-            <v-ons-radio
-              :input-id="'coinType-'+co.coinId"
-              :value="co.coinId" v-model="coinType"
-              ></v-ons-radio></div>
-          <label class="center" :for="'coinType-'+co.coinId">
-            {{co.name}}
-          </label>
-          <div class="right">
-            <currency-set :ticker="co.coinId"></currency-set>
-          </div>
-        </v-ons-list-item>
-        <v-ons-list-item v-show="possibility.length<=0">
-          <div class="left"></div>
-          <label class="center">まずは出金先アドレスを指定してください。</label>
-        </v-ons-list-item>
-        <v-ons-list-header>相手に送金する金額</v-ons-list-header>
-        <v-ons-list-item>
-          <div class="center">
-            <v-ons-input v-model="amount" type="number" @input="calcFiat" placeholder="相手に送金する金額" :disabled="!address||!coinType"></v-ons-input>
-          </div>
-          <div class="right">
-            <currency-set :ticker="coinType"></currency-set>
-          </div>
-        </v-ons-list-item>
-        <v-ons-list-header>法定通貨換算</v-ons-list-header>
-        <v-ons-list-item>
-          <div class="center">
-            <v-ons-input v-model="fiat" type="number" @input="calcCur" placeholder="日本円" :disabled="!address||!coinType"></v-ons-input>
-          </div>
-          <div class="right">
-            <currency-set :ticker="fiatTicker"></currency-set>
-          </div>
-        </v-ons-list-item>
-        
-        <v-ons-list-item><v-ons-button modifier="large" @click="confirm" :disabled="!address||!amount||!feePerByte">確認画面へ</v-ons-button></v-ons-list-item>
-        
-        <v-ons-list-item v-show="!advanced" @click="advanced=true">
-          <div class="left"><v-ons-icon icon="fa-caret-down"></v-ons-icon></div>
-          <div class="center">詳細オプション</div>
-        </v-ons-list-item>
-        
+              
        </v-ons-list>
       <v-ons-modal :visible="loading">
         <p style="text-align: center">

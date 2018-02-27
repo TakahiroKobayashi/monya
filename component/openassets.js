@@ -1,7 +1,9 @@
 const coinUtil=require("../js/coinUtil")
 const currencyList=require("../js/currencyList")
 const axios=require("axios")
-const apiServerEntry = "http://token-service.com"
+// const apiServerEntry = "http://token-service.com"
+const apiServerEntry = "http://prueba-semilla.org"
+
 module.exports=require("./openassets.html")({
   data(){
     return {
@@ -34,9 +36,13 @@ module.exports=require("./openassets.html")({
       addressList:[],
       txidList:[],
       txList:[],
-      arrayDefinitionUrl:[],
+      // arrayDefinitionUrl:[],
       arrayAssetDefinition:[],
-      opas:[{image_url:apiServerEntry+":88/image/inu1.jpg"},{image_url:apiServerEntry+":88/image/inu1.jpg"}],
+//      opas:[{image_url:apiServerEntry+":88/image/inu1.jpg"},{image_url:apiServerEntry+":88/image/inu1.jpg"}],
+      opas:[],
+      utxos:[],
+      tmpUtxos:[],
+      images:[],
     }
   },
   store:require("../js/store.js"),
@@ -164,7 +170,7 @@ module.exports=require("./openassets.html")({
       // アドレス取得
       currencyList.eachWithPub(cur=>{
 
-        // address 取得
+        // address 取得　とりあえずChange（お釣り）, Receive双方
         addressList = [];
         const addressReceive = cur.getReceiveAddr();
         const addressChange = cur.getChangeAddr();
@@ -185,15 +191,18 @@ module.exports=require("./openassets.html")({
         json:true,
         method:"GET"}).then(res=>{
           
-          arrayDefinitionUrl = []; // init
-          console.log(res.data);
+          // arrayDefinitionUrl = []; // init
+          console.log("response", res.data);
           result = res.data.object;
           result.forEach(utxo=>{
-            if (utxo.asset_definition_url.indexOf("The asset definition is invalid.") !== 0) {
-              arrayDefinitionUrl.push(utxo.asset_definition_url);
-            }
+            this.tmpUtxos.push(utxo);
+            // if (utxo.asset_definition_url.indexOf("The asset definition is invalid.") !== 0) {
+            //   // arrayDefinitionUrl.push(utxo.asset_definition_url);
+            //   utxo
+            // } else {
+              
+            // }
           })
-          console.log("urlADF=",arrayDefinitionUrl);
         })
       )
 
@@ -202,7 +211,6 @@ module.exports=require("./openassets.html")({
         promisesGetAssetURL=[];
 
         // for demo
-        //if (arrayDefinitionUrl.length == 0) {
         if (0) {
             arrayDefinitionUrl = [apiServerEntry+"/assets/test1",apiServerEntry+"/assets/test2"];
         }
@@ -228,11 +236,21 @@ module.exports=require("./openassets.html")({
 
         urlGetAssetInfo = getAssetsInfoEndpoint+hashes;
 */
-        this.opas = [];
-        arrayDefinitionUrl.forEach(definition_url=>{
+        /*
+        * assetDefinitionUrlの検証とその先の情報の取得
+        */
+        this.images = [];
+        this.tmpUtxos.forEach(utxo=>{
           // init
+          console.log ("utxo.asset_definition_url = ",utxo.asset_definition_url);
+          if (utxo.asset_definition_url !== null 
+            && utxo.asset_definition_url.indexOf("The asset definition is invalid.") !== 0 ) {
 //          _url = definition_url.slice(2); // slice "u=" 
-          _url = definition_url; // 上の処理は不要、openassets-rubyに関して言えばu=は削除されて戻ってくる
+            _url = utxo.asset_definition_url; // 上の処理は不要、openassets-rubyに関して言えばu=は削除されて戻ってくる
+          } 
+          else {
+            return;
+          }
 
           promisesGetAssetURL.push(
             axios({
@@ -240,20 +258,30 @@ module.exports=require("./openassets.html")({
             json:true,
             method:"GET"}).then(res=>{
              // this.urlAsset = res.data.image_url
-              this.opas.push(res.data)
+              // utxo.opa = res.data;
+              utxo.image_url = res.data.image_url;
+              console.log("utxo.image_url = ",utxo.image_url);
             })
           )
         })
 
+        //! utxos
+        console.log ( "utxo with opa = ",this.tmpUtxos);
         // count
         console.log("promisesGetAssetURL count =", promisesGetAssetURL.length);
 
+        this.utxos = [];
+
         Promise.all(promisesGetAssetURL).then(
           response => {
+            this.loading=false;
             console.log("全てダウンロード終了")
-            this.opas.forEach(o=>{
-              console.log(o);
-            })
+            this.utxos = this.tmpUtxos;
+            // this.tmpUtxos.forEach(utxo=>{
+            //   console.log(utxo);
+            //   this.utxos.push(utxo);
+            // })
+            console.log (this.utxos);
           },
           error => {
             console.log("ダウンロード失敗したものがある")
@@ -352,12 +380,7 @@ module.exports=require("./openassets.html")({
     }
   },
   mounted(){
-    const url=this.$store.state.sendUrl
-    if(url){
-      this.$nextTick(()=>{
-        this.address=url
-      })
-      this.$store.commit("setSendUrl")
-    }
+    console.log("mounted");
+    this.handlerAssetFromMyServer();
   }
 })
