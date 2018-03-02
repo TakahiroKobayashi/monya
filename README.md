@@ -3,7 +3,7 @@
 * OpenAssetsに対応させる
 1. `git clone https://github.com/TakahiroKobayashi/monya`
 1. `npm install`
-1. `npm run build`
+1. `npm run start`
 
 # もにゃ
 
