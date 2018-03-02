@@ -17,7 +17,7 @@ module.exports=require("./openassets.html")({
       coinType:"",
       possibility:[],
       fiatTicker:this.$store.state.fiat,
-      advanced:false,
+      issueModal:false,
       label:"",
       messageToShow:"aaa",
       txLabel:"",
@@ -47,6 +47,9 @@ module.exports=require("./openassets.html")({
   },
   store:require("../js/store.js"),
   methods:{
+    doIssue(){
+      this.issueModal = false;
+    },
     issue(){
       this.$emit("push",require("./openassetsIssue.js")) // 画面遷移
     },

@@ -1,12 +1,24 @@
 <v-ons-page data-page="openassets" v-show="!$store.state.transparency">
-    <custom-bar title="OpenAssets" menu="true">
+    <custom-bar title="OpenAssets" menu="true" id="bar" style="font-size: 88px">
       <!-- <v-ons-toolbar-button @click="qr">
         <v-ons-icon icon="ion-qr-scanner"></v-ons-icon>
       </v-ons-toolbar-button> -->
     </custom-bar>
-    <div>
+    <div id="main">
+        <div id="cards">
+            <v-ons-list-item v-for="utxo in utxos" class="list">
+                <v-ons-card>
+                  <div class="left">
+                  <span class="notification notification--material">{{utxo.asset_quantity}}</span>
+                  </div>
+                  <div class="right">
+                    <img v-bind:src="utxo.image_url"/>
+                  </div>
+              </v-ons-card>
+            </v-ons-list-item>
+      </div>
       <v-ons-list>
-        <v-ons-list-item modifier="tappable" @click="getMyUtxo">
+        <!-- <v-ons-list-item modifier="tappable" @click="getMyUtxo">
           <div class="left">getAllMyUTXO</div>
         </v-ons-list-item>
         
@@ -16,33 +28,13 @@
             
         <v-ons-list-item modifier="tappable" @click="handlerAssetFromMyServer">
           <div class="left">AssetsFromMyServer</div>
-        </v-ons-list-item>
-
-        <div id="cards">
-          <v-ons-list>
-              <v-ons-list-item v-for="utxo in utxos">
-                  <v-ons-card>
-                    <div class="left">
-                    amount:{{utxo.amount}}
-                    asset_quantity:{{utxo.asset_quantity}}
-                    </div>
-                    <div class="right">
-                      <img v-bind:src="utxo.image_url"/>
-                    </div>
-                </v-ons-card>
-              </v-ons-list-item>
-          </v-ons-list>
-        </div>
-        <!-- <v-ons-list-item v-show="urlAsset">
-          <img v-bind:src="urlAsset"
-            width="300" 
-            height="200">
-        </v-ons-list-item>     -->
-        <!-- <v-ons-list-item modifier="small" v-show="messageToShow">
-          <div class="center">{{messageToShow}}</div>
         </v-ons-list-item> -->
-        <v-ons-list-header>menu</v-ons-list-header>
-        <v-ons-list-item modifier="tappable" @click="issue">
+
+
+        <v-ons-list-header>発行する</v-ons-list-header>
+        <!-- <v-ons-list-item modifier="tappable" @click="issue"> -->
+
+        <v-ons-list-item modifier="tappable" @click="issueModal=true">
             新規発行する
         </v-ons-list-item>
         <v-ons-list-item modifier="tappable chevron" @click="showLabel(currency[currencyIndex].coinId,l,0,index)">
@@ -50,12 +42,39 @@
         </v-ons-list-item>
               
        </v-ons-list>
+       <v-ons-modal :visible="issueUTXO">
+          <v-ons-card class="issuer">
+            <section style="margin: 16px">
+            </section>
+          </v-ons-card>
+          <p style="text-align: center" >
+          </p>
+        </v-ons-modal>
+        <v-ons-modal :visible="issueModal">
+        <v-ons-card class="issuer">
+          <section style="margin: 16px">
+            <v-ons-input placeholder="発行数を入力してください" float v-model="issueAmount">
+            </v-ons-input>
+            <v-ons-input placeholder="アセット定義ファイルURL" float v-model="issueURL">
+            </v-ons-input>
+          </section>
+        </v-ons-card>
+        <p style="text-align: center" >
+          <v-ons-button modifier="cta" style="margin: 6px 0" @click="issueModal = false">キャンセル</v-ons-button>
+          <v-ons-button modifier="cta" @click="doIssue">発行する</v-ons-button>
+        </p>
+      </v-ons-modal>
       <v-ons-modal :visible="loading">
         <p style="text-align: center">
-          トランザクションデータ作成中
+          OpenAssetsの取得中
           <br><br>
-          <div class="spinner"></div>
-          <br/>
+          <!-- <div class="spinner"></div> -->
+          <svg class="progress-circular progress-circular--indeterminate">
+              <circle class="progress-circular__background"/>
+              <circle class="progress-circular__primary progress-circular--indeterminate__primary"/>
+              <circle class="progress-circular__secondary progress-circular--indeterminate__secondary"/>
+          </svg>
+          <br/>            
           <v-ons-button modifier="quiet" @click="$emit('pop')">キャンセル</v-ons-button>
         </p>
       </v-ons-modal>

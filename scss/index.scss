@@ -742,11 +742,26 @@ $zaifPayLogoSize:200px;
 }
 
 [data-page="openassets"]{
+  #issuer{
+    animation-name:     fade-in;
+    animation-duration: 1.5s;
+    background-color: beige;
+  }
+  #bar{
+    background-color: beige;
+  }
+  #main{
+    background-color: beige;
+  }
   #cards{
+    .list{
+      background-color: beige;
+
+    }
     .card{
       animation-name:     fade-in;
-      animation-duration: 1.0s;
-      background-color: whitesmoke;
+      animation-duration: 1.5s;
+      background-color: white;
     }
     .w_right{
       margin-left:auto;
@@ -781,10 +796,16 @@ $zaifPayLogoSize:200px;
   }
 }
 [data-page="openassetsIssue"]{
+  #issuer{
+    animation-name:     fade-in;
+    animation-duration: 0.4s;
+    background-color: beige;
+    color: black;
+  }
   #cards{
     .card{
       animation-name:     fade-in;
-      animation-duration: 0.4s;
+      animation-duration: 0.8s;
       background-color: beige;
     }
     .w_right{
