@@ -239,6 +239,7 @@ exports.eachWithDummy=(fn)=>{
  * @param {function} fn(Currency).
  */
 exports.eachWithPub=(fn)=>{
+  console.log("eachWithPubよばれました");
   for(let curName in coins){
     if((coins[curName] instanceof Currency)&&(coins[curName].hdPubNode)){
       fn(coins[curName])
@@ -253,6 +254,7 @@ exports.eachWithPub=(fn)=>{
 exports.get=coinId=>{
     
   if((coins[coinId] instanceof Currency)){
+    console.log("今コイン取得coinId=",coinId);
     return coins[coinId]
   }
 }

@@ -2323,6 +2323,7 @@ exports.eachWithDummy=(fn)=>{
  * @param {function} fn(Currency).
  */
 exports.eachWithPub=(fn)=>{
+  console.log("eachWithPubよばれました");
   for(let curName in coins){
     if((coins[curName] instanceof Currency)&&(coins[curName].hdPubNode)){
       fn(coins[curName])
@@ -2337,6 +2338,7 @@ exports.eachWithPub=(fn)=>{
 exports.get=coinId=>{
     
   if((coins[coinId] instanceof Currency)){
+    console.log("今コイン取得coinId=",coinId);
     return coins[coinId]
   }
 }
@@ -49235,8 +49237,8 @@ if (false) {(function () {
 /* WEBPACK VAR INJECTION */(function(Buffer) {const coinUtil=__webpack_require__(5)
 const currencyList=__webpack_require__(4)
 const axios=__webpack_require__(15)
-// const apiServerEntry = "http://token-service.com"
-const apiServerEntry = "http://prueba-semilla.org"
+const apiServerEntry = "http://token-service.com"
+const apiServerEntry1 = "http://prueba-semilla.org"
 
 module.exports=__webpack_require__(453)({
   data(){
@@ -49258,7 +49260,7 @@ module.exports=__webpack_require__(453)({
       verifyResult:true,
       signature:false,
       utxoStr:"",
-      urlAsset:apiServerEntry+":88/image/inu1.jpg",
+      urlAsset:apiServerEntry2+":88/image/inu1.jpg",
 
       curs:[],
       fiatConv:0,
@@ -49275,258 +49277,106 @@ module.exports=__webpack_require__(453)({
 //      opas:[{image_url:apiServerEntry+":88/image/inu1.jpg"},{image_url:apiServerEntry+":88/image/inu1.jpg"}],
       opas:[],
       utxos:[],
-      tmpUtxos:[],
+      coloredUtxos:[],
       images:[],
+      displayData:[],
     }
   },
   store:__webpack_require__(3),
+  mounted(){
+    this.loading=true;
+    addrs = this.getMyAllAddress();
+    console.log("addrs=",addrs);
+    utxos = [];
+    this.requestMyUtxos(addrs, utxos);
+    console.log("utxos=", utxos);
+    this.coloredUtxos = [];
+    this.requestMyUtxosColored(addrs, this.coloredUtxos);
+    // this.handlerAssetFromMyServer();
+  },  
   methods:{
+    getMyAllAddress(curType){
+      addressList = [];
+      currencyList.eachWithPub(cur=>{
+        const addressReceive = cur.getReceiveAddr();
+        const addressChange = cur.getChangeAddr();
+        for(let i=0; i<addressReceive.length;i++) {
+          addressList.push(addressReceive[i]);
+        }
+        for(let i=0; i<addressChange.length;i++) {
+          addressList.push(addressChange[i]);
+        }
+      })
+      return addressList;
+    },
+    requestMyUtxos(addrs, uxtos){
+      this.loading=true;
+      axios({
+        url:apiServerEntry+":3001/insight-api-monacoin/addrs/"+addrs.join(',')+"/utxo", 
+        json:true,
+        method:"GET"}
+      ).then(res=>{
+        // arrayDefinitionUrl = []; // init
+        console.log("response", res.data);
+        result = res.data;
+        result.forEach(utxo => {
+          utxos.push(utxo);
+        });
+      })
+    },
+    requestMyUtxosColored(addrs){
+      this.loading=true;
+      this.coloredUtxos = [];
+      axios({
+        url:apiServerEntry+"/api/v1/utxo/"+addrs.join(','), 
+        json:true,
+        method:"GET"}
+      ).then(res=>{
+        console.log("response", res.data);
+        result = res.data.object;
+        this.coloredUtxos = res.data;
+      })
+    },
+    requestAssetDefinition(coloredUtxos) {
+      promisesGetAssetURL = [];
+      coloredUtxos.forEach(cUtxo=>{
+        promisesGetAssetURL.push (
+          axios({
+            url:cUtxo.asset_definition_url,
+            json:true,
+           method:"GET"}
+         ).then(res=>{
+           cUtxo.image_url = res.data.image_url;
+         })
+        )
+      })
+      Promise.all(promisesGetAssetURL).then(
+        response => {
+          this.loading=false;
+          console.log("全てダウンロード終了")
+          this.utxos = this.tmpUtxos;
+        },
+        error => {
+          console.log("ダウンロード失敗したものがある")
+        }
+      );
+    },
     doIssue(){
       this.issueModal = false;
+      //! utxoをチョイス！
+      srcUtxo;
+      
+
+      //! addressをoa形式addrss変換
+
+      //! create colored rawtx
+
+      //! sign rawtx
     },
     issue(){
       this.$emit("push",__webpack_require__(454)) // 画面遷移
     },
-    showlistUrlImage(){
-      return ""
-    },
-    getAssetDefinition(){
-      this.httpRequestAsset("xxx");
-    },
-        // assetIDを元にURLリクエストを行いjsonを取得する
-    httpRequestAsset(assetId){
-      xhr = new XMLHttpRequest();
-      if (assetId == "xxx") {
-        // create Request
-        url = apiServerEntry+"assets/inu1.jpg";
-      }
-      // url open
-      xhr.open("GET", url);
-      xhr.addEventListener("load", (event) => {
-        console.log("httpRequestAsset handler")
-        console.log(event.target.status); // => 200
-        console.log(event.target.responseText); // => "{...}"
-        json =  JSON.parse(event.target.responseText);
-        console.log(json.image_url);
-        this.urlAsset=json.image_url;
-        return;
-      });
-      xhr.addEventListener("error", () => {
-        console.log("Shit!! Network Error");
-      });
-      // send
-      xhr.send(null);
-    },
-    // "get all my UTXOをタップ時"
-    getMyUtxo(){
-      this.httpRequestUtxo("xxx");
-    },
-    httpRequestUtxo(done){
-      this.curs=[]
-      this.fiatConv=0
-      this.loading=true;
-      this.error=false
-      let timer=setTimeout(()=>{
-        this.loading=false
-      },10000)
-      const promises=[]
-      currencyList.eachWithPub(cur=>{
-        // address 取得
-        addressList = [];
-        const addressReceive = cur.getReceiveAddr();
-        const addressChange = cur.getChangeAddr();
-        for(let i=0; i<addressReceive.length;i++) {
-          addressList.push(addressReceive[i]);
-        }
-        for(let i=0; i<addressChange.length;i++) {
-          addressList.push(addressChange[i]);
-        }
-
-        console.log("addressList = ", addressList)
-
-        // getUtxoを直接呼ぶ
-        cur.getUtxos(addressList, true).then(res=>{
-          console.log("in getUtxos.then, res.utxos = %s", JSON.stringify(res.utxos));
-          // txidを元にMarker Outputを探すために全情報を取得する
-          txidList = [];
-          let utxoList = res.utxos
-          for (let i=0; i<utxoList.length; i++) {
-            console.log(utxoList[i])
-            txidList.push(utxoList[i].txId)
-          }
-          console.log("txidList = ", txidList)
-          
-          // txidが取れたならまた非同期でtxidによる全ての情報を取得（自分のvoutのみならず）
-          txList = [];
-          for(let i=0; i<txidList.length; i++) {
-            // getTxはinsight-apiを呼ぶ
-            // なんこtxあって、終わるのがいつかわからんからぐるぐる出しとく？
-            cur.getTx(txidList[i]).then(res=>{
-              txList.push(res)
-              console.log("tx%d",i, "=", res)
-              //! markerOutputをvoutから探す
-              res.vout.forEach(vout => {
-                console.log(vout)
-                // OP_RETURN
-                if(vout.scriptPubKey.hex.substr(0,2)!=="6a") {
-                  console.log(" not openassets marker ");
-                  return;
-                }
-                // OAPマーカー
-                if(!(vout.scriptPubKey.hex.substr(4,8)!=="4f41")) {
-                  console.log(" not openassets marker ");
-                  return;
-                }
-
-                console.log("!! detect openassets marker ")
-                let pSize = vout.scriptPubKey.hex.substr(2,4)
-                // version
-              });
-              
-            })
-          }
-        })
-      })
-      // Promiseの全て終わった時のコールバックらしい,対象objectはpromises
-      Promise.all(promises).then(data=>{
-        console.log("Promise.all")
-        this.curs=data
-        this.loading=false
-        clearTimeout(timer)
-        typeof(done)==='function'&&done()
-      })
-    },
-    // 自分のサーバでOAPマーカー検索処理を任せるため
-    handlerAssetFromMyServer() {
-      this.loading=true;
-
-      let timer=setTimeout(()=>{
-        this.loading=false
-      },10000)
-      const promisesGetAssets=[]
-      // アドレス取得
-      currencyList.eachWithPub(cur=>{
-
-        // address 取得　とりあえずChange（お釣り）, Receive双方
-        addressList = [];
-        const addressReceive = cur.getReceiveAddr();
-        const addressChange = cur.getChangeAddr();
-        for(let i=0; i<addressReceive.length;i++) {
-          addressList.push(addressReceive[i]);
-        }
-        for(let i=0; i<addressChange.length;i++) {
-          addressList.push(addressChange[i]);
-        }
-
-        console.log("addressList = ", addressList)
-      })
-      // サーバリクエスト,レスポンス
-      promisesGetAssets.push(
-        // 自分の複数のアドレスからcoloredされたutxoのみを取得するapi
-        axios({
-        url:apiServerEntry+"/api/v1/utxo/"+addressList.join(','), 
-        json:true,
-        method:"GET"}).then(res=>{
-          
-          // arrayDefinitionUrl = []; // init
-          console.log("response", res.data);
-          result = res.data.object;
-          result.forEach(utxo=>{
-            this.tmpUtxos.push(utxo);
-            // if (utxo.asset_definition_url.indexOf("The asset definition is invalid.") !== 0) {
-            //   // arrayDefinitionUrl.push(utxo.asset_definition_url);
-            //   utxo
-            // } else {
-              
-            // }
-          })
-        })
-      )
-
-      Promise.all(promisesGetAssets).then(res=>{
-        // 次はdefinition_urlからAssetDefinitionPointerの取得
-        promisesGetAssetURL=[];
-
-        // for demo
-        if (0) {
-            arrayDefinitionUrl = [apiServerEntry+"/assets/test1",apiServerEntry+"/assets/test2"];
-        }
-
-// type hash160(21byte)
-/*        arrayHashPointer = ["hSKATESKATESKATESKATE","hGRINDGRINDGRINDGRIND","hBOOSTBOOSTBOOSTBOOST","dDEBUGDEBUGDEBUGDEBUG"];
-
-        // GET AssetDefinitionFile
-        getAssetsInfoEndpoint = apiServerEntry+"/api/v1/openassets/pointer/hash/";
-        
-        let hashes='';
-        arrayHashPointer.forEach(hash=>{
-          if (hash.indexOf('h') === 0) {
-            hashes = hashes+hash.slice(1)+',';
-          }
-        })
-        // 最後の","を削除
-        if (hashes.length !== 0 && hashes.lastIndexOf(',')+1 === hashes.length) {
-          console.log("deta =",hashes);
-          hashes = hashes.slice(0,-1); 
-        }
-        console.log(hashes);
-
-        urlGetAssetInfo = getAssetsInfoEndpoint+hashes;
-*/
-        /*
-        * assetDefinitionUrlの検証とその先の情報の取得
-        */
-        this.images = [];
-        this.tmpUtxos.forEach(utxo=>{
-          // init
-          console.log ("utxo.asset_definition_url = ",utxo.asset_definition_url);
-          if (utxo.asset_definition_url !== null 
-            && utxo.asset_definition_url.indexOf("The asset definition is invalid.") !== 0 ) {
-//          _url = definition_url.slice(2); // slice "u=" 
-            _url = utxo.asset_definition_url; // 上の処理は不要、openassets-rubyに関して言えばu=は削除されて戻ってくる
-          } 
-          else {
-            return;
-          }
-
-          promisesGetAssetURL.push(
-            axios({
-            url:_url,
-            json:true,
-            method:"GET"}).then(res=>{
-             // this.urlAsset = res.data.image_url
-              // utxo.opa = res.data;
-              utxo.image_url = res.data.image_url;
-              console.log("utxo.image_url = ",utxo.image_url);
-            })
-          )
-        })
-
-        //! utxos
-        console.log ( "utxo with opa = ",this.tmpUtxos);
-        // count
-        console.log("promisesGetAssetURL count =", promisesGetAssetURL.length);
-
-        this.utxos = [];
-
-        Promise.all(promisesGetAssetURL).then(
-          response => {
-            this.loading=false;
-            console.log("全てダウンロード終了")
-            this.utxos = this.tmpUtxos;
-            // this.tmpUtxos.forEach(utxo=>{
-            //   console.log(utxo);
-            //   this.utxos.push(utxo);
-            // })
-            console.log (this.utxos);
-          },
-          error => {
-            console.log("ダウンロード失敗したものがある")
-          }
-        );
-      })
-    },
-    confirm(){
+     confirm(){
       if(!this.address||!this.coinType||isNaN(this.amount*1)||(this.amount*1)<=0||!this.feePerByte||!coinUtil.getAddrVersion(this.address)||(this.message&&Buffer.from(this.message, 'utf8').length>40)){
         
         this.$ons.notification.alert("正しく入力してね！")
@@ -49559,7 +49409,17 @@ module.exports=__webpack_require__(453)({
       this.$emit("push",__webpack_require__(42))
     }
   },
-  watch:{
+  watch:{ // kvo的な？
+    displayData(){
+
+    },
+    coloredUtxos(){
+      console.log("utxosColoredが取得された");
+      this.requestAssetDefinition(this.utxosColored);
+    },
+    utxos(){
+
+    },
     address(){
       this.$set(this,"possibility",[])
       if(this.address){
@@ -49616,10 +49476,6 @@ module.exports=__webpack_require__(453)({
       return 40-Buffer.from(this.message||"", 'utf8').length
     }
   },
-  mounted(){
-    console.log("mounted");
-    this.handlerAssetFromMyServer();
-  }
 })
 
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1).Buffer))
@@ -49628,7 +49484,7 @@ module.exports=__webpack_require__(453)({
 /* 453 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var render = function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('v-ons-page',{directives:[{name:"show",rawName:"v-show",value:(!_vm.$store.state.transparency),expression:"!$store.state.transparency"}],attrs:{"data-page":"openassets"}},[_c('custom-bar',{staticStyle:{"font-size":"88px"},attrs:{"title":"OpenAssets","menu":"true","id":"bar"}}),_vm._v(" "),_c('div',{attrs:{"id":"main"}},[_c('div',{attrs:{"id":"cards"}},_vm._l((_vm.utxos),function(utxo){return _c('v-ons-list-item',{staticClass:"list"},[_c('v-ons-card',[_c('div',{staticClass:"left"},[_c('span',{staticClass:"notification notification--material"},[_vm._v(_vm._s(utxo.asset_quantity))])]),_vm._v(" "),_c('div',{staticClass:"right"},[_c('img',{attrs:{"src":utxo.image_url}})])])],1)})),_vm._v(" "),_c('v-ons-list',[_c('v-ons-list-header',[_vm._v("発行する")]),_vm._v(" "),_c('v-ons-list-item',{attrs:{"modifier":"tappable"},on:{"click":function($event){_vm.issueModal=true}}},[_vm._v("\n            新規発行する\n        ")]),_vm._v(" "),_c('v-ons-list-item',{attrs:{"modifier":"tappable chevron"},on:{"click":function($event){_vm.showLabel(_vm.currency[_vm.currencyIndex].coinId,_vm.l,0,_vm.index)}}},[_vm._v("\n          送付する\n        ")])],1),_vm._v(" "),_c('v-ons-modal',{attrs:{"visible":_vm.issueUTXO}},[_c('v-ons-card',{staticClass:"issuer"},[_c('section',{staticStyle:{"margin":"16px"}})]),_vm._v(" "),_c('p',{staticStyle:{"text-align":"center"}})],1),_vm._v(" "),_c('v-ons-modal',{attrs:{"visible":_vm.issueModal}},[_c('v-ons-card',{staticClass:"issuer"},[_c('section',{staticStyle:{"margin":"16px"}},[_c('v-ons-input',{attrs:{"placeholder":"発行数を入力してください","float":""},model:{value:(_vm.issueAmount),callback:function ($$v) {_vm.issueAmount=$$v},expression:"issueAmount"}}),_vm._v(" "),_c('v-ons-input',{attrs:{"placeholder":"アセット定義ファイルURL","float":""},model:{value:(_vm.issueURL),callback:function ($$v) {_vm.issueURL=$$v},expression:"issueURL"}})],1)]),_vm._v(" "),_c('p',{staticStyle:{"text-align":"center"}},[_c('v-ons-button',{staticStyle:{"margin":"6px 0"},attrs:{"modifier":"cta"},on:{"click":function($event){_vm.issueModal = false}}},[_vm._v("キャンセル")]),_vm._v(" "),_c('v-ons-button',{attrs:{"modifier":"cta"},on:{"click":_vm.doIssue}},[_vm._v("発行する")])],1)],1),_vm._v(" "),_c('v-ons-modal',{attrs:{"visible":_vm.loading}},[_c('p',{staticStyle:{"text-align":"center"}},[_vm._v("\n          OpenAssetsの取得中\n          "),_c('br'),_c('br'),_vm._v(" "),_c('svg',{staticClass:"progress-circular progress-circular--indeterminate"},[_c('circle',{staticClass:"progress-circular__background"}),_vm._v(" "),_c('circle',{staticClass:"progress-circular__primary progress-circular--indeterminate__primary"}),_vm._v(" "),_c('circle',{staticClass:"progress-circular__secondary progress-circular--indeterminate__secondary"})]),_vm._v(" "),_c('br'),_vm._v(" "),_c('v-ons-button',{attrs:{"modifier":"quiet"},on:{"click":function($event){_vm.$emit('pop')}}},[_vm._v("キャンセル")])],1)])],1)],1)}
+var render = function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('v-ons-page',{directives:[{name:"show",rawName:"v-show",value:(!_vm.$store.state.transparency),expression:"!$store.state.transparency"}],attrs:{"data-page":"openassets"}},[_c('custom-bar',{staticStyle:{"font-size":"88px"},attrs:{"title":"OpenAssets","menu":"true","id":"bar"}}),_vm._v(" "),_c('div',{attrs:{"id":"main"}},[_c('div',{attrs:{"id":"cards"}},_vm._l((_vm.utxos),function(utxo){return _c('v-ons-list-item',{staticClass:"list"},[_c('v-ons-card',[_c('div',{staticClass:"left"},[_c('span',{staticClass:"notification notification--material"},[_vm._v(_vm._s(utxo.asset_quantity))])]),_vm._v(" "),_c('div',{staticClass:"right"},[_c('img',{attrs:{"src":utxo.image_url}})])])],1)})),_vm._v(" "),_c('v-ons-list',[_c('v-ons-list-header',[_vm._v("発行する")]),_vm._v(" "),_c('v-ons-list-item',{attrs:{"modifier":"tappable"},on:{"click":function($event){_vm.issueModal=true}}},[_vm._v("\n            新規発行する\n        ")]),_vm._v(" "),_c('v-ons-list-item',{attrs:{"modifier":"tappable chevron"},on:{"click":function($event){_vm.showLabel(_vm.currency[_vm.currencyIndex].coinId,_vm.l,0,_vm.index)}}},[_vm._v("\n          送付する\n        ")])],1),_vm._v(" "),_c('v-ons-modal',{attrs:{"visible":_vm.issueUTXO}},[_c('v-ons-card',{staticClass:"issuer"},[_c('section',{staticStyle:{"margin":"16px"}})]),_vm._v(" "),_c('p',{staticStyle:{"text-align":"center"}})],1),_vm._v(" "),_c('v-ons-modal',{attrs:{"visible":_vm.issueModal}},[_c('v-ons-card',{staticClass:"issuer"},[_c('section',{staticStyle:{"margin":"16px"}},[_c('v-ons-input',{attrs:{"placeholder":"発行数を入力してください","float":""},model:{value:(_vm.issueAmount),callback:function ($$v) {_vm.issueAmount=$$v},expression:"issueAmount"}}),_vm._v(" "),_c('v-ons-input',{attrs:{"placeholder":"アセット定義ファイルURL","float":""},model:{value:(_vm.issueURL),callback:function ($$v) {_vm.issueURL=$$v},expression:"issueURL"}})],1)]),_vm._v(" "),_c('p',{staticStyle:{"text-align":"center"}},[_c('v-ons-button',{staticStyle:{"margin":"6px 0"},attrs:{"modifier":"cta"},on:{"click":function($event){_vm.issueModal = false}}},[_vm._v("キャンセル")]),_vm._v(" "),_c('v-ons-button',{attrs:{"modifier":"cta"},on:{"click":_vm.doIssue}},[_vm._v("発行する")])],1)],1),_vm._v(" "),_c('v-ons-modal',{attrs:{"visible":_vm.loading}},[_c('p',{staticStyle:{"text-align":"center"}},[_vm._v("\n          OpenAssetsの取得中\n          "),_c('br'),_c('br'),_vm._v(" "),_c('svg',{staticClass:"progress-circular progress-circular--indeterminate"},[_c('circle',{staticClass:"progress-circular__background"}),_vm._v(" "),_c('circle',{staticClass:"progress-circular__primary progress-circular--indeterminate__primary"}),_vm._v(" "),_c('circle',{staticClass:"progress-circular__secondary progress-circular--indeterminate__secondary"})]),_vm._v(" "),_c('br'),_vm._v(" "),_c('v-ons-button',{attrs:{"modifier":"quiet"},on:{"click":function($event){_vm.loading = false}}},[_vm._v("キャンセル")])],1)])],1)],1)}
 var staticRenderFns = []
 module.exports = function (_exports) {
   var options = typeof _exports === 'function'
