@@ -1,8 +1,8 @@
 const coinUtil=require("../js/coinUtil")
 const currencyList=require("../js/currencyList")
 const axios=require("axios")
-const apiServerEntry = "http://token-service.com"
-const apiServerEntry1 = "http://prueba-semilla.org"
+const apiServerEntry1 = "http://token-service.com"
+const apiServerEntry = "http://prueba-semilla.org"
 
 module.exports=require("./openassets.html")({
   data(){
@@ -24,7 +24,7 @@ module.exports=require("./openassets.html")({
       verifyResult:true,
       signature:false,
       utxoStr:"",
-      urlAsset:apiServerEntry2+":88/image/inu1.jpg",
+      urlAsset:apiServerEntry+":88/image/inu1.jpg",
 
       curs:[],
       fiatConv:0,
@@ -81,7 +81,7 @@ module.exports=require("./openassets.html")({
         method:"GET"}
       ).then(res=>{
         // arrayDefinitionUrl = []; // init
-        console.log("response", res.data);
+        console.log("myUtxos", res.data);
         result = res.data;
         result.forEach(utxo => {
           utxos.push(utxo);
@@ -96,20 +96,24 @@ module.exports=require("./openassets.html")({
         json:true,
         method:"GET"}
       ).then(res=>{
-        console.log("response", res.data);
-        result = res.data.object;
-        this.coloredUtxos = res.data;
+        console.log("myUtxosColored", res.data);
+        this.coloredUtxos = res.data.object;
       })
     },
     requestAssetDefinition(coloredUtxos) {
       promisesGetAssetURL = [];
+      console.log(coloredUtxos);
       coloredUtxos.forEach(cUtxo=>{
+        if(cUtxo.asset_definition_url.indexOf("The") === 0) {
+          return;
+        }
         promisesGetAssetURL.push (
           axios({
             url:cUtxo.asset_definition_url,
             json:true,
            method:"GET"}
          ).then(res=>{
+           console.log("Asset(image_url) =",res.data.image_url)
            cUtxo.image_url = res.data.image_url;
          })
         )
@@ -118,7 +122,7 @@ module.exports=require("./openassets.html")({
         response => {
           this.loading=false;
           console.log("全てダウンロード終了")
-          this.utxos = this.tmpUtxos;
+          this.utxos = this.coloredUtxos;
         },
         error => {
           console.log("ダウンロード失敗したものがある")
@@ -179,10 +183,10 @@ module.exports=require("./openassets.html")({
     },
     coloredUtxos(){
       console.log("utxosColoredが取得された");
-      this.requestAssetDefinition(this.utxosColored);
+      this.requestAssetDefinition(this.coloredUtxos);
     },
     utxos(){
-
+      console.log("image_urlが取得された");
     },
     address(){
       this.$set(this,"possibility",[])
