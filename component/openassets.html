@@ -1,4 +1,5 @@
 <v-ons-page data-page="openassets" v-show="!$store.state.transparency">
+    <!-- <meta name="csrf-token" content="{{ csrf_token() }}"> -->
     <custom-bar title="OpenAssets" menu="true" id="bar" style="font-size: 88px">
       <!-- <v-ons-toolbar-button @click="qr">
         <v-ons-icon icon="ion-qr-scanner"></v-ons-icon>
@@ -6,13 +7,13 @@
     </custom-bar>
     <div id="main">
         <div id="cards">
-            <v-ons-list-item v-for="utxo in utxos" class="list">
+            <v-ons-list-item v-for="cutxo in myUtxos" v-if="cutxo.asset_id" class="list">
                 <v-ons-card>
                   <div class="left">
-                  <span class="notification notification--material">{{utxo.asset_quantity}}</span>
+                  <span class="notification notification--material">{{cutxo.asset_quantity}}</span>
                   </div>
                   <div class="right">
-                    <img v-bind:src="utxo.image_url"/>
+                    <img v-bind:src="cutxo.image_url"/>
                   </div>
               </v-ons-card>
             </v-ons-list-item>
@@ -34,7 +35,7 @@
         <v-ons-list-header>発行する</v-ons-list-header>
         <!-- <v-ons-list-item modifier="tappable" @click="issue"> -->
 
-        <v-ons-list-item modifier="tappable" @click="issueModal=true">
+        <v-ons-list-item modifier="tappable" @click="didTapIssue">
             新規発行する
         </v-ons-list-item>
         <v-ons-list-item modifier="tappable chevron" @click="showLabel(currency[currencyIndex].coinId,l,0,index)">
@@ -42,28 +43,44 @@
         </v-ons-list-item>
               
        </v-ons-list>
-       <v-ons-modal :visible="issueUTXO">
-          <v-ons-card class="issuer">
+
+       <v-ons-modal :visible="issueUTXOs">
+          発行に使うUTXOを選択してください
             <section style="margin: 16px">
+                <!-- <v-ons-list-item class="list" v-for="(utxo,index) in myUtxos" modifier="tappable" @click="didTapUtxo(index)"> -->
+                  <v-ons-card class="utxos" v-for="(utxo,index) in myUtxos" modifier="tappable" @click="didTapUtxo(index)">
+                    <div class="left">
+                      <font color="green">address:{{utxo.address}}</font>
+                      <font color="black">amount:{{utxo.amount}}</font>
+                    </div>
+                </v-ons-card>
+              <!-- </v-ons-list-item> -->
             </section>
-          </v-ons-card>
           <p style="text-align: center" >
+              <v-ons-button modifier="cta" style="margin: 6px 0" @click="issueUTXOs = false">キャンセル</v-ons-button>
           </p>
         </v-ons-modal>
-        <v-ons-modal :visible="issueModal">
+
+      <v-ons-modal :visible="issueModal">
         <v-ons-card class="issuer">
           <section style="margin: 16px">
-            <v-ons-input placeholder="発行数を入力してください" float v-model="issueAmount">
+            <v-ons-input placeholder="発行数" float v-model="issueQuantity">
             </v-ons-input>
-            <v-ons-input placeholder="アセット定義ファイルURL" float v-model="issueURL">
+            <v-ons-input placeholder="定義ファイルURL" float v-model="issueURL">
             </v-ons-input>
           </section>
         </v-ons-card>
         <p style="text-align: center" >
-          <v-ons-button modifier="cta" style="margin: 6px 0" @click="issueModal = false">キャンセル</v-ons-button>
+          <v-ons-button modifier="cta" style="margin: 6px 0" @click="didTapBack">戻る</v-ons-button>
           <v-ons-button modifier="cta" @click="doIssue">発行する</v-ons-button>
         </p>
       </v-ons-modal>
+      <v-ons-modal :visible="alert">
+        <section style="margin: 16px">
+          {{alertMessage}}
+        </section>
+        <v-ons-button modifier="quiet" @click="alert = false">閉じる</v-ons-button>
+      </v-ons-modal>  
       <v-ons-modal :visible="loading">
         <p style="text-align: center">
           OpenAssetsの取得中

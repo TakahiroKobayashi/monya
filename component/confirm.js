@@ -81,6 +81,7 @@ module.exports=require("./confirm.html")({
           utxoStr:this.utxoStr
         })
       }).then(d=>{
+        console.log("cur.buildTransactin = ",d);
         this.fee=(new BigNumber(d.fee)).divToInt(100000000)
         this.utxosToShow=d.utxos
         console.log("d.utxos =", d.utxos)
@@ -127,7 +128,9 @@ module.exports=require("./confirm.html")({
           txBuilder:this.txb,
           path:this.path
         })
+        console.log("finaleTx=",finalTx);
         this.hash=finalTx.toHex()
+        return; // テストデータ作成のため送信はしない
         return cur.pushTx(this.hash)
       }).then((res)=>{
         cur.saveTxLabel(res.txid,{label:this.txLabel,price:parseFloat(this.price)})
