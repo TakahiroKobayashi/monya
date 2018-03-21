@@ -303,6 +303,7 @@ module.exports=class{
         console.log("outputs =", outputs)
         
         if (!inputs || !outputs) throw new errors.NoSolutionError()
+        // vin の作成
         inputs.forEach(input => {
           txb.addInput(input.txId, input.vout)
           console.log("input.txid = ",input.txId)
@@ -310,11 +311,13 @@ module.exports=class{
           path.push(this.getIndexFromAddress(input.address))
           
         })
+        // vout の作成（自分へのお釣りも）
         outputs.forEach(output => {
           if (!output.address) {
             output.address = this.getAddress(1,(this.changeIndex+1)%coinUtil.GAP_LIMIT_FOR_CHANGE)
           }
-
+          console.log("output.address = ",output.address);
+          console.log("output.value = ", output.value);
           txb.addOutput(output.address, output.value)
         })
         
@@ -341,6 +344,7 @@ module.exports=class{
 
     //! 
     const node = bcLib.HDNode.fromSeedBuffer(seed,this.network)
+    console.log("node",node);
 
     if(!txb){
       txb=coinUtil.buildBuilderfromPubKeyTx(bcLib.Transaction.fromHex(option.hash),this.network)

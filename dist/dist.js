@@ -14360,6 +14360,7 @@ module.exports=class{
         console.log("outputs =", outputs)
         
         if (!inputs || !outputs) throw new errors.NoSolutionError()
+        // vin の作成
         inputs.forEach(input => {
           txb.addInput(input.txId, input.vout)
           console.log("input.txid = ",input.txId)
@@ -14367,11 +14368,13 @@ module.exports=class{
           path.push(this.getIndexFromAddress(input.address))
           
         })
+        // vout の作成（自分へのお釣りも）
         outputs.forEach(output => {
           if (!output.address) {
             output.address = this.getAddress(1,(this.changeIndex+1)%coinUtil.GAP_LIMIT_FOR_CHANGE)
           }
-
+          console.log("output.address = ",output.address);
+          console.log("output.value = ", output.value);
           txb.addOutput(output.address, output.value)
         })
         
@@ -14398,6 +14401,7 @@ module.exports=class{
 
     //! 
     const node = bcLib.HDNode.fromSeedBuffer(seed,this.network)
+    console.log("node",node);
 
     if(!txb){
       txb=coinUtil.buildBuilderfromPubKeyTx(bcLib.Transaction.fromHex(option.hash),this.network)
@@ -51370,6 +51374,7 @@ const axios=__webpack_require__(17)
 const qs= __webpack_require__(135)
 const apiServerEntry1 = "http://token-service.com"
 const apiServerEntry = "http://160.16.224.84"
+const BigNumber = __webpack_require__(33)
 
 module.exports=__webpack_require__(479)({
   data(){
@@ -51420,10 +51425,12 @@ module.exports=__webpack_require__(479)({
       issueQuantity:"10",
       issueURL:"http://prueba-semilla.org/assets/test",
       issueAddress:"",
+      network:"",
     }
   },
   store:__webpack_require__(2),
   mounted(){
+    // console.log ("2**(256)",(new BigNumber(2**(256)).toHex));
     console.log ("test leb128",leb128.unsigned.encode('9019283812387'));
     // axios.defaults.headers.common = {
     //   'X-CSRF-TOKEN': document.head.querySelector('meta[name="csrf-token"]').content,
@@ -51454,30 +51461,31 @@ module.exports=__webpack_require__(479)({
           metadata:metadata,
         }),
         method:"POST"
-      }).then(res=>{
-        console.log ("requestIssueAsset res",res);
+      }).then(response=>{
+        console.log ("requestIssueAsset response.data.tx",response.data.tx);
         storage.get("keyPairs").then((cipher)=>{
           // 署名する
           console.log("storage.get");
           console.log("cipher =", cipher);
           console.log("password =", this.password);
 
+          //! 鍵のパスを取得（二次元配列の[changeFlag, index]のあれ
           path = [];
-
           currencyList.eachWithPub((cur)=>{
             path.push(cur.getIndexFromAddress(this.issueAddress));
+            this.network = cur.network;
           })
-          console.log(path);
-
           console.log("path =", path);
+          console.log("network =",this.network);
           const finalTx=this.signTx({
             entropyCipher:cipher.entropy,
             password:"takahiro",
-            txBuilder:res.data.txBuilder,
+            txBuilder:response.data.tx,
             path:path
           })
           console.log ("finalTx",finalTx);
           this.hash=finalTx.toHex()
+/* debug */
           return;
           return cur.pushTx(this.hash)
         }).then((res)=>{
@@ -51520,28 +51528,11 @@ module.exports=__webpack_require__(479)({
       console.log("signTx txb =",txb)
       console.log("signTx path =",path)
       console.log("signTx seed =",seed) //! seed = Uint8Array(64) 512bitですか
-      transaction = txb.txBuilder; // rawtxを強引にキャストしてみる
-      //! 
-      const node = bcLib.HDNode.fromSeedBuffer(seed,this.network)
-      console.log(node);
-      if(!txb){
-        console.log ("txb == null");
-        txb=coinUtil.buildBuilderfromPubKeyTx(bcLib.Transaction.fromHex(option.hash),this.network)
-  
-        for(let i=0;i<txb.inputs.length;i++){
-        transaction.sign(i,node
-                 .deriveHardened(44)
-                 .deriveHardened(this.bip44.coinType)
-                 .deriveHardened(this.bip44.account)
-                 .derive(path[0][0]|0)
-                 .derive(path[0][1]|0).keyPair
-                )
-        }
-        return transaction.build()
-      }
       
-      console.log ("txb != null");
+      const node = bcLib.HDNode.fromSeedBuffer(seed,this.network)
+      console.log ("Node",node);
       for(let i=0;i<path.length;i++){
+        console.log("for i=",i);
         txb.sign(i,node
                  .deriveHardened(44)
                  .deriveHardened(this.bip44.coinType)
@@ -51550,8 +51541,8 @@ module.exports=__webpack_require__(479)({
                  .derive(path[i][1]|0).keyPair
                 )
       }
+      console.log("txb last = ",txb);
       return txb.build()
-      
     },
     pushTx(hex){
       if(this.dummy){return Promise.resolve()}
