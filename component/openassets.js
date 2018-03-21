@@ -1,8 +1,10 @@
+const leb128 = require("leb128")
 const bcLib = require('bitcoinjs-lib')
 const bip39 = require("bip39")
 const storage = require("../js/storage.js")
 const coinUtil=require("../js/coinUtil")
 const currencyList=require("../js/currencyList")
+const Currency = require("../js/currency")
 const axios=require("axios")
 const qs= require("qs")
 const apiServerEntry1 = "http://token-service.com"
@@ -61,15 +63,20 @@ module.exports=require("./openassets.html")({
   },
   store:require("../js/store.js"),
   mounted(){
+    console.log ("test leb128",leb128.unsigned.encode('9019283812387'));
     // axios.defaults.headers.common = {
     //   'X-CSRF-TOKEN': document.head.querySelector('meta[name="csrf-token"]').content,
     //     'X-Requested-With': 'XMLHttpRequest'
     // };
     this.loading=true;
+    //! アドレスをlocalStorageから取得
     addrs = this.getMyAllAddress();
     console.log("addrs=",addrs);
+    //! アドレスから全てのutxoを初期化、取得
     this.utxos = [];
     this.requestMyUtxos(addrs);
+
+    //! アドレスからcoloredされたutxoのみを取得
     this.tmpUtxos = [];
     this.requestMyUtxosColored(addrs, this.tmpUtxos);
     // this.handlerAssetFromMyServer();
@@ -87,20 +94,30 @@ module.exports=require("./openassets.html")({
         }),
         method:"POST"
       }).then(res=>{
-        console.log (res);
+        console.log ("requestIssueAsset res",res);
         storage.get("keyPairs").then((cipher)=>{
           // 署名する
           console.log("storage.get");
           console.log("cipher =", cipher);
           console.log("password =", this.password);
-          console.log("this.path =", this.path);
-          const finalTx=cur.signTx({
-            entropyCipher:cipher.entropy,
-            password:this.password,
-            txBuilder:this.txb,
-            path:this.path
+
+          path = [];
+
+          currencyList.eachWithPub((cur)=>{
+            path.push(cur.getIndexFromAddress(this.issueAddress));
           })
+          console.log(path);
+
+          console.log("path =", path);
+          const finalTx=this.signTx({
+            entropyCipher:cipher.entropy,
+            password:"takahiro",
+            txBuilder:res.data.txBuilder,
+            path:path
+          })
+          console.log ("finalTx",finalTx);
           this.hash=finalTx.toHex()
+          return;
           return cur.pushTx(this.hash)
         }).then((res)=>{
           cur.saveTxLabel(res.txid,{label:this.txLabel,price:parseFloat(this.price)})
@@ -126,7 +143,7 @@ module.exports=require("./openassets.html")({
   
       })
     },
-    signTx(option){
+    signTx(option){ //
       const entropyCipher = option.entropyCipher
       const password= option.password
       let txb=option.txBuilder
@@ -138,19 +155,20 @@ module.exports=require("./openassets.html")({
               coinUtil.decrypt(entropyCipher,password)
             )
           )
-      console.log("entropyCipher = %s", entropyCipher)
-      console.log("txb = %s",txb)
-      console.log("path = %s",path)
-      console.log("seed = %s",seed) //! seed = Uint8Array(64) 512bitですか
-  
+      console.log("signTx entropyCipher =", entropyCipher)
+      console.log("signTx txb =",txb)
+      console.log("signTx path =",path)
+      console.log("signTx seed =",seed) //! seed = Uint8Array(64) 512bitですか
+      transaction = txb.txBuilder; // rawtxを強引にキャストしてみる
       //! 
       const node = bcLib.HDNode.fromSeedBuffer(seed,this.network)
-  
+      console.log(node);
       if(!txb){
+        console.log ("txb == null");
         txb=coinUtil.buildBuilderfromPubKeyTx(bcLib.Transaction.fromHex(option.hash),this.network)
   
         for(let i=0;i<txb.inputs.length;i++){
-        txb.sign(i,node
+        transaction.sign(i,node
                  .deriveHardened(44)
                  .deriveHardened(this.bip44.coinType)
                  .deriveHardened(this.bip44.account)
@@ -158,9 +176,10 @@ module.exports=require("./openassets.html")({
                  .derive(path[0][1]|0).keyPair
                 )
         }
-        return txb.build()
+        return transaction.build()
       }
       
+      console.log ("txb != null");
       for(let i=0;i<path.length;i++){
         txb.sign(i,node
                  .deriveHardened(44)
@@ -223,6 +242,7 @@ module.exports=require("./openassets.html")({
       promisesGetAssetURL = [];
       utxos.forEach(utxo=>{
         if(utxo.asset_definition_url === null ||
+          utxo.asset_definition_url.length === 0 ||
           utxo.asset_definition_url.indexOf("The") === 0) {
           return;
         }
@@ -272,6 +292,7 @@ module.exports=require("./openassets.html")({
       this.issueUTXOs = true;
     },
     doIssue(){
+      console.log("発行するタップ")
       console.log(this.issueQuantity);
       console.log(this.issueURL);
       this.issueModal = false;
@@ -287,7 +308,19 @@ module.exports=require("./openassets.html")({
       //! addressをoa形式addrss変換
       oa_address = this.oa_address_from_address(this.issueAddress);
       //! create colored rawtx
-
+/*
+      def to_payload
+        payload = ["4f41", "0100"]
+        asset_quantity_count = Bitcoin::Protocol.pack_var_int(@asset_quantities.length).unpack("H*")
+        payload << sort_count(asset_quantity_count[0])
+        @asset_quantities.map{|q|payload << encode_leb128(q)}
+        @metadata ||= ''
+        metadata_length = Bitcoin::Protocol.pack_var_int(@metadata.length).unpack("H*")
+        payload << sort_count(metadata_length[0])
+        payload << @metadata.bytes.map{|b| sprintf("%02x", b)}.join
+        payload.join
+      end
+*/
       //! sign rawtx
     },
     oa_address_from_address(addr){
@@ -305,11 +338,13 @@ module.exports=require("./openassets.html")({
       base=alpha.length;
       chara = "";
       for (i=0;i<base58_val.length;i++) {
+        // 末尾からhitした文字のindexを取得->indexOf(chara) alpha.length = 58 ^ i
         if (i===0) {
           chara = base58_val.slice(-1);
         } else {
           chara = base58_val.slice(-(i+1),-i);
         }
+        // ! alpha.indexOf(chara) - > indexを取得(ex:)
         int_val += alpha.indexOf(chara)*(base**i);
       }
       console.log (int_val);
@@ -368,9 +403,11 @@ module.exports=require("./openassets.html")({
     tmpUtxos(){
       console.log("utxoが取得された");
       this.requestAssetDefinition(this.tmpUtxos);
+      console.log("this.tmpUtxos", this.tmpUtxos);
     },
     utxos(){
       console.log("すべてのutxoが取得された");
+      console.log("this.utxos", this.utxos);
       this.loading = false;
     },
     address(){
