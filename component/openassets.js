@@ -98,6 +98,7 @@ module.exports=require("./openassets.html")({
         method:"POST"
       }).then(response=>{
         console.log ("requestIssueAsset response.data.tx",response.data.tx);
+        console.log ("response.data rawtxHex = ", response.data.rawtxHex);
         storage.get("keyPairs").then((cipher)=>{
           // 署名する
           console.log("storage.get");
@@ -112,6 +113,8 @@ module.exports=require("./openassets.html")({
           })
           console.log("path =", path);
           console.log("network =",this.network);
+          const txb = new bcLib.TransactionBuilder(this.network)
+
           const finalTx=this.signTx({
             entropyCipher:cipher.entropy,
             password:"takahiro",
