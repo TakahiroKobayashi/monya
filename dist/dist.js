@@ -2031,7 +2031,7 @@ const defaultCoins=[
     bip21:"monacoin",
     defaultFeeSatPerByte:200,//will implement dynamic fee
     icon:__webpack_require__(384),
-    defaultAPIEndpoint:"https://mona.insight.monaco-ex.org/insight-api-monacoin",
+    defaultAPIEndpoint:"http://160.16.224.84:3001/insight-api-monacoin",
     network:{
       messagePrefix: '\x19Monacoin Signed Message:\n',
       bip32: {
@@ -2255,7 +2255,6 @@ exports.eachWithDummy=(fn)=>{
  * @param {function} fn(Currency).
  */
 exports.eachWithPub=(fn)=>{
-  console.log("eachWithPubよばれました");
   for(let curName in coins){
     if((coins[curName] instanceof Currency)&&(coins[curName].hdPubNode)){
       fn(coins[curName])
@@ -2270,7 +2269,6 @@ exports.eachWithPub=(fn)=>{
 exports.get=coinId=>{
     
   if((coins[coinId] instanceof Currency)){
-    console.log("今コイン取得coinId=",coinId);
     return coins[coinId]
   }
 }
@@ -7622,7 +7620,7 @@ module.exports = function createHash (alg) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var Buffer = __webpack_require__(4).Buffer
-var Transform = __webpack_require__(31).Transform
+var Transform = __webpack_require__(32).Transform
 var StringDecoder = __webpack_require__(53).StringDecoder
 var inherits = __webpack_require__(1)
 
@@ -7744,7 +7742,7 @@ module.exports = {
   TransactionBuilder: __webpack_require__(263),
 
   address: __webpack_require__(72),
-  crypto: __webpack_require__(30),
+  crypto: __webpack_require__(31),
   networks: __webpack_require__(40),
   opcodes: __webpack_require__(12),
   script: script
@@ -7894,631 +7892,6 @@ module.exports = BigInteger
 
 /***/ }),
 /* 26 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function(global, process) {
-
-function oldBrowser () {
-  throw new Error('secure random number generation not supported by this browser\nuse chrome, FireFox or Internet Explorer 11')
-}
-
-var Buffer = __webpack_require__(4).Buffer
-var crypto = global.crypto || global.msCrypto
-
-if (crypto && crypto.getRandomValues) {
-  module.exports = randomBytes
-} else {
-  module.exports = oldBrowser
-}
-
-function randomBytes (size, cb) {
-  // phantomjs needs to throw
-  if (size > 65536) throw new Error('requested too many random bytes')
-  // in case browserify  isn't using the Uint8Array version
-  var rawBytes = new global.Uint8Array(size)
-
-  // This will not work in older browsers.
-  // See https://developer.mozilla.org/en-US/docs/Web/API/window.crypto.getRandomValues
-  if (size > 0) {  // getRandomValues fails on IE if size == 0
-    crypto.getRandomValues(rawBytes)
-  }
-
-  // XXX: phantomjs doesn't like a buffer being passed here
-  var bytes = Buffer.from(rawBytes.buffer)
-
-  if (typeof cb === 'function') {
-    return process.nextTick(function () {
-      cb(null, bytes)
-    })
-  }
-
-  return bytes
-}
-
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(15), __webpack_require__(14)))
-
-/***/ }),
-/* 27 */
-/***/ (function(module, exports) {
-
-var toSJISFunction
-var CODEWORDS_COUNT = [
-  0, // Not used
-  26, 44, 70, 100, 134, 172, 196, 242, 292, 346,
-  404, 466, 532, 581, 655, 733, 815, 901, 991, 1085,
-  1156, 1258, 1364, 1474, 1588, 1706, 1828, 1921, 2051, 2185,
-  2323, 2465, 2611, 2761, 2876, 3034, 3196, 3362, 3532, 3706
-]
-
-/**
- * Returns the QR Code size for the specified version
- *
- * @param  {Number} version QR Code version
- * @return {Number}         size of QR code
- */
-exports.getSymbolSize = function getSymbolSize (version) {
-  if (!version) throw new Error('"version" cannot be null or undefined')
-  if (version < 1 || version > 40) throw new Error('"version" should be in range from 1 to 40')
-  return version * 4 + 17
-}
-
-/**
- * Returns the total number of codewords used to store data and EC information.
- *
- * @param  {Number} version QR Code version
- * @return {Number}         Data length in bits
- */
-exports.getSymbolTotalCodewords = function getSymbolTotalCodewords (version) {
-  return CODEWORDS_COUNT[version]
-}
-
-/**
- * Encode data with Bose-Chaudhuri-Hocquenghem
- *
- * @param  {Number} data Value to encode
- * @return {Number}      Encoded value
- */
-exports.getBCHDigit = function (data) {
-  var digit = 0
-
-  while (data !== 0) {
-    digit++
-    data >>>= 1
-  }
-
-  return digit
-}
-
-exports.setToSJISFunction = function setToSJISFunction (f) {
-  if (typeof f !== 'function') {
-    throw new Error('"toSJISFunc" is not a valid function.')
-  }
-
-  toSJISFunction = f
-}
-
-exports.isKanjiModeEnabled = function () {
-  return typeof toSJISFunction !== 'undefined'
-}
-
-exports.toSJIS = function toSJIS (kanji) {
-  return toSJISFunction(kanji)
-}
-
-
-/***/ }),
-/* 28 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var Version = __webpack_require__(159)
-var Regex = __webpack_require__(160)
-
-/**
- * Numeric mode encodes data from the decimal digit set (0 - 9)
- * (byte values 30HEX to 39HEX).
- * Normally, 3 data characters are represented by 10 bits.
- *
- * @type {Object}
- */
-exports.NUMERIC = {
-  id: 'Numeric',
-  bit: 1 << 0,
-  ccBits: [10, 12, 14]
-}
-
-/**
- * Alphanumeric mode encodes data from a set of 45 characters,
- * i.e. 10 numeric digits (0 - 9),
- *      26 alphabetic characters (A - Z),
- *   and 9 symbols (SP, $, %, *, +, -, ., /, :).
- * Normally, two input characters are represented by 11 bits.
- *
- * @type {Object}
- */
-exports.ALPHANUMERIC = {
-  id: 'Alphanumeric',
-  bit: 1 << 1,
-  ccBits: [9, 11, 13]
-}
-
-/**
- * In byte mode, data is encoded at 8 bits per character.
- *
- * @type {Object}
- */
-exports.BYTE = {
-  id: 'Byte',
-  bit: 1 << 2,
-  ccBits: [8, 16, 16]
-}
-
-/**
- * The Kanji mode efficiently encodes Kanji characters in accordance with
- * the Shift JIS system based on JIS X 0208.
- * The Shift JIS values are shifted from the JIS X 0208 values.
- * JIS X 0208 gives details of the shift coded representation.
- * Each two-byte character value is compacted to a 13-bit binary codeword.
- *
- * @type {Object}
- */
-exports.KANJI = {
-  id: 'Kanji',
-  bit: 1 << 3,
-  ccBits: [8, 10, 12]
-}
-
-/**
- * Mixed mode will contain a sequences of data in a combination of any of
- * the modes described above
- *
- * @type {Object}
- */
-exports.MIXED = {
-  bit: -1
-}
-
-/**
- * Returns the number of bits needed to store the data length
- * according to QR Code specifications.
- *
- * @param  {Mode}   mode    Data mode
- * @param  {Number} version QR Code version
- * @return {Number}         Number of bits
- */
-exports.getCharCountIndicator = function getCharCountIndicator (mode, version) {
-  if (!mode.ccBits) throw new Error('Invalid mode: ' + mode)
-
-  if (!Version.isValid(version)) {
-    throw new Error('Invalid version: ' + version)
-  }
-
-  if (version >= 1 && version < 10) return mode.ccBits[0]
-  else if (version < 27) return mode.ccBits[1]
-  return mode.ccBits[2]
-}
-
-/**
- * Returns the most efficient mode to store the specified data
- *
- * @param  {String} dataStr Input data string
- * @return {Mode}           Best mode
- */
-exports.getBestModeForData = function getBestModeForData (dataStr) {
-  if (Regex.testNumeric(dataStr)) return exports.NUMERIC
-  else if (Regex.testAlphanumeric(dataStr)) return exports.ALPHANUMERIC
-  else if (Regex.testKanji(dataStr)) return exports.KANJI
-  else return exports.BYTE
-}
-
-/**
- * Return mode name as string
- *
- * @param {Mode} mode Mode object
- * @returns {String}  Mode name
- */
-exports.toString = function toString (mode) {
-  if (mode && mode.id) return mode.id
-  throw new Error('Invalid mode')
-}
-
-/**
- * Check if input param is a valid mode object
- *
- * @param   {Mode}    mode Mode object
- * @returns {Boolean} True if valid mode, false otherwise
- */
-exports.isValid = function isValid (mode) {
-  return mode && mode.bit && mode.ccBits
-}
-
-/**
- * Get mode object from its name
- *
- * @param   {String} string Mode name
- * @returns {Mode}          Mode object
- */
-function fromString (string) {
-  if (typeof string !== 'string') {
-    throw new Error('Param is not a string')
-  }
-
-  var lcStr = string.toLowerCase()
-
-  switch (lcStr) {
-    case 'numeric':
-      return exports.NUMERIC
-    case 'alphanumeric':
-      return exports.ALPHANUMERIC
-    case 'kanji':
-      return exports.KANJI
-    case 'byte':
-      return exports.BYTE
-    default:
-      throw new Error('Unknown mode: ' + string)
-  }
-}
-
-/**
- * Returns mode from a value.
- * If value is not a valid mode, returns defaultValue
- *
- * @param  {Mode|String} value        Encoding mode
- * @param  {Mode}        defaultValue Fallback value
- * @return {Mode}                     Encoding mode
- */
-exports.from = function from (value, defaultValue) {
-  if (exports.isValid(value)) {
-    return value
-  }
-
-  try {
-    return fromString(value)
-  } catch (e) {
-    return defaultValue
-  }
-}
-
-
-/***/ }),
-/* 29 */
-/***/ (function(module, exports) {
-
-/*
-	MIT License http://www.opensource.org/licenses/mit-license.php
-	Author Tobias Koppers @sokra
-*/
-// css base code, injected by the css-loader
-module.exports = function(useSourceMap) {
-	var list = [];
-
-	// return the list of modules as css string
-	list.toString = function toString() {
-		return this.map(function (item) {
-			var content = cssWithMappingToString(item, useSourceMap);
-			if(item[2]) {
-				return "@media " + item[2] + "{" + content + "}";
-			} else {
-				return content;
-			}
-		}).join("");
-	};
-
-	// import a list of modules into the list
-	list.i = function(modules, mediaQuery) {
-		if(typeof modules === "string")
-			modules = [[null, modules, ""]];
-		var alreadyImportedModules = {};
-		for(var i = 0; i < this.length; i++) {
-			var id = this[i][0];
-			if(typeof id === "number")
-				alreadyImportedModules[id] = true;
-		}
-		for(i = 0; i < modules.length; i++) {
-			var item = modules[i];
-			// skip already imported module
-			// this implementation is not 100% perfect for weird media query combinations
-			//  when a module is imported multiple times with different media queries.
-			//  I hope this will never occur (Hey this way we have smaller bundles)
-			if(typeof item[0] !== "number" || !alreadyImportedModules[item[0]]) {
-				if(mediaQuery && !item[2]) {
-					item[2] = mediaQuery;
-				} else if(mediaQuery) {
-					item[2] = "(" + item[2] + ") and (" + mediaQuery + ")";
-				}
-				list.push(item);
-			}
-		}
-	};
-	return list;
-};
-
-function cssWithMappingToString(item, useSourceMap) {
-	var content = item[1] || '';
-	var cssMapping = item[3];
-	if (!cssMapping) {
-		return content;
-	}
-
-	if (useSourceMap && typeof btoa === 'function') {
-		var sourceMapping = toComment(cssMapping);
-		var sourceURLs = cssMapping.sources.map(function (source) {
-			return '/*# sourceURL=' + cssMapping.sourceRoot + source + ' */'
-		});
-
-		return [content].concat(sourceURLs).concat([sourceMapping]).join('\n');
-	}
-
-	return [content].join('\n');
-}
-
-// Adapted from convert-source-map (MIT)
-function toComment(sourceMap) {
-	// eslint-disable-next-line no-undef
-	var base64 = btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap))));
-	var data = 'sourceMappingURL=data:application/json;charset=utf-8;base64,' + base64;
-
-	return '/*# ' + data + ' */';
-}
-
-
-/***/ }),
-/* 30 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var createHash = __webpack_require__(105)
-
-function ripemd160 (buffer) {
-  return createHash('rmd160').update(buffer).digest()
-}
-
-function sha1 (buffer) {
-  return createHash('sha1').update(buffer).digest()
-}
-
-function sha256 (buffer) {
-  return createHash('sha256').update(buffer).digest()
-}
-
-function hash160 (buffer) {
-  return ripemd160(sha256(buffer))
-}
-
-function hash256 (buffer) {
-  return sha256(sha256(buffer))
-}
-
-module.exports = {
-  hash160: hash160,
-  hash256: hash256,
-  ripemd160: ripemd160,
-  sha1: sha1,
-  sha256: sha256
-}
-
-
-/***/ }),
-/* 31 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// Copyright Joyent, Inc. and other Node contributors.
-//
-// Permission is hereby granted, free of charge, to any person obtaining a
-// copy of this software and associated documentation files (the
-// "Software"), to deal in the Software without restriction, including
-// without limitation the rights to use, copy, modify, merge, publish,
-// distribute, sublicense, and/or sell copies of the Software, and to permit
-// persons to whom the Software is furnished to do so, subject to the
-// following conditions:
-//
-// The above copyright notice and this permission notice shall be included
-// in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
-// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
-// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
-// USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-module.exports = Stream;
-
-var EE = __webpack_require__(66).EventEmitter;
-var inherits = __webpack_require__(1);
-
-inherits(Stream, EE);
-Stream.Readable = __webpack_require__(67);
-Stream.Writable = __webpack_require__(238);
-Stream.Duplex = __webpack_require__(239);
-Stream.Transform = __webpack_require__(240);
-Stream.PassThrough = __webpack_require__(241);
-
-// Backwards-compat with node 0.4.x
-Stream.Stream = Stream;
-
-
-
-// old-style streams.  Note that the pipe method (the only relevant
-// part of this class) is overridden in the Readable class.
-
-function Stream() {
-  EE.call(this);
-}
-
-Stream.prototype.pipe = function(dest, options) {
-  var source = this;
-
-  function ondata(chunk) {
-    if (dest.writable) {
-      if (false === dest.write(chunk) && source.pause) {
-        source.pause();
-      }
-    }
-  }
-
-  source.on('data', ondata);
-
-  function ondrain() {
-    if (source.readable && source.resume) {
-      source.resume();
-    }
-  }
-
-  dest.on('drain', ondrain);
-
-  // If the 'end' option is not supplied, dest.end() will be called when
-  // source gets the 'end' or 'close' events.  Only dest.end() once.
-  if (!dest._isStdio && (!options || options.end !== false)) {
-    source.on('end', onend);
-    source.on('close', onclose);
-  }
-
-  var didOnEnd = false;
-  function onend() {
-    if (didOnEnd) return;
-    didOnEnd = true;
-
-    dest.end();
-  }
-
-
-  function onclose() {
-    if (didOnEnd) return;
-    didOnEnd = true;
-
-    if (typeof dest.destroy === 'function') dest.destroy();
-  }
-
-  // don't leave dangling pipes when there are errors.
-  function onerror(er) {
-    cleanup();
-    if (EE.listenerCount(this, 'error') === 0) {
-      throw er; // Unhandled stream error in pipe.
-    }
-  }
-
-  source.on('error', onerror);
-  dest.on('error', onerror);
-
-  // remove all the event listeners that were added.
-  function cleanup() {
-    source.removeListener('data', ondata);
-    dest.removeListener('drain', ondrain);
-
-    source.removeListener('end', onend);
-    source.removeListener('close', onclose);
-
-    source.removeListener('error', onerror);
-    dest.removeListener('error', onerror);
-
-    source.removeListener('end', cleanup);
-    source.removeListener('close', cleanup);
-
-    dest.removeListener('close', cleanup);
-  }
-
-  source.on('end', cleanup);
-  source.on('close', cleanup);
-
-  dest.on('close', cleanup);
-
-  dest.emit('pipe', source);
-
-  // Allow for unix-like usage: A.pipe(B).pipe(C)
-  return dest;
-};
-
-
-/***/ }),
-/* 32 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var Buffer = __webpack_require__(5).Buffer
-
-// prototype class for hash functions
-function Hash (blockSize, finalSize) {
-  this._block = Buffer.alloc(blockSize)
-  this._finalSize = finalSize
-  this._blockSize = blockSize
-  this._len = 0
-}
-
-Hash.prototype.update = function (data, enc) {
-  if (typeof data === 'string') {
-    enc = enc || 'utf8'
-    data = Buffer.from(data, enc)
-  }
-
-  var block = this._block
-  var blockSize = this._blockSize
-  var length = data.length
-  var accum = this._len
-
-  for (var offset = 0; offset < length;) {
-    var assigned = accum % blockSize
-    var remainder = Math.min(length - offset, blockSize - assigned)
-
-    for (var i = 0; i < remainder; i++) {
-      block[assigned + i] = data[offset + i]
-    }
-
-    accum += remainder
-    offset += remainder
-
-    if ((accum % blockSize) === 0) {
-      this._update(block)
-    }
-  }
-
-  this._len += length
-  return this
-}
-
-Hash.prototype.digest = function (enc) {
-  var rem = this._len % this._blockSize
-
-  this._block[rem] = 0x80
-
-  // zero (rem + 1) trailing bits, where (rem + 1) is the smallest
-  // non-negative solution to the equation (length + 1 + (rem + 1)) === finalSize mod blockSize
-  this._block.fill(0, rem + 1)
-
-  if (rem >= this._finalSize) {
-    this._update(this._block)
-    this._block.fill(0)
-  }
-
-  var bits = this._len * 8
-
-  // uint32
-  if (bits <= 0xffffffff) {
-    this._block.writeUInt32BE(bits, this._blockSize - 4)
-
-  // uint64
-  } else {
-    var lowBits = (bits & 0xffffffff) >>> 0
-    var highBits = (bits - lowBits) / 0x100000000
-
-    this._block.writeUInt32BE(highBits, this._blockSize - 8)
-    this._block.writeUInt32BE(lowBits, this._blockSize - 4)
-  }
-
-  this._update(this._block)
-  var hash = this._hash()
-
-  return enc ? hash.toString(enc) : hash
-}
-
-Hash.prototype._update = function () {
-  throw new Error('_update must be implemented by subclass')
-}
-
-module.exports = Hash
-
-
-/***/ }),
-/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_RESULT__;/*! bignumber.js v5.0.0 https://github.com/MikeMcl/bignumber.js/LICENCE */
@@ -11260,6 +10633,631 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/*! bignumber.js v5.0.0 https://github.com/Mik
 
 
 /***/ }),
+/* 27 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(global, process) {
+
+function oldBrowser () {
+  throw new Error('secure random number generation not supported by this browser\nuse chrome, FireFox or Internet Explorer 11')
+}
+
+var Buffer = __webpack_require__(4).Buffer
+var crypto = global.crypto || global.msCrypto
+
+if (crypto && crypto.getRandomValues) {
+  module.exports = randomBytes
+} else {
+  module.exports = oldBrowser
+}
+
+function randomBytes (size, cb) {
+  // phantomjs needs to throw
+  if (size > 65536) throw new Error('requested too many random bytes')
+  // in case browserify  isn't using the Uint8Array version
+  var rawBytes = new global.Uint8Array(size)
+
+  // This will not work in older browsers.
+  // See https://developer.mozilla.org/en-US/docs/Web/API/window.crypto.getRandomValues
+  if (size > 0) {  // getRandomValues fails on IE if size == 0
+    crypto.getRandomValues(rawBytes)
+  }
+
+  // XXX: phantomjs doesn't like a buffer being passed here
+  var bytes = Buffer.from(rawBytes.buffer)
+
+  if (typeof cb === 'function') {
+    return process.nextTick(function () {
+      cb(null, bytes)
+    })
+  }
+
+  return bytes
+}
+
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(15), __webpack_require__(14)))
+
+/***/ }),
+/* 28 */
+/***/ (function(module, exports) {
+
+var toSJISFunction
+var CODEWORDS_COUNT = [
+  0, // Not used
+  26, 44, 70, 100, 134, 172, 196, 242, 292, 346,
+  404, 466, 532, 581, 655, 733, 815, 901, 991, 1085,
+  1156, 1258, 1364, 1474, 1588, 1706, 1828, 1921, 2051, 2185,
+  2323, 2465, 2611, 2761, 2876, 3034, 3196, 3362, 3532, 3706
+]
+
+/**
+ * Returns the QR Code size for the specified version
+ *
+ * @param  {Number} version QR Code version
+ * @return {Number}         size of QR code
+ */
+exports.getSymbolSize = function getSymbolSize (version) {
+  if (!version) throw new Error('"version" cannot be null or undefined')
+  if (version < 1 || version > 40) throw new Error('"version" should be in range from 1 to 40')
+  return version * 4 + 17
+}
+
+/**
+ * Returns the total number of codewords used to store data and EC information.
+ *
+ * @param  {Number} version QR Code version
+ * @return {Number}         Data length in bits
+ */
+exports.getSymbolTotalCodewords = function getSymbolTotalCodewords (version) {
+  return CODEWORDS_COUNT[version]
+}
+
+/**
+ * Encode data with Bose-Chaudhuri-Hocquenghem
+ *
+ * @param  {Number} data Value to encode
+ * @return {Number}      Encoded value
+ */
+exports.getBCHDigit = function (data) {
+  var digit = 0
+
+  while (data !== 0) {
+    digit++
+    data >>>= 1
+  }
+
+  return digit
+}
+
+exports.setToSJISFunction = function setToSJISFunction (f) {
+  if (typeof f !== 'function') {
+    throw new Error('"toSJISFunc" is not a valid function.')
+  }
+
+  toSJISFunction = f
+}
+
+exports.isKanjiModeEnabled = function () {
+  return typeof toSJISFunction !== 'undefined'
+}
+
+exports.toSJIS = function toSJIS (kanji) {
+  return toSJISFunction(kanji)
+}
+
+
+/***/ }),
+/* 29 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var Version = __webpack_require__(159)
+var Regex = __webpack_require__(160)
+
+/**
+ * Numeric mode encodes data from the decimal digit set (0 - 9)
+ * (byte values 30HEX to 39HEX).
+ * Normally, 3 data characters are represented by 10 bits.
+ *
+ * @type {Object}
+ */
+exports.NUMERIC = {
+  id: 'Numeric',
+  bit: 1 << 0,
+  ccBits: [10, 12, 14]
+}
+
+/**
+ * Alphanumeric mode encodes data from a set of 45 characters,
+ * i.e. 10 numeric digits (0 - 9),
+ *      26 alphabetic characters (A - Z),
+ *   and 9 symbols (SP, $, %, *, +, -, ., /, :).
+ * Normally, two input characters are represented by 11 bits.
+ *
+ * @type {Object}
+ */
+exports.ALPHANUMERIC = {
+  id: 'Alphanumeric',
+  bit: 1 << 1,
+  ccBits: [9, 11, 13]
+}
+
+/**
+ * In byte mode, data is encoded at 8 bits per character.
+ *
+ * @type {Object}
+ */
+exports.BYTE = {
+  id: 'Byte',
+  bit: 1 << 2,
+  ccBits: [8, 16, 16]
+}
+
+/**
+ * The Kanji mode efficiently encodes Kanji characters in accordance with
+ * the Shift JIS system based on JIS X 0208.
+ * The Shift JIS values are shifted from the JIS X 0208 values.
+ * JIS X 0208 gives details of the shift coded representation.
+ * Each two-byte character value is compacted to a 13-bit binary codeword.
+ *
+ * @type {Object}
+ */
+exports.KANJI = {
+  id: 'Kanji',
+  bit: 1 << 3,
+  ccBits: [8, 10, 12]
+}
+
+/**
+ * Mixed mode will contain a sequences of data in a combination of any of
+ * the modes described above
+ *
+ * @type {Object}
+ */
+exports.MIXED = {
+  bit: -1
+}
+
+/**
+ * Returns the number of bits needed to store the data length
+ * according to QR Code specifications.
+ *
+ * @param  {Mode}   mode    Data mode
+ * @param  {Number} version QR Code version
+ * @return {Number}         Number of bits
+ */
+exports.getCharCountIndicator = function getCharCountIndicator (mode, version) {
+  if (!mode.ccBits) throw new Error('Invalid mode: ' + mode)
+
+  if (!Version.isValid(version)) {
+    throw new Error('Invalid version: ' + version)
+  }
+
+  if (version >= 1 && version < 10) return mode.ccBits[0]
+  else if (version < 27) return mode.ccBits[1]
+  return mode.ccBits[2]
+}
+
+/**
+ * Returns the most efficient mode to store the specified data
+ *
+ * @param  {String} dataStr Input data string
+ * @return {Mode}           Best mode
+ */
+exports.getBestModeForData = function getBestModeForData (dataStr) {
+  if (Regex.testNumeric(dataStr)) return exports.NUMERIC
+  else if (Regex.testAlphanumeric(dataStr)) return exports.ALPHANUMERIC
+  else if (Regex.testKanji(dataStr)) return exports.KANJI
+  else return exports.BYTE
+}
+
+/**
+ * Return mode name as string
+ *
+ * @param {Mode} mode Mode object
+ * @returns {String}  Mode name
+ */
+exports.toString = function toString (mode) {
+  if (mode && mode.id) return mode.id
+  throw new Error('Invalid mode')
+}
+
+/**
+ * Check if input param is a valid mode object
+ *
+ * @param   {Mode}    mode Mode object
+ * @returns {Boolean} True if valid mode, false otherwise
+ */
+exports.isValid = function isValid (mode) {
+  return mode && mode.bit && mode.ccBits
+}
+
+/**
+ * Get mode object from its name
+ *
+ * @param   {String} string Mode name
+ * @returns {Mode}          Mode object
+ */
+function fromString (string) {
+  if (typeof string !== 'string') {
+    throw new Error('Param is not a string')
+  }
+
+  var lcStr = string.toLowerCase()
+
+  switch (lcStr) {
+    case 'numeric':
+      return exports.NUMERIC
+    case 'alphanumeric':
+      return exports.ALPHANUMERIC
+    case 'kanji':
+      return exports.KANJI
+    case 'byte':
+      return exports.BYTE
+    default:
+      throw new Error('Unknown mode: ' + string)
+  }
+}
+
+/**
+ * Returns mode from a value.
+ * If value is not a valid mode, returns defaultValue
+ *
+ * @param  {Mode|String} value        Encoding mode
+ * @param  {Mode}        defaultValue Fallback value
+ * @return {Mode}                     Encoding mode
+ */
+exports.from = function from (value, defaultValue) {
+  if (exports.isValid(value)) {
+    return value
+  }
+
+  try {
+    return fromString(value)
+  } catch (e) {
+    return defaultValue
+  }
+}
+
+
+/***/ }),
+/* 30 */
+/***/ (function(module, exports) {
+
+/*
+	MIT License http://www.opensource.org/licenses/mit-license.php
+	Author Tobias Koppers @sokra
+*/
+// css base code, injected by the css-loader
+module.exports = function(useSourceMap) {
+	var list = [];
+
+	// return the list of modules as css string
+	list.toString = function toString() {
+		return this.map(function (item) {
+			var content = cssWithMappingToString(item, useSourceMap);
+			if(item[2]) {
+				return "@media " + item[2] + "{" + content + "}";
+			} else {
+				return content;
+			}
+		}).join("");
+	};
+
+	// import a list of modules into the list
+	list.i = function(modules, mediaQuery) {
+		if(typeof modules === "string")
+			modules = [[null, modules, ""]];
+		var alreadyImportedModules = {};
+		for(var i = 0; i < this.length; i++) {
+			var id = this[i][0];
+			if(typeof id === "number")
+				alreadyImportedModules[id] = true;
+		}
+		for(i = 0; i < modules.length; i++) {
+			var item = modules[i];
+			// skip already imported module
+			// this implementation is not 100% perfect for weird media query combinations
+			//  when a module is imported multiple times with different media queries.
+			//  I hope this will never occur (Hey this way we have smaller bundles)
+			if(typeof item[0] !== "number" || !alreadyImportedModules[item[0]]) {
+				if(mediaQuery && !item[2]) {
+					item[2] = mediaQuery;
+				} else if(mediaQuery) {
+					item[2] = "(" + item[2] + ") and (" + mediaQuery + ")";
+				}
+				list.push(item);
+			}
+		}
+	};
+	return list;
+};
+
+function cssWithMappingToString(item, useSourceMap) {
+	var content = item[1] || '';
+	var cssMapping = item[3];
+	if (!cssMapping) {
+		return content;
+	}
+
+	if (useSourceMap && typeof btoa === 'function') {
+		var sourceMapping = toComment(cssMapping);
+		var sourceURLs = cssMapping.sources.map(function (source) {
+			return '/*# sourceURL=' + cssMapping.sourceRoot + source + ' */'
+		});
+
+		return [content].concat(sourceURLs).concat([sourceMapping]).join('\n');
+	}
+
+	return [content].join('\n');
+}
+
+// Adapted from convert-source-map (MIT)
+function toComment(sourceMap) {
+	// eslint-disable-next-line no-undef
+	var base64 = btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap))));
+	var data = 'sourceMappingURL=data:application/json;charset=utf-8;base64,' + base64;
+
+	return '/*# ' + data + ' */';
+}
+
+
+/***/ }),
+/* 31 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var createHash = __webpack_require__(105)
+
+function ripemd160 (buffer) {
+  return createHash('rmd160').update(buffer).digest()
+}
+
+function sha1 (buffer) {
+  return createHash('sha1').update(buffer).digest()
+}
+
+function sha256 (buffer) {
+  return createHash('sha256').update(buffer).digest()
+}
+
+function hash160 (buffer) {
+  return ripemd160(sha256(buffer))
+}
+
+function hash256 (buffer) {
+  return sha256(sha256(buffer))
+}
+
+module.exports = {
+  hash160: hash160,
+  hash256: hash256,
+  ripemd160: ripemd160,
+  sha1: sha1,
+  sha256: sha256
+}
+
+
+/***/ }),
+/* 32 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// Copyright Joyent, Inc. and other Node contributors.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to permit
+// persons to whom the Software is furnished to do so, subject to the
+// following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+// USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+module.exports = Stream;
+
+var EE = __webpack_require__(66).EventEmitter;
+var inherits = __webpack_require__(1);
+
+inherits(Stream, EE);
+Stream.Readable = __webpack_require__(67);
+Stream.Writable = __webpack_require__(238);
+Stream.Duplex = __webpack_require__(239);
+Stream.Transform = __webpack_require__(240);
+Stream.PassThrough = __webpack_require__(241);
+
+// Backwards-compat with node 0.4.x
+Stream.Stream = Stream;
+
+
+
+// old-style streams.  Note that the pipe method (the only relevant
+// part of this class) is overridden in the Readable class.
+
+function Stream() {
+  EE.call(this);
+}
+
+Stream.prototype.pipe = function(dest, options) {
+  var source = this;
+
+  function ondata(chunk) {
+    if (dest.writable) {
+      if (false === dest.write(chunk) && source.pause) {
+        source.pause();
+      }
+    }
+  }
+
+  source.on('data', ondata);
+
+  function ondrain() {
+    if (source.readable && source.resume) {
+      source.resume();
+    }
+  }
+
+  dest.on('drain', ondrain);
+
+  // If the 'end' option is not supplied, dest.end() will be called when
+  // source gets the 'end' or 'close' events.  Only dest.end() once.
+  if (!dest._isStdio && (!options || options.end !== false)) {
+    source.on('end', onend);
+    source.on('close', onclose);
+  }
+
+  var didOnEnd = false;
+  function onend() {
+    if (didOnEnd) return;
+    didOnEnd = true;
+
+    dest.end();
+  }
+
+
+  function onclose() {
+    if (didOnEnd) return;
+    didOnEnd = true;
+
+    if (typeof dest.destroy === 'function') dest.destroy();
+  }
+
+  // don't leave dangling pipes when there are errors.
+  function onerror(er) {
+    cleanup();
+    if (EE.listenerCount(this, 'error') === 0) {
+      throw er; // Unhandled stream error in pipe.
+    }
+  }
+
+  source.on('error', onerror);
+  dest.on('error', onerror);
+
+  // remove all the event listeners that were added.
+  function cleanup() {
+    source.removeListener('data', ondata);
+    dest.removeListener('drain', ondrain);
+
+    source.removeListener('end', onend);
+    source.removeListener('close', onclose);
+
+    source.removeListener('error', onerror);
+    dest.removeListener('error', onerror);
+
+    source.removeListener('end', cleanup);
+    source.removeListener('close', cleanup);
+
+    dest.removeListener('close', cleanup);
+  }
+
+  source.on('end', cleanup);
+  source.on('close', cleanup);
+
+  dest.on('close', cleanup);
+
+  dest.emit('pipe', source);
+
+  // Allow for unix-like usage: A.pipe(B).pipe(C)
+  return dest;
+};
+
+
+/***/ }),
+/* 33 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var Buffer = __webpack_require__(5).Buffer
+
+// prototype class for hash functions
+function Hash (blockSize, finalSize) {
+  this._block = Buffer.alloc(blockSize)
+  this._finalSize = finalSize
+  this._blockSize = blockSize
+  this._len = 0
+}
+
+Hash.prototype.update = function (data, enc) {
+  if (typeof data === 'string') {
+    enc = enc || 'utf8'
+    data = Buffer.from(data, enc)
+  }
+
+  var block = this._block
+  var blockSize = this._blockSize
+  var length = data.length
+  var accum = this._len
+
+  for (var offset = 0; offset < length;) {
+    var assigned = accum % blockSize
+    var remainder = Math.min(length - offset, blockSize - assigned)
+
+    for (var i = 0; i < remainder; i++) {
+      block[assigned + i] = data[offset + i]
+    }
+
+    accum += remainder
+    offset += remainder
+
+    if ((accum % blockSize) === 0) {
+      this._update(block)
+    }
+  }
+
+  this._len += length
+  return this
+}
+
+Hash.prototype.digest = function (enc) {
+  var rem = this._len % this._blockSize
+
+  this._block[rem] = 0x80
+
+  // zero (rem + 1) trailing bits, where (rem + 1) is the smallest
+  // non-negative solution to the equation (length + 1 + (rem + 1)) === finalSize mod blockSize
+  this._block.fill(0, rem + 1)
+
+  if (rem >= this._finalSize) {
+    this._update(this._block)
+    this._block.fill(0)
+  }
+
+  var bits = this._len * 8
+
+  // uint32
+  if (bits <= 0xffffffff) {
+    this._block.writeUInt32BE(bits, this._blockSize - 4)
+
+  // uint64
+  } else {
+    var lowBits = (bits & 0xffffffff) >>> 0
+    var highBits = (bits - lowBits) / 0x100000000
+
+    this._block.writeUInt32BE(highBits, this._blockSize - 8)
+    this._block.writeUInt32BE(lowBits, this._blockSize - 4)
+  }
+
+  this._update(this._block)
+  var hash = this._hash()
+
+  return enc ? hash.toString(enc) : hash
+}
+
+Hash.prototype._update = function () {
+  throw new Error('_update must be implemented by subclass')
+}
+
+module.exports = Hash
+
+
+/***/ }),
 /* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -12363,7 +12361,7 @@ BlockHash.prototype._pad = function pad() {
 var Buffer = __webpack_require__(4).Buffer
 var createHash = __webpack_require__(21)
 var pbkdf2 = __webpack_require__(83).pbkdf2Sync
-var randomBytes = __webpack_require__(26)
+var randomBytes = __webpack_require__(27)
 
 // use unorm until String.prototype.normalize gets better browser support
 var unorm = __webpack_require__(328)
@@ -12523,7 +12521,7 @@ module.exports = {
 "use strict";
 
 
-exports.randomBytes = exports.rng = exports.pseudoRandomBytes = exports.prng = __webpack_require__(26)
+exports.randomBytes = exports.rng = exports.pseudoRandomBytes = exports.prng = __webpack_require__(27)
 exports.createHash = exports.Hash = __webpack_require__(21)
 exports.createHmac = exports.Hmac = __webpack_require__(138)
 
@@ -14057,7 +14055,7 @@ function updateLink (link, options, obj) {
 
 const bcLib = __webpack_require__(23)
 const axios = __webpack_require__(17);
-const BigNumber = __webpack_require__(33);
+const BigNumber = __webpack_require__(26);
 const coinSelect = __webpack_require__(282)
 const bcMsg = __webpack_require__(285)
 const bip39 = __webpack_require__(42)
@@ -14340,7 +14338,8 @@ module.exports=class{
       const feeRate = option.feeRate
 
       const txb = new bcLib.TransactionBuilder(this.network)
-
+      console.log("this.network",this.network);
+      console.log("txb ok", txb);
       let param
       if(option.utxoStr){
         param=JSON.parse(option.utxoStr)
@@ -14353,6 +14352,9 @@ module.exports=class{
       this.getUtxos(param,option.includeUnconfirmedFunds).then(res=>{
         console.log("in getUtxos.then, res.utxos = %s", JSON.stringify(res.utxos));
         const path=[]
+        console.log("res.utxos", res.utxos);
+        console.log("send targets", targets);
+        console.log("feeRate = ", feeRate);
         //! 手持ちのutxoから送金に必要なutxoを簡単に作ってくれるライブラリ？
         const { inputs, outputs, fee } = coinSelect(res.utxos, targets, feeRate)
 
@@ -14363,8 +14365,6 @@ module.exports=class{
         // vin の作成
         inputs.forEach(input => {
           txb.addInput(input.txId, input.vout)
-          console.log("input.txid = ",input.txId)
-          console.log("input.vout = ", input.vout)
           path.push(this.getIndexFromAddress(input.address))
           
         })
@@ -14373,8 +14373,6 @@ module.exports=class{
           if (!output.address) {
             output.address = this.getAddress(1,(this.changeIndex+1)%coinUtil.GAP_LIMIT_FOR_CHANGE)
           }
-          console.log("output.address = ",output.address);
-          console.log("output.value = ", output.value);
           txb.addOutput(output.address, output.value)
         })
         
@@ -14419,6 +14417,7 @@ module.exports=class{
     }
     
     for(let i=0;i<path.length;i++){
+      console.log("for i",i);
       txb.sign(i,node
                .deriveHardened(44)
                .deriveHardened(this.bip44.coinType)
@@ -14427,6 +14426,7 @@ module.exports=class{
                .derive(path[i][1]|0).keyPair
               )
     }
+    console.log("txb last send",txb);
     return txb.build()
     
   }
@@ -15848,7 +15848,7 @@ Writable.prototype._destroy = function (err, cb) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var Buffer = __webpack_require__(5).Buffer
-var Transform = __webpack_require__(31).Transform
+var Transform = __webpack_require__(32).Transform
 var StringDecoder = __webpack_require__(53).StringDecoder
 var inherits = __webpack_require__(16)
 
@@ -15953,7 +15953,7 @@ module.exports = CipherBase
 /***/ (function(module, exports, __webpack_require__) {
 
 var Buffer = __webpack_require__(5).Buffer
-var bcrypto = __webpack_require__(30)
+var bcrypto = __webpack_require__(31)
 var bscript = __webpack_require__(10)
 var bufferutils = __webpack_require__(104)
 var opcodes = __webpack_require__(12)
@@ -16451,7 +16451,7 @@ module.exports = Transaction
 /***/ (function(module, exports, __webpack_require__) {
 
 var baddress = __webpack_require__(72)
-var bcrypto = __webpack_require__(30)
+var bcrypto = __webpack_require__(31)
 var ecdsa = __webpack_require__(251)
 var randomBytes = __webpack_require__(260)
 var typeforce = __webpack_require__(8)
@@ -18074,7 +18074,7 @@ exports.EDE = __webpack_require__(357);
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {var bn = __webpack_require__(9);
-var randomBytes = __webpack_require__(26);
+var randomBytes = __webpack_require__(27);
 module.exports = crt;
 function blind(priv) {
   var r = getr(priv);
@@ -18125,7 +18125,7 @@ const coinUtil=__webpack_require__(6)
 const currencyList = __webpack_require__(3)
 const bcLib = __webpack_require__(23)
 const errors = __webpack_require__(35)
-const BigNumber = __webpack_require__(33);
+const BigNumber = __webpack_require__(26);
 module.exports=__webpack_require__(399)({
   data(){
     return {
@@ -22000,7 +22000,7 @@ exports.sha512 = __webpack_require__(114)
  */
 
 var inherits = __webpack_require__(16)
-var Hash = __webpack_require__(32)
+var Hash = __webpack_require__(33)
 var Buffer = __webpack_require__(5).Buffer
 
 var K = [
@@ -22133,7 +22133,7 @@ module.exports = Sha256
 /***/ (function(module, exports, __webpack_require__) {
 
 var inherits = __webpack_require__(16)
-var Hash = __webpack_require__(32)
+var Hash = __webpack_require__(33)
 var Buffer = __webpack_require__(5).Buffer
 
 var K = [
@@ -26332,7 +26332,7 @@ module.exports = StreamCipher
 /* 145 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var randomBytes = __webpack_require__(26);
+var randomBytes = __webpack_require__(27);
 module.exports = findPrime;
 findPrime.simpleSieve = simpleSieve;
 findPrime.fermatTest = fermatTest;
@@ -27741,10 +27741,10 @@ exports.getTotalCodewordsCount = function getTotalCodewordsCount (version, error
 /* 159 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var Utils = __webpack_require__(27)
+var Utils = __webpack_require__(28)
 var ECCode = __webpack_require__(158)
 var ECLevel = __webpack_require__(91)
-var Mode = __webpack_require__(28)
+var Mode = __webpack_require__(29)
 var isArray = __webpack_require__(90)
 
 // Generator polynomial used to encode version information
@@ -28535,13 +28535,11 @@ module.exports=__webpack_require__(439)({
       this.$emit("push",__webpack_require__(92))
     },
     render(entropy){
-      console.log("render")
       this.words=bip39.entropyToMnemonic(entropy).split(" ");
       // koba test
       seed = bip39.mnemonicToSeed(bip39.entropyToMnemonic(entropy));
       node = bcLib.HDNode.fromSeedBuffer(seed);
       string = node.neutered().toBase58();
-      console.log(string); // xpub
     },
     decrypt(){
       storage.get("keyPairs").then((cipher)=>{
@@ -28787,7 +28785,7 @@ if(false) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var escape = __webpack_require__(51);
-exports = module.exports = __webpack_require__(29)(false);
+exports = module.exports = __webpack_require__(30)(false);
 // imports
 
 
@@ -29005,7 +29003,7 @@ if(false) {
 /* 189 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(29)(false);
+exports = module.exports = __webpack_require__(30)(false);
 // imports
 exports.i(__webpack_require__(190), "");
 exports.i(__webpack_require__(194), "");
@@ -29022,7 +29020,7 @@ exports.push([module.i, "/*! onsenui - v2.8.2 - 2017-11-22 */ons-gesture-detecto
 /***/ (function(module, exports, __webpack_require__) {
 
 var escape = __webpack_require__(51);
-exports = module.exports = __webpack_require__(29)(false);
+exports = module.exports = __webpack_require__(30)(false);
 // imports
 
 
@@ -29055,7 +29053,7 @@ module.exports = __webpack_require__.p + "dist/assets/aff28a207631f39ee0272d5cdd
 /***/ (function(module, exports, __webpack_require__) {
 
 var escape = __webpack_require__(51);
-exports = module.exports = __webpack_require__(29)(false);
+exports = module.exports = __webpack_require__(30)(false);
 // imports
 
 
@@ -29088,7 +29086,7 @@ module.exports = __webpack_require__.p + "dist/assets/b351bd62abcd96e924d9f44a3d
 /***/ (function(module, exports, __webpack_require__) {
 
 var escape = __webpack_require__(51);
-exports = module.exports = __webpack_require__(29)(false);
+exports = module.exports = __webpack_require__(30)(false);
 // imports
 
 
@@ -29169,7 +29167,7 @@ if(false) {
 /* 206 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(29)(false);
+exports = module.exports = __webpack_require__(30)(false);
 // imports
 
 
@@ -30438,7 +30436,7 @@ module.exports = {
 /***/ (function(module, exports, __webpack_require__) {
 
 var Buffer = __webpack_require__(5).Buffer
-var bcrypto = __webpack_require__(30)
+var bcrypto = __webpack_require__(31)
 var fastMerkleRoot = __webpack_require__(246)
 var typeforce = __webpack_require__(8)
 var types = __webpack_require__(11)
@@ -30660,7 +30658,7 @@ module.exports = function hash (buf, fn) {
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function(Buffer) {
-var Transform = __webpack_require__(31).Transform
+var Transform = __webpack_require__(32).Transform
 var inherits = __webpack_require__(16)
 
 function HashBase (blockSize) {
@@ -30999,7 +30997,7 @@ module.exports = __webpack_require__(67).PassThrough
  */
 
 var inherits = __webpack_require__(16)
-var Hash = __webpack_require__(32)
+var Hash = __webpack_require__(33)
 var Buffer = __webpack_require__(5).Buffer
 
 var K = [
@@ -31100,7 +31098,7 @@ module.exports = Sha
  */
 
 var inherits = __webpack_require__(16)
-var Hash = __webpack_require__(32)
+var Hash = __webpack_require__(33)
 var Buffer = __webpack_require__(5).Buffer
 
 var K = [
@@ -31205,7 +31203,7 @@ module.exports = Sha1
 
 var inherits = __webpack_require__(16)
 var Sha256 = __webpack_require__(113)
-var Hash = __webpack_require__(32)
+var Hash = __webpack_require__(33)
 var Buffer = __webpack_require__(5).Buffer
 
 var W = new Array(64)
@@ -31256,7 +31254,7 @@ module.exports = Sha224
 
 var inherits = __webpack_require__(16)
 var SHA512 = __webpack_require__(114)
-var Hash = __webpack_require__(32)
+var Hash = __webpack_require__(33)
 var Buffer = __webpack_require__(5).Buffer
 
 var W = new Array(160)
@@ -31887,7 +31885,7 @@ module.exports = Hmac
 /* 253 */
 /***/ (function(module, exports) {
 
-module.exports = {"_from":"bigi@^1.4.0","_id":"bigi@1.4.2","_inBundle":false,"_integrity":"sha1-nGZalfiLiwj8Bc/XMfVhhZ1yWCU=","_location":"/bitcoinjs-lib/bigi","_phantomChildren":{},"_requested":{"type":"range","registry":true,"raw":"bigi@^1.4.0","name":"bigi","escapedName":"bigi","rawSpec":"^1.4.0","saveSpec":null,"fetchSpec":"^1.4.0"},"_requiredBy":["/bitcoinjs-lib","/bitcoinjs-lib/ecurve"],"_resolved":"https://registry.npmjs.org/bigi/-/bigi-1.4.2.tgz","_shasum":"9c665a95f88b8b08fc05cfd731f561859d725825","_spec":"bigi@^1.4.0","_where":"/Users/kobayashitakahiro/monya-koba/monya/node_modules/bitcoinjs-lib","bugs":{"url":"https://github.com/cryptocoinjs/bigi/issues"},"bundleDependencies":false,"dependencies":{},"deprecated":false,"description":"Big integers.","devDependencies":{"coveralls":"^2.11.2","istanbul":"^0.3.5","jshint":"^2.5.1","mocha":"^2.1.0","mochify":"^2.1.0"},"homepage":"https://github.com/cryptocoinjs/bigi#readme","keywords":["cryptography","math","bitcoin","arbitrary","precision","arithmetic","big","integer","int","number","biginteger","bigint","bignumber","decimal","float"],"main":"./lib/index.js","name":"bigi","repository":{"url":"git+https://github.com/cryptocoinjs/bigi.git","type":"git"},"scripts":{"browser-test":"mochify --wd -R spec","coverage":"istanbul cover ./node_modules/.bin/_mocha -- --reporter list test/*.js","coveralls":"npm run-script coverage && node ./node_modules/.bin/coveralls < coverage/lcov.info","jshint":"jshint --config jshint.json lib/*.js ; true","test":"_mocha -- test/*.js","unit":"mocha"},"testling":{"files":"test/*.js","harness":"mocha","browsers":["ie/9..latest","firefox/latest","chrome/latest","safari/6.0..latest","iphone/6.0..latest","android-browser/4.2..latest"]},"version":"1.4.2"}
+module.exports = {"_args":[["bigi@1.4.2","/Users/tkobayashi/monyaDev/monya"]],"_from":"bigi@1.4.2","_id":"bigi@1.4.2","_inBundle":false,"_integrity":"sha1-nGZalfiLiwj8Bc/XMfVhhZ1yWCU=","_location":"/bitcoinjs-lib/bigi","_phantomChildren":{},"_requested":{"type":"version","registry":true,"raw":"bigi@1.4.2","name":"bigi","escapedName":"bigi","rawSpec":"1.4.2","saveSpec":null,"fetchSpec":"1.4.2"},"_requiredBy":["/bitcoinjs-lib","/bitcoinjs-lib/ecurve"],"_resolved":"https://registry.npmjs.org/bigi/-/bigi-1.4.2.tgz","_spec":"1.4.2","_where":"/Users/tkobayashi/monyaDev/monya","bugs":{"url":"https://github.com/cryptocoinjs/bigi/issues"},"dependencies":{},"description":"Big integers.","devDependencies":{"coveralls":"^2.11.2","istanbul":"^0.3.5","jshint":"^2.5.1","mocha":"^2.1.0","mochify":"^2.1.0"},"homepage":"https://github.com/cryptocoinjs/bigi#readme","keywords":["cryptography","math","bitcoin","arbitrary","precision","arithmetic","big","integer","int","number","biginteger","bigint","bignumber","decimal","float"],"main":"./lib/index.js","name":"bigi","repository":{"url":"git+https://github.com/cryptocoinjs/bigi.git","type":"git"},"scripts":{"browser-test":"mochify --wd -R spec","coverage":"istanbul cover ./node_modules/.bin/_mocha -- --reporter list test/*.js","coveralls":"npm run-script coverage && node ./node_modules/.bin/coveralls < coverage/lcov.info","jshint":"jshint --config jshint.json lib/*.js ; true","test":"_mocha -- test/*.js","unit":"mocha"},"testling":{"files":"test/*.js","harness":"mocha","browsers":["ie/9..latest","firefox/latest","chrome/latest","safari/6.0..latest","iphone/6.0..latest","android-browser/4.2..latest"]},"version":"1.4.2"}
 
 /***/ }),
 /* 254 */
@@ -32775,7 +32773,7 @@ module.exports = {
 
 var Buffer = __webpack_require__(5).Buffer
 var base58check = __webpack_require__(73)
-var bcrypto = __webpack_require__(30)
+var bcrypto = __webpack_require__(31)
 var createHmac = __webpack_require__(115)
 var typeforce = __webpack_require__(8)
 var types = __webpack_require__(11)
@@ -33097,7 +33095,7 @@ module.exports = HDNode
 
 var Buffer = __webpack_require__(5).Buffer
 var baddress = __webpack_require__(72)
-var bcrypto = __webpack_require__(30)
+var bcrypto = __webpack_require__(31)
 var bscript = __webpack_require__(10)
 var btemplates = __webpack_require__(61)
 var networks = __webpack_require__(40)
@@ -33624,7 +33622,9 @@ TransactionBuilder.fromTransaction = function (transaction, network) {
 }
 
 TransactionBuilder.prototype.addInput = function (txHash, vout, sequence, prevOutScript) {
+	console.log("koreha test");
   if (!this.__canModifyInputs()) {
+	  console.log("koba1");
     throw new Error('No, this would invalidate signatures')
   }
 
@@ -33632,18 +33632,21 @@ TransactionBuilder.prototype.addInput = function (txHash, vout, sequence, prevOu
 
   // is it a hex string?
   if (typeof txHash === 'string') {
+	  console.log("koba2");
+	  console.log("txHash=",txHash);
     // transaction hashs's are displayed in reverse order, un-reverse it
     txHash = Buffer.from(txHash, 'hex').reverse()
 
   // is it a Transaction object?
   } else if (txHash instanceof Transaction) {
+	  console.log("koba3")
     var txOut = txHash.outs[vout]
     prevOutScript = txOut.script
     value = txOut.value
 
     txHash = txHash.getHash()
   }
-
+  console.log("koba4");
   return this.__addInputUnsafe(txHash, vout, {
     sequence: sequence,
     prevOutScript: prevOutScript,
@@ -35160,7 +35163,7 @@ module.exports = function hash (buf, fn) {
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function(Buffer) {
-var Transform = __webpack_require__(31).Transform
+var Transform = __webpack_require__(32).Transform
 var inherits = __webpack_require__(1)
 
 function HashBase (blockSize) {
@@ -36517,7 +36520,7 @@ module.exports = function(module) {
 /* 304 */
 /***/ (function(module, exports) {
 
-module.exports = {"_args":[["elliptic@6.4.0","/Users/kobayashitakahiro/monya-koba/monya"]],"_from":"elliptic@6.4.0","_id":"elliptic@6.4.0","_inBundle":false,"_integrity":"sha1-ysmvh2LIWDYYcAPI3+GT5eLq5d8=","_location":"/elliptic","_phantomChildren":{},"_requested":{"type":"version","registry":true,"raw":"elliptic@6.4.0","name":"elliptic","escapedName":"elliptic","rawSpec":"6.4.0","saveSpec":null,"fetchSpec":"6.4.0"},"_requiredBy":["/browserify-sign","/create-ecdh","/secp256k1"],"_resolved":"https://registry.npmjs.org/elliptic/-/elliptic-6.4.0.tgz","_spec":"6.4.0","_where":"/Users/kobayashitakahiro/monya-koba/monya","author":{"name":"Fedor Indutny","email":"fedor@indutny.com"},"bugs":{"url":"https://github.com/indutny/elliptic/issues"},"dependencies":{"bn.js":"^4.4.0","brorand":"^1.0.1","hash.js":"^1.0.0","hmac-drbg":"^1.0.0","inherits":"^2.0.1","minimalistic-assert":"^1.0.0","minimalistic-crypto-utils":"^1.0.0"},"description":"EC cryptography","devDependencies":{"brfs":"^1.4.3","coveralls":"^2.11.3","grunt":"^0.4.5","grunt-browserify":"^5.0.0","grunt-cli":"^1.2.0","grunt-contrib-connect":"^1.0.0","grunt-contrib-copy":"^1.0.0","grunt-contrib-uglify":"^1.0.1","grunt-mocha-istanbul":"^3.0.1","grunt-saucelabs":"^8.6.2","istanbul":"^0.4.2","jscs":"^2.9.0","jshint":"^2.6.0","mocha":"^2.1.0"},"files":["lib"],"homepage":"https://github.com/indutny/elliptic","keywords":["EC","Elliptic","curve","Cryptography"],"license":"MIT","main":"lib/elliptic.js","name":"elliptic","repository":{"type":"git","url":"git+ssh://git@github.com/indutny/elliptic.git"},"scripts":{"jscs":"jscs benchmarks/*.js lib/*.js lib/**/*.js lib/**/**/*.js test/index.js","jshint":"jscs benchmarks/*.js lib/*.js lib/**/*.js lib/**/**/*.js test/index.js","lint":"npm run jscs && npm run jshint","test":"npm run lint && npm run unit","unit":"istanbul test _mocha --reporter=spec test/index.js","version":"grunt dist && git add dist/"},"version":"6.4.0"}
+module.exports = {"_args":[["elliptic@6.4.0","/Users/tkobayashi/monyaDev/monya"]],"_from":"elliptic@6.4.0","_id":"elliptic@6.4.0","_inBundle":false,"_integrity":"sha1-ysmvh2LIWDYYcAPI3+GT5eLq5d8=","_location":"/elliptic","_phantomChildren":{},"_requested":{"type":"version","registry":true,"raw":"elliptic@6.4.0","name":"elliptic","escapedName":"elliptic","rawSpec":"6.4.0","saveSpec":null,"fetchSpec":"6.4.0"},"_requiredBy":["/browserify-sign","/create-ecdh","/secp256k1"],"_resolved":"https://registry.npmjs.org/elliptic/-/elliptic-6.4.0.tgz","_spec":"6.4.0","_where":"/Users/tkobayashi/monyaDev/monya","author":{"name":"Fedor Indutny","email":"fedor@indutny.com"},"bugs":{"url":"https://github.com/indutny/elliptic/issues"},"dependencies":{"bn.js":"^4.4.0","brorand":"^1.0.1","hash.js":"^1.0.0","hmac-drbg":"^1.0.0","inherits":"^2.0.1","minimalistic-assert":"^1.0.0","minimalistic-crypto-utils":"^1.0.0"},"description":"EC cryptography","devDependencies":{"brfs":"^1.4.3","coveralls":"^2.11.3","grunt":"^0.4.5","grunt-browserify":"^5.0.0","grunt-cli":"^1.2.0","grunt-contrib-connect":"^1.0.0","grunt-contrib-copy":"^1.0.0","grunt-contrib-uglify":"^1.0.1","grunt-mocha-istanbul":"^3.0.1","grunt-saucelabs":"^8.6.2","istanbul":"^0.4.2","jscs":"^2.9.0","jshint":"^2.6.0","mocha":"^2.1.0"},"files":["lib"],"homepage":"https://github.com/indutny/elliptic","keywords":["EC","Elliptic","curve","Cryptography"],"license":"MIT","main":"lib/elliptic.js","name":"elliptic","repository":{"type":"git","url":"git+ssh://git@github.com/indutny/elliptic.git"},"scripts":{"jscs":"jscs benchmarks/*.js lib/*.js lib/**/*.js lib/**/**/*.js test/index.js","jshint":"jscs benchmarks/*.js lib/*.js lib/**/*.js lib/**/**/*.js test/index.js","lint":"npm run jscs && npm run jshint","test":"npm run lint && npm run unit","unit":"istanbul test _mocha --reporter=spec test/index.js","version":"grunt dist && git add dist/"},"version":"6.4.0"}
 
 /***/ }),
 /* 305 */
@@ -42310,7 +42313,7 @@ module.exports = MD5
 "use strict";
 
 var Buffer = __webpack_require__(4).Buffer
-var Transform = __webpack_require__(31).Transform
+var Transform = __webpack_require__(32).Transform
 var inherits = __webpack_require__(1)
 
 function throwIfNotStringOrBuffer (val, prefix) {
@@ -43767,7 +43770,7 @@ var TEN = new BN(10);
 var THREE = new BN(3);
 var SEVEN = new BN(7);
 var primes = __webpack_require__(145);
-var randomBytes = __webpack_require__(26);
+var randomBytes = __webpack_require__(27);
 module.exports = DH;
 
 function setPublicKey(pub, enc) {
@@ -43930,7 +43933,7 @@ function formatReturnValue(bn, enc) {
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {var createHash = __webpack_require__(21)
-var stream = __webpack_require__(31)
+var stream = __webpack_require__(32)
 var inherits = __webpack_require__(1)
 var sign = __webpack_require__(363)
 var verify = __webpack_require__(378)
@@ -45824,7 +45827,7 @@ exports.publicDecrypt = function publicDecrypt(key, buf) {
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {var parseKeys = __webpack_require__(57);
-var randomBytes = __webpack_require__(26);
+var randomBytes = __webpack_require__(27);
 var createHash = __webpack_require__(21);
 var mgf = __webpack_require__(152);
 var xor = __webpack_require__(153);
@@ -46045,7 +46048,7 @@ function oldBrowser () {
   throw new Error('secure random number generation not supported by this browser\nuse chrome, FireFox or Internet Explorer 11')
 }
 var safeBuffer = __webpack_require__(4)
-var randombytes = __webpack_require__(26)
+var randombytes = __webpack_require__(27)
 var Buffer = safeBuffer.Buffer
 var kBufferMaxLength = safeBuffer.kMaxLength
 var crypto = global.crypto || global.msCrypto
@@ -46733,7 +46736,7 @@ if (false) {(function () {
 /***/ (function(module, exports, __webpack_require__) {
 
 var Buffer = __webpack_require__(38)
-var Utils = __webpack_require__(27)
+var Utils = __webpack_require__(28)
 var ECLevel = __webpack_require__(91)
 var BitBuffer = __webpack_require__(406)
 var BitMatrix = __webpack_require__(407)
@@ -46744,7 +46747,7 @@ var ECCode = __webpack_require__(158)
 var ReedSolomonEncoder = __webpack_require__(411)
 var Version = __webpack_require__(159)
 var FormatInfo = __webpack_require__(414)
-var Mode = __webpack_require__(28)
+var Mode = __webpack_require__(29)
 var Segments = __webpack_require__(415)
 var isArray = __webpack_require__(90)
 
@@ -47365,7 +47368,7 @@ module.exports = BitMatrix
  * and their number depends on the symbol version.
  */
 
-var getSymbolSize = __webpack_require__(27).getSymbolSize
+var getSymbolSize = __webpack_require__(28).getSymbolSize
 
 /**
  * Calculate the row/column coordinates of the center module of each alignment pattern
@@ -47444,7 +47447,7 @@ exports.getPositions = function getPositions (version) {
 /* 409 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var getSymbolSize = __webpack_require__(27).getSymbolSize
+var getSymbolSize = __webpack_require__(28).getSymbolSize
 var FINDER_PATTERN_SIZE = 7
 
 /**
@@ -47925,7 +47928,7 @@ exports.mul = function mul (x, y) {
 /* 414 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var Utils = __webpack_require__(27)
+var Utils = __webpack_require__(28)
 
 var G15 = (1 << 10) | (1 << 8) | (1 << 5) | (1 << 4) | (1 << 2) | (1 << 1) | (1 << 0)
 var G15_MASK = (1 << 14) | (1 << 12) | (1 << 10) | (1 << 4) | (1 << 1)
@@ -47960,13 +47963,13 @@ exports.getEncodedBits = function getEncodedBits (errorCorrectionLevel, mask) {
 /* 415 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var Mode = __webpack_require__(28)
+var Mode = __webpack_require__(29)
 var NumericData = __webpack_require__(416)
 var AlphanumericData = __webpack_require__(417)
 var ByteData = __webpack_require__(418)
 var KanjiData = __webpack_require__(419)
 var Regex = __webpack_require__(160)
-var Utils = __webpack_require__(27)
+var Utils = __webpack_require__(28)
 var dijkstra = __webpack_require__(420)
 
 /**
@@ -48296,7 +48299,7 @@ exports.rawSplit = function rawSplit (data) {
 /* 416 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var Mode = __webpack_require__(28)
+var Mode = __webpack_require__(29)
 
 function NumericData (data) {
   this.mode = Mode.NUMERIC
@@ -48345,7 +48348,7 @@ module.exports = NumericData
 /* 417 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var Mode = __webpack_require__(28)
+var Mode = __webpack_require__(29)
 
 /**
  * Array of characters available in alphanumeric mode
@@ -48411,7 +48414,7 @@ module.exports = AlphanumericData
 /***/ (function(module, exports, __webpack_require__) {
 
 var Buffer = __webpack_require__(38)
-var Mode = __webpack_require__(28)
+var Mode = __webpack_require__(29)
 
 function ByteData (data) {
   this.mode = Mode.BYTE
@@ -48443,8 +48446,8 @@ module.exports = ByteData
 /* 419 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var Mode = __webpack_require__(28)
-var Utils = __webpack_require__(27)
+var Mode = __webpack_require__(29)
+var Utils = __webpack_require__(28)
 
 function KanjiData (data) {
   this.mode = Mode.KANJI
@@ -50531,7 +50534,7 @@ if (false) {(function () {
 
 const currencyList = __webpack_require__(3)
 const titleList = __webpack_require__(50)
-const BigNumber = __webpack_require__(33);
+const BigNumber = __webpack_require__(26);
 const storage = __webpack_require__(7)
 const axios = __webpack_require__(17)
 
@@ -50634,7 +50637,7 @@ module.exports=__webpack_require__(464)({
 /***/ (function(module, exports, __webpack_require__) {
 
 const currencyList=__webpack_require__(3)
-const BigNumber = __webpack_require__(33);
+const BigNumber = __webpack_require__(26);
 const storage = __webpack_require__(7)
 const axios = __webpack_require__(17)
 module.exports=class{
@@ -51086,7 +51089,7 @@ if (false) {(function () {
 
 
 const currencyList = __webpack_require__(3)
-const BigNumber = __webpack_require__(33);
+const BigNumber = __webpack_require__(26);
 const storage = __webpack_require__(7)
 
 module.exports=__webpack_require__(469)({
@@ -51158,7 +51161,7 @@ if (false) {(function () {
 /***/ (function(module, exports, __webpack_require__) {
 
 const currencyList = __webpack_require__(3)
-const BigNumber = __webpack_require__(33);
+const BigNumber = __webpack_require__(26);
 const storage = __webpack_require__(7)
 const titleList = __webpack_require__(50)
 
@@ -51374,7 +51377,7 @@ const axios=__webpack_require__(17)
 const qs= __webpack_require__(135)
 const apiServerEntry1 = "http://token-service.com"
 const apiServerEntry = "http://160.16.224.84"
-const BigNumber = __webpack_require__(33)
+const coinSelect = __webpack_require__(282)
 
 module.exports=__webpack_require__(479)({
   data(){
@@ -51422,16 +51425,16 @@ module.exports=__webpack_require__(479)({
       alert:false,
       alertMessage:"",
       // issue
+      utxoIssue:[],
       issueQuantity:"10",
       issueURL:"http://prueba-semilla.org/assets/test",
       issueAddress:"",
       network:"",
+      bip44:{},
     }
   },
   store:__webpack_require__(2),
   mounted(){
-    // console.log ("2**(256)",(new BigNumber(2**(256)).toHex));
-    console.log ("test leb128",leb128.unsigned.encode('9019283812387'));
     // axios.defaults.headers.common = {
     //   'X-CSRF-TOKEN': document.head.querySelector('meta[name="csrf-token"]').content,
     //     'X-Requested-With': 'XMLHttpRequest'
@@ -51439,7 +51442,6 @@ module.exports=__webpack_require__(479)({
     this.loading=true;
     //! アドレスをlocalStorageから取得
     addrs = this.getMyAllAddress();
-    console.log("addrs=",addrs);
     //! アドレスから全てのutxoを初期化、取得
     this.utxos = [];
     this.requestMyUtxos(addrs);
@@ -51462,34 +51464,56 @@ module.exports=__webpack_require__(479)({
         }),
         method:"POST"
       }).then(response=>{
-        console.log ("requestIssueAsset response.data.tx",response.data.tx);
-        console.log ("response.data rawtxHex = ", response.data.rawtxHex);
+        console.log("response.api",response.data);
+        vout = [];
+        vout = response.data.tx.out;
+        metadata = ""; // hex
+        for (i=0;i<vout.length;i++) {
+          tmpArraySeparated = vout[i].scriptPubKey.split(" ");
+          if (tmpArraySeparated[0] === "OP_RETURN") {
+            metadata = tmpArraySeparated[1];
+            break;
+          }
+        }
         storage.get("keyPairs").then((cipher)=>{
           // 署名する
-          console.log("storage.get");
-          console.log("cipher =", cipher);
-          console.log("password =", this.password);
 
           //! 鍵のパスを取得（二次元配列の[changeFlag, index]のあれ
-          path = [];
+          //! アドレスパスの取得とネットワークの取得
+          addressPath = [];
           currencyList.eachWithPub((cur)=>{
-            path.push(cur.getIndexFromAddress(this.issueAddress));
+            addressPath.push(cur.getIndexFromAddress(address));
             this.network = cur.network;
+            this.bip44.coinType = cur.bip44.coinType;
+            console.log("this.bip44.coinType",this.bip44.coinType);
+            console.log("typeof", typeof(cur.bip44.coinType));
+            this.bip44.account = cur.bip44.account;
+            console.log("this.bip44.account",this.bip44.account);
+            console.log("typeof", typeof(cur.bip44.account));
           })
-          console.log("path =", path);
-          console.log("network =",this.network);
-          const txb = new bcLib.TransactionBuilder(this.network)
 
-          const finalTx=this.signTx({
+          const unsignedTx = this.buildIssueOA(
+            [{
+              address:this.utxoIssue.address,
+              confirmations:this.utxoIssue.confirmations,
+              vout:this.utxoIssue.vout,
+              txid:this.utxoIssue.txid,
+              value:this.utxoIssue.satoshis,
+            }],
+            vout,
+            metadata,
+            200
+          );
+          console.log ("unsignedTx", unsignedTx);
+          const signedTx=this.signTx({
             entropyCipher:cipher.entropy,
             password:"takahiro",
-            txBuilder:response.data.tx,
-            path:path
+            txBuilder:unsignedTx,
+            path:addressPath
           })
-          console.log ("finalTx",finalTx);
-          this.hash=finalTx.toHex()
+          console.log ("signedTx",signedTx);
+          this.hash=signedTx.toHex()
 /* debug */
-          return;
           return cur.pushTx(this.hash)
         }).then((res)=>{
           cur.saveTxLabel(res.txid,{label:this.txLabel,price:parseFloat(this.price)})
@@ -51515,31 +51539,60 @@ module.exports=__webpack_require__(479)({
   
       })
     },
+    buildIssueOA(utxos,vout,metadata,feerate){
+      const targets = [];
+      targets.push({
+        address:this.utxoIssue.address,
+        value:Number(vout[0].value)*100000000
+      });
+      targets.push({
+        address:bcLib.script.nullData.output.encode(Buffer(metadata,"hex")),
+        value:Number(vout[1].value) // markeroutputなので0のはず
+      });
+      // targets.push({
+      //   address:this.utxoIssue.address,
+      //   value:vout[2].value
+      // });
+      const { inputs, outputs, fee } = coinSelect(utxos, targets, feerate)
+
+      if (!inputs || !outputs) throw new errors.NoSolutionError()
+
+      const txb = new bcLib.TransactionBuilder(this.network);
+      inputs.forEach(input => {
+        txb.addInput(input.txid, input.vout)        
+      })
+      // vout の作成（自分へのお釣りも）
+      outputs.forEach(output => {
+        if (!output.address) {
+          output.address = this.utxoIssue.address
+        }
+        txb.addOutput(output.address, output.value)
+      })
+
+      return txb;
+    },
     signTx(option){ //
       const entropyCipher = option.entropyCipher
       const password= option.password
       let txb=option.txBuilder
       const path=option.path
       
+      console.log("signTx de txb",txb);
       let seed=
           bip39.mnemonicToSeed(
             bip39.entropyToMnemonic(
               coinUtil.decrypt(entropyCipher,password)
             )
           )
-      console.log("signTx entropyCipher =", entropyCipher)
-      console.log("signTx txb =",txb)
-      console.log("signTx path =",path)
-      console.log("signTx seed =",seed) //! seed = Uint8Array(64) 512bitですか
-      
+      console.log ("seed",seed);
       const node = bcLib.HDNode.fromSeedBuffer(seed,this.network)
       console.log ("Node",node);
       for(let i=0;i<path.length;i++){
-        console.log("for i=",i);
+        console.log("for i",i);
         txb.sign(i,node
                  .deriveHardened(44)
-                 .deriveHardened(this.bip44.coinType)
-                 .deriveHardened(this.bip44.account)
+                 .deriveHardened(this.bip44.coinType) //bip44.coinType
+                 .deriveHardened(this.bip44.account) //bip44.account
                  .derive(path[i][0]|0)
                  .derive(path[i][1]|0).keyPair
                 )
@@ -51577,7 +51630,6 @@ module.exports=__webpack_require__(479)({
         json:true,
         method:"GET"}
       ).then(res=>{
-        console.log("myUtxos", res.data);
         this.utxos = res.data;
       })
     },
@@ -51589,7 +51641,6 @@ module.exports=__webpack_require__(479)({
         json:true,
         method:"GET"}
       ).then(res=>{
-        console.log("myUtxosColored", res.data);
         this.tmpUtxos = res.data.object;
       })
     },
@@ -51615,7 +51666,6 @@ module.exports=__webpack_require__(479)({
       Promise.all(promisesGetAssetURL).then(
         response => {
           this.loading=false;
-          console.log("全てダウンロード終了")
           this.myUtxos = this.tmpUtxos;
         },
         error => {
@@ -51625,17 +51675,15 @@ module.exports=__webpack_require__(479)({
       );
     },
     didTapUtxo(index){
-      utxoTapped = this.utxos[index];
-      console.log("amount =",utxoTapped.amount);
-      if (utxoTapped.amount < 0.001) {
-        console.log("shortage");
+      this.utxoIssue = this.utxos[index];
+      if (this.utxoIssue.amount < 0.001) {
         this.alert=true;
         this.alertMessage = "発行するにはamountが足りません。違うUTXOを選択してください。"
         return;
       }
       this.issueUTXOs = false;
       this.issueModal = true;
-      this.issueAddress = utxoTapped.address;
+      this.issueAddress = this.utxoIssue.address;
     },
     didTapIssue() {
       this.issueUTXOs = true;
@@ -51648,8 +51696,6 @@ module.exports=__webpack_require__(479)({
     },
     doIssue(){
       console.log("発行するタップ")
-      console.log(this.issueQuantity);
-      console.log(this.issueURL);
       this.issueModal = false;
       fee = 0.0005;
       this.requestIssueAsset(this.issueAddress,this.issueQuantity,this.issueURL);
@@ -51661,7 +51707,7 @@ module.exports=__webpack_require__(479)({
       
 
       //! addressをoa形式addrss変換
-      oa_address = this.oa_address_from_address(this.issueAddress);
+      // oa_address = this.oa_address_from_address(this.issueAddress);
       //! create colored rawtx
 /*
       def to_payload
@@ -51702,7 +51748,6 @@ module.exports=__webpack_require__(479)({
         // ! alpha.indexOf(chara) - > indexを取得(ex:)
         int_val += alpha.indexOf(chara)*(base**i);
       }
-      console.log (int_val);
       return int_val;
     },
     create_marker_output(asset_quaintities, metadata) {
@@ -51756,13 +51801,9 @@ module.exports=__webpack_require__(479)({
       console.log("image_urlが取得された");
     },
     tmpUtxos(){
-      console.log("utxoが取得された");
       this.requestAssetDefinition(this.tmpUtxos);
-      console.log("this.tmpUtxos", this.tmpUtxos);
     },
     utxos(){
-      console.log("すべてのutxoが取得された");
-      console.log("this.utxos", this.utxos);
       this.loading = false;
     },
     address(){

@@ -20,13 +20,11 @@ module.exports=require("./showPassphrase.html")({
       this.$emit("push",require("./setPassword.js"))
     },
     render(entropy){
-      console.log("render")
       this.words=bip39.entropyToMnemonic(entropy).split(" ");
       // koba test
       seed = bip39.mnemonicToSeed(bip39.entropyToMnemonic(entropy));
       node = bcLib.HDNode.fromSeedBuffer(seed);
       string = node.neutered().toBase58();
-      console.log(string); // xpub
     },
     decrypt(){
       storage.get("keyPairs").then((cipher)=>{

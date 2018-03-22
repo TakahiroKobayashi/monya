@@ -15,7 +15,7 @@ const defaultCoins=[
     bip21:"monacoin",
     defaultFeeSatPerByte:200,//will implement dynamic fee
     icon:require("../res/coins/mona.png"),
-    defaultAPIEndpoint:"https://mona.insight.monaco-ex.org/insight-api-monacoin",
+    defaultAPIEndpoint:"http://160.16.224.84:3001/insight-api-monacoin",
     network:{
       messagePrefix: '\x19Monacoin Signed Message:\n',
       bip32: {
@@ -239,7 +239,6 @@ exports.eachWithDummy=(fn)=>{
  * @param {function} fn(Currency).
  */
 exports.eachWithPub=(fn)=>{
-  console.log("eachWithPubよばれました");
   for(let curName in coins){
     if((coins[curName] instanceof Currency)&&(coins[curName].hdPubNode)){
       fn(coins[curName])
@@ -254,7 +253,6 @@ exports.eachWithPub=(fn)=>{
 exports.get=coinId=>{
     
   if((coins[coinId] instanceof Currency)){
-    console.log("今コイン取得coinId=",coinId);
     return coins[coinId]
   }
 }

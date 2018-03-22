@@ -283,7 +283,8 @@ module.exports=class{
       const feeRate = option.feeRate
 
       const txb = new bcLib.TransactionBuilder(this.network)
-
+      console.log("this.network",this.network);
+      console.log("txb ok", txb);
       let param
       if(option.utxoStr){
         param=JSON.parse(option.utxoStr)
@@ -296,6 +297,9 @@ module.exports=class{
       this.getUtxos(param,option.includeUnconfirmedFunds).then(res=>{
         console.log("in getUtxos.then, res.utxos = %s", JSON.stringify(res.utxos));
         const path=[]
+        console.log("res.utxos", res.utxos);
+        console.log("send targets", targets);
+        console.log("feeRate = ", feeRate);
         //! 手持ちのutxoから送金に必要なutxoを簡単に作ってくれるライブラリ？
         const { inputs, outputs, fee } = coinSelect(res.utxos, targets, feeRate)
 
@@ -306,8 +310,6 @@ module.exports=class{
         // vin の作成
         inputs.forEach(input => {
           txb.addInput(input.txId, input.vout)
-          console.log("input.txid = ",input.txId)
-          console.log("input.vout = ", input.vout)
           path.push(this.getIndexFromAddress(input.address))
           
         })
@@ -316,8 +318,6 @@ module.exports=class{
           if (!output.address) {
             output.address = this.getAddress(1,(this.changeIndex+1)%coinUtil.GAP_LIMIT_FOR_CHANGE)
           }
-          console.log("output.address = ",output.address);
-          console.log("output.value = ", output.value);
           txb.addOutput(output.address, output.value)
         })
         
@@ -362,6 +362,7 @@ module.exports=class{
     }
     
     for(let i=0;i<path.length;i++){
+      console.log("for i",i);
       txb.sign(i,node
                .deriveHardened(44)
                .deriveHardened(this.bip44.coinType)
@@ -370,6 +371,7 @@ module.exports=class{
                .derive(path[i][1]|0).keyPair
               )
     }
+    console.log("txb last send",txb);
     return txb.build()
     
   }
