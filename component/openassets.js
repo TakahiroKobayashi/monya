@@ -59,7 +59,7 @@ module.exports=require("./openassets.html")({
       // issue
       utxoIssue:[],
       issueQuantity:"10",
-      issueURL:"http://prueba-semilla.org/assets/test",
+      issueURL:"http://prueba-semilla.org/assets/test3",
       issueAddress:"",
       network:"",
       bip44:{},
@@ -102,7 +102,7 @@ module.exports=require("./openassets.html")({
         metadata = ""; // hex
         for (i=0;i<vout.length;i++) {
           tmpArraySeparated = vout[i].scriptPubKey.split(" ");
-          if (tmpArraySeparated[0] === "OP_RETURN") {
+          if (tmpArraySeparated[0] === "OP_RETURN" && tmpArraySeparated.length === 2) {
             metadata = tmpArraySeparated[1];
             break;
           }
@@ -129,7 +129,7 @@ module.exports=require("./openassets.html")({
               address:this.utxoIssue.address,
               confirmations:this.utxoIssue.confirmations,
               vout:this.utxoIssue.vout,
-              txid:this.utxoIssue.txid,
+              txId:this.utxoIssue.txid,
               value:this.utxoIssue.satoshis,
             }],
             vout,
@@ -145,15 +145,11 @@ module.exports=require("./openassets.html")({
           })
           console.log ("signedTx",signedTx);
           this.hash=signedTx.toHex()
+          console.log ("this.hash = ", this.hash);
 /* debug */
-          return cur.pushTx(this.hash)
+          return this.pushTx(this.hash)
         }).then((res)=>{
-          cur.saveTxLabel(res.txid,{label:this.txLabel,price:parseFloat(this.price)})
-          this.$store.commit("setFinishNextPage",{page:require("./home.js"),infoId:"sent",payload:{
-            txId:res.txid
-          }})
-          this.$emit("replace",require("./finished.js"))
-  
+          console.log("send signedTx done");
           
         }).catch(e=>{
           this.loading=false
@@ -191,7 +187,7 @@ module.exports=require("./openassets.html")({
 
       const txb = new bcLib.TransactionBuilder(this.network);
       inputs.forEach(input => {
-        txb.addInput(input.txid, input.vout)        
+        txb.addInput(input.txId, input.vout)        
       })
       // vout の作成（自分へのお釣りも）
       outputs.forEach(output => {
@@ -204,7 +200,7 @@ module.exports=require("./openassets.html")({
       return txb;
     },
     signTx(option){ //
-      const entropyCipher = option.entropyCipher
+      const entropyCipher = option.entropyCipher // 一緒
       const password= option.password
       let txb=option.txBuilder
       const path=option.path
@@ -216,7 +212,7 @@ module.exports=require("./openassets.html")({
               coinUtil.decrypt(entropyCipher,password)
             )
           )
-      console.log ("seed",seed);
+      console.log ("seed",seed); // 一緒OK
       const node = bcLib.HDNode.fromSeedBuffer(seed,this.network)
       console.log ("Node",node);
       for(let i=0;i<path.length;i++){
@@ -233,6 +229,7 @@ module.exports=require("./openassets.html")({
       return txb.build()
     },
     pushTx(hex){
+      console.log("push openassets")
       if(this.dummy){return Promise.resolve()}
       return axios({
         url:apiServerEntry+":3001/insight-api-monacoin/tx/send",

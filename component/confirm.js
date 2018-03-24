@@ -88,7 +88,7 @@ module.exports=require("./confirm.html")({
         this.path=d.path
         console.log("d.path =",d.path);
         this.myBalanceBeforeSending=d.balance
-        this.txb=d.txBuilder
+        this.txb=d.txBuilder // txBuilderにはinput, outputの情報が付加されている
         this.ready=true
         this.loading=false
         return coinUtil.getPrice(cur.coinId,this.$store.state.fiat)
