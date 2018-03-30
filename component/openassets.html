@@ -1,50 +1,22 @@
 <v-ons-page data-page="openassets" v-show="!$store.state.transparency">
     <!-- <meta name="csrf-token" content="{{ csrf_token() }}"> -->
     <custom-bar title="OpenAssets" menu="true" id="bar" style="font-size: 88px">
-      <!-- <v-ons-toolbar-button @click="qr">
-        <v-ons-icon icon="ion-qr-scanner"></v-ons-icon>
-      </v-ons-toolbar-button> -->
+      <v-ons-toolbar-button @click="didTapIssue"><v-ons-icon icon="fa-plus"></v-ons-icon></v-ons-toolbar-button>
     </custom-bar>
     <div id="main">
         <div id="cards">
-            <v-ons-list-item v-for="cutxo in myUtxos" v-if="cutxo.asset_id" class="list">
-                <v-ons-card>
+            <v-ons-list-item v-for="(cutxo,index) in myUtxos" v-if="cutxo.asset_id" class="list">
+                <v-ons-card modifier="touch" @click="didTapCard(index)">
                   <div class="left">
                   <span class="notification notification--material">{{cutxo.asset_quantity}}</span>
                   </div>
                   <div class="right">
-                    <img v-bind:src="cutxo.image_url"/>
+                    <img v-bind:src="cutxo.image_url" />
                   </div>
               </v-ons-card>
             </v-ons-list-item>
       </div>
-      <v-ons-list>
-        <!-- <v-ons-list-item modifier="tappable" @click="getMyUtxo">
-          <div class="left">getAllMyUTXO</div>
-        </v-ons-list-item>
-        
-        <v-ons-list-item modifier="tappable" @click="getAssetDefinition">
-          <div class="left">get my assets</div>
-        </v-ons-list-item>
-            
-        <v-ons-list-item modifier="tappable" @click="handlerAssetFromMyServer">
-          <div class="left">AssetsFromMyServer</div>
-        </v-ons-list-item> -->
-
-
-        <v-ons-list-header>発行する</v-ons-list-header>
-        <!-- <v-ons-list-item modifier="tappable" @click="issue"> -->
-
-        <v-ons-list-item modifier="tappable" @click="didTapIssue">
-            新規発行する
-        </v-ons-list-item>
-        <v-ons-list-item modifier="tappable chevron" @click="showLabel(currency[currencyIndex].coinId,l,0,index)">
-          送付する
-        </v-ons-list-item>
-              
-       </v-ons-list>
-
-       <v-ons-modal :visible="issueUTXOs">
+      <v-ons-modal :visible="issueUTXOs">
           発行に使うUTXOを選択してください
             <section style="margin: 16px">
                 <!-- <v-ons-list-item class="list" v-for="(utxo,index) in myUtxos" modifier="tappable" @click="didTapUtxo(index)"> -->
@@ -68,12 +40,40 @@
             </v-ons-input>
             <v-ons-input placeholder="定義ファイルURL" float v-model="issueURL">
             </v-ons-input>
+
+            <input type="file" accept="image/*" @change="uploadImage($event)" id="file-input">
+
+            <div class="upload-box">
+                <button @click="didTapUploadButton" type="button">
+                  upload
+                </button>
+            </div>
+            <div class="upload">
+                <img v-show="uploadedImage" v-bind:src="uploadedImage" />
+                <input type="file" v-on:change="onFileChange">
+            </div>
           </section>
         </v-ons-card>
         <p style="text-align: center" >
           <v-ons-button modifier="cta" style="margin: 6px 0" @click="didTapBack">戻る</v-ons-button>
           <v-ons-button modifier="cta" @click="doIssue">発行する</v-ons-button>
         </p>
+      </v-ons-modal>
+      <v-ons-modal :visible="detailCardModal">
+          <v-ons-card class="detailCard">
+            <section style="margin: 16px">
+              <img v-bind:src="detailUtxo.image_url"/>
+
+              <v-ons-input placeholder="何枚送付しますか？" float v-model="sendQuantity">
+              </v-ons-input>
+              <v-ons-input placeholder="送付先アドレス" float v-model="send_to_address">
+              </v-ons-input>
+            </section>
+          </v-ons-card>
+          <p style="text-align: center" >
+            <v-ons-button modifier="cta" style="margin: 6px 0" @click="didTapBackToTop">戻る</v-ons-button>
+            <v-ons-button modifier="cta" @click="doIssue">送付する</v-ons-button>
+          </p>
       </v-ons-modal>
       <v-ons-modal :visible="alert">
         <section style="margin: 16px">
@@ -83,7 +83,7 @@
       </v-ons-modal>  
       <v-ons-modal :visible="loading">
         <p style="text-align: center">
-          OpenAssetsの取得中
+          {{loadingMessage}}
           <br><br>
           <!-- <div class="spinner"></div> -->
           <svg class="progress-circular progress-circular--indeterminate">
@@ -92,7 +92,7 @@
               <circle class="progress-circular__secondary progress-circular--indeterminate__secondary"/>
           </svg>
           <br/>            
-          <v-ons-button modifier="quiet" @click="loading = false">キャンセル</v-ons-button>
+          <v-ons-button modifier="quiet" @click="loading = false">{{loadingCloseTitle}}</v-ons-button>
         </p>
       </v-ons-modal>
     </div>

@@ -742,10 +742,22 @@ $zaifPayLogoSize:200px;
 }
 
 [data-page="openassets"]{
+  #detailCard{
+      img{
+        width:200px;
+        height:150px;
+      }
+  }
   #issuer{
     animation-name:     fade-in;
     animation-duration: 1.5s;
     background-color: beige;
+    img {
+      width: 100px;
+    }
+  }
+  #preview img{
+    width: 100px;
   }
   #bar{
     background-color: beige;
