@@ -17,30 +17,27 @@
             </v-ons-list-item>
       </div>
       <v-ons-modal :visible="issueUTXOs">
-          発行に使うUTXOを選択してください
-            <section style="margin: 16px">
-                <!-- <v-ons-list-item class="list" v-for="(utxo,index) in myUtxos" modifier="tappable" @click="didTapUtxo(index)"> -->
-                  <v-ons-card class="utxos" v-for="(utxo,index) in myUtxos" modifier="tappable" @click="didTapUtxo(index)">
-                    <div class="left">
-                      <font color="green">address:{{utxo.address}}</font>
-                      <font color="black">amount:{{utxo.amount}}</font>
-                    </div>
-                </v-ons-card>
-              <!-- </v-ons-list-item> -->
-            </section>
-          <p style="text-align: center" >
-              <v-ons-button modifier="cta" style="margin: 6px 0" @click="issueUTXOs = false">キャンセル</v-ons-button>
-          </p>
-        </v-ons-modal>
-
-      <v-ons-modal :visible="issueModal">
+        発行に使うUTXOを選択してください
+        <section style="margin: 16px">
+        <!-- <v-ons-list-item class="list" v-for="(utxo,index) in myUtxos" modifier="tappable" @click="didTapUtxo(index)"> -->
+        <v-ons-card class="utxos" v-for="(utxo,index) in myUtxos" modifier="tappable" @click="didTapUtxo(index)">
+          <div class="left">
+            <font color="green">address:{{utxo.address}}</font>
+            <font color="black">amount:{{utxo.amount}}</font>
+          </div>
+        </v-ons-card>
+          <!-- </v-ons-list-item> -->
+        </section>
+        <p style="text-align: center" >
+          <v-ons-button modifier="cta" style="margin: 6px 0" @click="issueUTXOs = false">キャンセル</v-ons-button>
+        </p>
+      </v-ons-modal>
+      <v-ons-modal :visible="modalAmount">
+        発行枚数を入力してください
         <v-ons-card class="issuer">
           <section style="margin: 16px">
-            <v-ons-input placeholder="発行数" float v-model="issueQuantity">
-            </v-ons-input>
-            <v-ons-input placeholder="定義ファイルURL" float v-model="issueURL">
-            </v-ons-input>
-
+            <v-ons-input placeholder="発行数" float v-model="quantityIssue">
+            </v-ons-input>            
             <input type="file" accept="image/*" @change="uploadImage($event)" id="file-input">
 
             <div class="upload-box">
@@ -48,18 +45,61 @@
                   upload
                 </button>
             </div>
-            <div class="upload">
-                <img v-show="uploadedImage" v-bind:src="uploadedImage" />
-                <input type="file" v-on:change="onFileChange">
+
+          </section>
+        </v-ons-card>
+        <p style="text-align: center" >
+          <v-ons-button modifier="cta" style="margin: 6px 0" @click="didTapBack">戻る</v-ons-button>
+          <v-ons-button modifier="cta" @click="amountDone">決定</v-ons-button>
+        </p>
+      </v-ons-modal>
+      <v-ons-modal :visible="modalAssetUrl">
+        アセットの定義ファイルを作成します。
+        <v-ons-card class="issuer">
+          <section style="margin: 16px">
+            <v-ons-input placeholder="発行数" float v-model="quantityIssue">
+            </v-ons-input>
+            <v-ons-input placeholder="asset_ids(必須)" float v-model="quantityIssue">
+            </v-ons-input>
+            <v-ons-input placeholder="アセット名(必須)" float v-model="assetName">
+            </v-ons-input>
+            <v-ons-input placeholder="略称(必須)" float v-model="assetNameShort">
+            </v-ons-input>
+            <v-ons-input placeholder="アセット情報URL(任意)" float v-model="assetContractURL">
+            </v-ons-input>
+            <v-ons-input placeholder="発行者(任意)" float v-model="assetIssuer">
+            </v-ons-input>
+            <v-ons-input placeholder="詳細情報(任意)" float v-model="assetDescription">
+            </v-ons-input>
+            <v-ons-input placeholder="MIME情報(任意)" float v-model="assetDescriptionMime">
+            </v-ons-input>
+            <v-ons-input placeholder="分割数(小数点何位)" float v-model="assetDivisility">
+            </v-ons-input>
+
+            <div class="right">
+              <v-ons-switch></v-ons-switch>
+            </div>
+                        <!-- <v-ons-input placeholder="定義ファイルURL" float v-model="issueURL">
+            </v-ons-input> -->
+            <label for="name1">icon画像</label>
+            <div class="right">
+              <img v-show="uploadedImageIcon" v-bind:src="uploadedImageIcon" />
+              <input type="file" v-on:change="onFileChangeIconImage">
+            </div>
+            <label for="name2">Image画像</label>
+            <div class="right">
+              <img v-show="uploadedImage" v-bind:src="uploadedImage" />
+              <input type="file" v-on:change="onFileChangeImage">
             </div>
           </section>
         </v-ons-card>
         <p style="text-align: center" >
           <v-ons-button modifier="cta" style="margin: 6px 0" @click="didTapBack">戻る</v-ons-button>
-          <v-ons-button modifier="cta" @click="doIssue">発行する</v-ons-button>
+          <v-ons-button modifier="cta" @click="amountDone">決定</v-ons-button>
+          <v-ons-button modifier="cta" @click="amountDone">まだ作っていない</v-ons-button>
         </p>
       </v-ons-modal>
-      <v-ons-modal :visible="detailCardModal">
+      <v-ons-modal :visible="modalDetailCard">
           <v-ons-card class="detailCard">
             <section style="margin: 16px">
               <img v-bind:src="detailUtxo.image_url"/>

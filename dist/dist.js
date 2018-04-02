@@ -31605,24 +31605,34 @@ function deterministicGenerateK (hash, x, checkSig) {
 var N_OVER_TWO = secp256k1.n.shiftRight(1)
 
 function sign (hash, d) {
+	console.log("sign hash",hash);
+	console.log("sign d",d);
   typeforce(types.tuple(types.Hash256bit, types.BigInt), arguments)
-
+console.log("sign 1");
   var x = d.toBuffer(32)
+console.log("sign 2");
   var e = BigInteger.fromBuffer(hash)
+console.log("sign 3");
   var n = secp256k1.n
+console.log("sign 4");
   var G = secp256k1.G
+console.log("sign 5");
 
   var r, s
   deterministicGenerateK(hash, x, function (k) {
+console.log("sign 6");
     var Q = G.multiply(k)
 
     if (secp256k1.isInfinity(Q)) return false
+console.log("sign 7");
 
     r = Q.affineX.mod(n)
     if (r.signum() === 0) return false
+console.log("sign 8");
 
     s = k.modInverse(n).multiply(e.add(d.multiply(r))).mod(n)
     if (s.signum() === 0) return false
+console.log("sign 9");
 
     return true
   })
@@ -31748,7 +31758,7 @@ module.exports = Hmac
 /* 253 */
 /***/ (function(module, exports) {
 
-module.exports = {"_args":[["bigi@1.4.2","/Users/tkobayashi/monyaDev/monya"]],"_from":"bigi@1.4.2","_id":"bigi@1.4.2","_inBundle":false,"_integrity":"sha1-nGZalfiLiwj8Bc/XMfVhhZ1yWCU=","_location":"/bitcoinjs-lib/bigi","_phantomChildren":{},"_requested":{"type":"version","registry":true,"raw":"bigi@1.4.2","name":"bigi","escapedName":"bigi","rawSpec":"1.4.2","saveSpec":null,"fetchSpec":"1.4.2"},"_requiredBy":["/bitcoinjs-lib","/bitcoinjs-lib/ecurve"],"_resolved":"https://registry.npmjs.org/bigi/-/bigi-1.4.2.tgz","_spec":"1.4.2","_where":"/Users/tkobayashi/monyaDev/monya","bugs":{"url":"https://github.com/cryptocoinjs/bigi/issues"},"dependencies":{},"description":"Big integers.","devDependencies":{"coveralls":"^2.11.2","istanbul":"^0.3.5","jshint":"^2.5.1","mocha":"^2.1.0","mochify":"^2.1.0"},"homepage":"https://github.com/cryptocoinjs/bigi#readme","keywords":["cryptography","math","bitcoin","arbitrary","precision","arithmetic","big","integer","int","number","biginteger","bigint","bignumber","decimal","float"],"main":"./lib/index.js","name":"bigi","repository":{"url":"git+https://github.com/cryptocoinjs/bigi.git","type":"git"},"scripts":{"browser-test":"mochify --wd -R spec","coverage":"istanbul cover ./node_modules/.bin/_mocha -- --reporter list test/*.js","coveralls":"npm run-script coverage && node ./node_modules/.bin/coveralls < coverage/lcov.info","jshint":"jshint --config jshint.json lib/*.js ; true","test":"_mocha -- test/*.js","unit":"mocha"},"testling":{"files":"test/*.js","harness":"mocha","browsers":["ie/9..latest","firefox/latest","chrome/latest","safari/6.0..latest","iphone/6.0..latest","android-browser/4.2..latest"]},"version":"1.4.2"}
+module.exports = {"_from":"bigi@^1.4.0","_id":"bigi@1.4.2","_inBundle":false,"_integrity":"sha1-nGZalfiLiwj8Bc/XMfVhhZ1yWCU=","_location":"/bitcoinjs-lib/bigi","_phantomChildren":{},"_requested":{"type":"range","registry":true,"raw":"bigi@^1.4.0","name":"bigi","escapedName":"bigi","rawSpec":"^1.4.0","saveSpec":null,"fetchSpec":"^1.4.0"},"_requiredBy":["/bitcoinjs-lib","/bitcoinjs-lib/ecurve"],"_resolved":"https://registry.npmjs.org/bigi/-/bigi-1.4.2.tgz","_shasum":"9c665a95f88b8b08fc05cfd731f561859d725825","_spec":"bigi@^1.4.0","_where":"/Users/kobayashitakahiro/monya-koba/monya/node_modules/bitcoinjs-lib","bugs":{"url":"https://github.com/cryptocoinjs/bigi/issues"},"bundleDependencies":false,"dependencies":{},"deprecated":false,"description":"Big integers.","devDependencies":{"coveralls":"^2.11.2","istanbul":"^0.3.5","jshint":"^2.5.1","mocha":"^2.1.0","mochify":"^2.1.0"},"homepage":"https://github.com/cryptocoinjs/bigi#readme","keywords":["cryptography","math","bitcoin","arbitrary","precision","arithmetic","big","integer","int","number","biginteger","bigint","bignumber","decimal","float"],"main":"./lib/index.js","name":"bigi","repository":{"url":"git+https://github.com/cryptocoinjs/bigi.git","type":"git"},"scripts":{"browser-test":"mochify --wd -R spec","coverage":"istanbul cover ./node_modules/.bin/_mocha -- --reporter list test/*.js","coveralls":"npm run-script coverage && node ./node_modules/.bin/coveralls < coverage/lcov.info","jshint":"jshint --config jshint.json lib/*.js ; true","test":"_mocha -- test/*.js","unit":"mocha"},"testling":{"files":"test/*.js","harness":"mocha","browsers":["ie/9..latest","firefox/latest","chrome/latest","safari/6.0..latest","iphone/6.0..latest","android-browser/4.2..latest"]},"version":"1.4.2"}
 
 /***/ }),
 /* 254 */
@@ -33485,9 +33495,7 @@ TransactionBuilder.fromTransaction = function (transaction, network) {
 }
 
 TransactionBuilder.prototype.addInput = function (txHash, vout, sequence, prevOutScript) {
-	console.log("koreha test");
   if (!this.__canModifyInputs()) {
-	  console.log("koba1");
     throw new Error('No, this would invalidate signatures')
   }
 
@@ -33495,21 +33503,18 @@ TransactionBuilder.prototype.addInput = function (txHash, vout, sequence, prevOu
 
   // is it a hex string?
   if (typeof txHash === 'string') {
-	  console.log("koba2");
-	  console.log("txHash=",txHash);
     // transaction hashs's are displayed in reverse order, un-reverse it
     txHash = Buffer.from(txHash, 'hex').reverse()
 
   // is it a Transaction object?
   } else if (txHash instanceof Transaction) {
-	  console.log("koba3")
     var txOut = txHash.outs[vout]
     prevOutScript = txOut.script
     value = txOut.value
 
     txHash = txHash.getHash()
   }
-  console.log("koba4");
+
   return this.__addInputUnsafe(txHash, vout, {
     sequence: sequence,
     prevOutScript: prevOutScript,
@@ -33576,6 +33581,7 @@ TransactionBuilder.prototype.addOutput = function (scriptPubKey, value) {
 }
 
 TransactionBuilder.prototype.build = function () {
+	console.log("build ?");
   return this.__build(false)
 }
 TransactionBuilder.prototype.buildIncomplete = function () {
@@ -33587,24 +33593,30 @@ TransactionBuilder.prototype.__build = function (allowIncomplete) {
     if (!this.tx.ins.length) throw new Error('Transaction has no inputs')
     if (!this.tx.outs.length) throw new Error('Transaction has no outputs')
   }
-
+console.log("build this.tx.ins", this.tx.ins);
+	console.log("build this.tx.outs",this.tx.outs);
+	console.log("build 1");
   var tx = this.tx.clone()
+	console.log("build 2");
   // Create script signatures from inputs
   this.inputs.forEach(function (input, i) {
     var scriptType = input.witnessScriptType || input.redeemScriptType || input.prevOutType
+	  console.log("scriptType",scriptType);
     if (!scriptType && !allowIncomplete) throw new Error('Transaction is not complete')
     var result = buildInput(input, allowIncomplete)
-
+console.log("build input",input);
     // skip if no result
     if (!allowIncomplete) {
       if (!supportedType(result.type) && result.type !== btemplates.types.P2WPKH) {
         throw new Error(result.type + ' not supported')
       }
     }
-
+console.log("i",i);
+	  console.log("result.script",result.script);
     tx.setInputScript(i, result.script)
     tx.setWitness(i, result.witness)
   })
+	console.log("build 3");
 
   if (!allowIncomplete) {
     // do not rely on this, its merely a last resort
@@ -33612,6 +33624,7 @@ TransactionBuilder.prototype.__build = function (allowIncomplete) {
       throw new Error('Transaction has absurd fees')
     }
   }
+	console.log("build 4");
 
   return tx
 }
@@ -36356,7 +36369,7 @@ module.exports = function(module) {
 /* 303 */
 /***/ (function(module, exports) {
 
-module.exports = {"_args":[["elliptic@6.4.0","/Users/tkobayashi/monyaDev/monya"]],"_from":"elliptic@6.4.0","_id":"elliptic@6.4.0","_inBundle":false,"_integrity":"sha1-ysmvh2LIWDYYcAPI3+GT5eLq5d8=","_location":"/elliptic","_phantomChildren":{},"_requested":{"type":"version","registry":true,"raw":"elliptic@6.4.0","name":"elliptic","escapedName":"elliptic","rawSpec":"6.4.0","saveSpec":null,"fetchSpec":"6.4.0"},"_requiredBy":["/browserify-sign","/create-ecdh","/secp256k1"],"_resolved":"https://registry.npmjs.org/elliptic/-/elliptic-6.4.0.tgz","_spec":"6.4.0","_where":"/Users/tkobayashi/monyaDev/monya","author":{"name":"Fedor Indutny","email":"fedor@indutny.com"},"bugs":{"url":"https://github.com/indutny/elliptic/issues"},"dependencies":{"bn.js":"^4.4.0","brorand":"^1.0.1","hash.js":"^1.0.0","hmac-drbg":"^1.0.0","inherits":"^2.0.1","minimalistic-assert":"^1.0.0","minimalistic-crypto-utils":"^1.0.0"},"description":"EC cryptography","devDependencies":{"brfs":"^1.4.3","coveralls":"^2.11.3","grunt":"^0.4.5","grunt-browserify":"^5.0.0","grunt-cli":"^1.2.0","grunt-contrib-connect":"^1.0.0","grunt-contrib-copy":"^1.0.0","grunt-contrib-uglify":"^1.0.1","grunt-mocha-istanbul":"^3.0.1","grunt-saucelabs":"^8.6.2","istanbul":"^0.4.2","jscs":"^2.9.0","jshint":"^2.6.0","mocha":"^2.1.0"},"files":["lib"],"homepage":"https://github.com/indutny/elliptic","keywords":["EC","Elliptic","curve","Cryptography"],"license":"MIT","main":"lib/elliptic.js","name":"elliptic","repository":{"type":"git","url":"git+ssh://git@github.com/indutny/elliptic.git"},"scripts":{"jscs":"jscs benchmarks/*.js lib/*.js lib/**/*.js lib/**/**/*.js test/index.js","jshint":"jscs benchmarks/*.js lib/*.js lib/**/*.js lib/**/**/*.js test/index.js","lint":"npm run jscs && npm run jshint","test":"npm run lint && npm run unit","unit":"istanbul test _mocha --reporter=spec test/index.js","version":"grunt dist && git add dist/"},"version":"6.4.0"}
+module.exports = {"_args":[["elliptic@6.4.0","/Users/kobayashitakahiro/monya-koba/monya"]],"_from":"elliptic@6.4.0","_id":"elliptic@6.4.0","_inBundle":false,"_integrity":"sha1-ysmvh2LIWDYYcAPI3+GT5eLq5d8=","_location":"/elliptic","_phantomChildren":{},"_requested":{"type":"version","registry":true,"raw":"elliptic@6.4.0","name":"elliptic","escapedName":"elliptic","rawSpec":"6.4.0","saveSpec":null,"fetchSpec":"6.4.0"},"_requiredBy":["/browserify-sign","/create-ecdh","/secp256k1"],"_resolved":"https://registry.npmjs.org/elliptic/-/elliptic-6.4.0.tgz","_spec":"6.4.0","_where":"/Users/kobayashitakahiro/monya-koba/monya","author":{"name":"Fedor Indutny","email":"fedor@indutny.com"},"bugs":{"url":"https://github.com/indutny/elliptic/issues"},"dependencies":{"bn.js":"^4.4.0","brorand":"^1.0.1","hash.js":"^1.0.0","hmac-drbg":"^1.0.0","inherits":"^2.0.1","minimalistic-assert":"^1.0.0","minimalistic-crypto-utils":"^1.0.0"},"description":"EC cryptography","devDependencies":{"brfs":"^1.4.3","coveralls":"^2.11.3","grunt":"^0.4.5","grunt-browserify":"^5.0.0","grunt-cli":"^1.2.0","grunt-contrib-connect":"^1.0.0","grunt-contrib-copy":"^1.0.0","grunt-contrib-uglify":"^1.0.1","grunt-mocha-istanbul":"^3.0.1","grunt-saucelabs":"^8.6.2","istanbul":"^0.4.2","jscs":"^2.9.0","jshint":"^2.6.0","mocha":"^2.1.0"},"files":["lib"],"homepage":"https://github.com/indutny/elliptic","keywords":["EC","Elliptic","curve","Cryptography"],"license":"MIT","main":"lib/elliptic.js","name":"elliptic","repository":{"type":"git","url":"git+ssh://git@github.com/indutny/elliptic.git"},"scripts":{"jscs":"jscs benchmarks/*.js lib/*.js lib/**/*.js lib/**/**/*.js test/index.js","jshint":"jscs benchmarks/*.js lib/*.js lib/**/*.js lib/**/**/*.js test/index.js","lint":"npm run jscs && npm run jshint","test":"npm run lint && npm run unit","unit":"istanbul test _mocha --reporter=spec test/index.js","version":"grunt dist && git add dist/"},"version":"6.4.0"}
 
 /***/ }),
 /* 304 */
@@ -51392,9 +51405,9 @@ module.exports=__webpack_require__(479)({
       coinType:"",
       possibility:[],
       fiatTicker:this.$store.state.fiat,
-      issueModal:false,
+      modalAssetUrl:false,
       issueUTXOs:false,
-      detailCardModal:false,
+      modalDetailCard:false,
       label:"",
       messageToShow:"aaa",
       txLabel:"",
@@ -51429,7 +51442,7 @@ module.exports=__webpack_require__(479)({
       loadingCloseTitle:"閉じる",
       // issue
       utxoIssue:[],
-      issueQuantity:"10",
+      quantityIssue:"",
       issueURL:"http://prueba-semilla.org/assets/test3",
       issueAddress:"",
       network:"",
@@ -51438,12 +51451,13 @@ module.exports=__webpack_require__(479)({
       detailUtxo:"",
 
       // upload
-      iconImageFile:"",
       assetImageFile:"",
       preview:"",
       imageIconFile:[],
+      uploadedImageIcon: '',
       uploadedImage: '',
       imagefile:'',
+      iconImageFile:'',
     }
   },
   store:__webpack_require__(2),
@@ -51463,13 +51477,24 @@ module.exports=__webpack_require__(479)({
     // this.handlerAssetFromMyServer();
   },  
   methods:{
-    onFileChange(e) {
-      let files = e.target.files || e.dataTransfer.files;
-      console.log("files", files);
-      this.createImage(files[0]);
+    onFileChangeIconImage(event) {
+      let files = event.target.files || event.dataTransfer.files;
+      this.iconImageFile = files[0];
+      this.createIconImage(this.iconImageFile);
+    },
+    onFileChangeImage(event) {
+      let files = event.target.files || event.dataTransfer.files;
       this.imagefile = files[0];
+      this.createImage(this.imagefile);
     },
     // アップロードした画像を表示
+    createIconImage(file) {
+      let reader = new FileReader();
+      reader.onload = (e) => {
+        this.uploadedImageIcon = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    },
     createImage(file) {
       let reader = new FileReader();
       reader.onload = (e) => {
@@ -51503,8 +51528,6 @@ module.exports=__webpack_require__(479)({
       console.log("to_address",to_address);
       console.log("quantity", quantity);
       console.log("from_address", from_address);
-
-
     },
     requestIssueAsset(address, quantity, metadata){
       this.loading=true;
@@ -51742,7 +51765,7 @@ module.exports=__webpack_require__(479)({
         return;
       }
       this.issueUTXOs = false;
-      this.issueModal = true;
+      this.modalAmount = true;
       this.issueAddress = this.utxoIssue.address;
     },
     didTapIssue() {
@@ -51751,7 +51774,7 @@ module.exports=__webpack_require__(479)({
       this.requestMyUtxos(addrs);
     },
     didTapBack() {
-      this.issueModal = false;
+      this.modalAmount = false;
       this.issueUTXOs = true;
     },
     didTapCard(index) {
@@ -51759,21 +51782,25 @@ module.exports=__webpack_require__(479)({
       this.confirmSend(index);
     },
     didTapBackToTop(){
-      this.issueModal = false;
-      this.detailCardModal = false;
+      this.modalAmount = false;
+      this.modalDetailCard = false;
     },
     confirmSend(index){
       this.detailUtxo = this.myUtxos[index];
-      console.log("show detailCardModal");
-      this.detailCardModal = true;
+      console.log("show modalDetailCard");
+      this.modalDetailCard = true;
+    },
+    amountDone(){
+      this.modalAmount = false;
+      this.modalAssetUrl = true;
     },
     doIssue(){
       console.log("発行するタップ")
-      this.issueModal = false;
+      this.modalAmount = false;
       fee = 0.0005;
       promise = [];
       promise.push(
-        this.requestIssueAsset(this.issueAddress,this.issueQuantity,this.issueURL)
+        this.requestIssueAsset(this.issueAddress,this.quantityIssue,this.issueURL)
       );
       Promise.all(promise).then(res=>
         {
@@ -52101,7 +52128,7 @@ function decode (buffer) {
 /* 479 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var render = function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('v-ons-page',{directives:[{name:"show",rawName:"v-show",value:(!_vm.$store.state.transparency),expression:"!$store.state.transparency"}],attrs:{"data-page":"openassets"}},[_c('custom-bar',{staticStyle:{"font-size":"88px"},attrs:{"title":"OpenAssets","menu":"true","id":"bar"}},[_c('v-ons-toolbar-button',{on:{"click":_vm.didTapIssue}},[_c('v-ons-icon',{attrs:{"icon":"fa-plus"}})],1)],1),_vm._v(" "),_c('div',{attrs:{"id":"main"}},[_c('div',{attrs:{"id":"cards"}},_vm._l((_vm.myUtxos),function(cutxo,index){return (cutxo.asset_id)?_c('v-ons-list-item',{staticClass:"list"},[_c('v-ons-card',{attrs:{"modifier":"touch"},on:{"click":function($event){_vm.didTapCard(index)}}},[_c('div',{staticClass:"left"},[_c('span',{staticClass:"notification notification--material"},[_vm._v(_vm._s(cutxo.asset_quantity))])]),_vm._v(" "),_c('div',{staticClass:"right"},[_c('img',{attrs:{"src":cutxo.image_url}})])])],1):_vm._e()})),_vm._v(" "),_c('v-ons-modal',{attrs:{"visible":_vm.issueUTXOs}},[_vm._v("\n          発行に使うUTXOを選択してください\n            "),_c('section',{staticStyle:{"margin":"16px"}},_vm._l((_vm.myUtxos),function(utxo,index){return _c('v-ons-card',{staticClass:"utxos",attrs:{"modifier":"tappable"},on:{"click":function($event){_vm.didTapUtxo(index)}}},[_c('div',{staticClass:"left"},[_c('font',{attrs:{"color":"green"}},[_vm._v("address:"+_vm._s(utxo.address))]),_vm._v(" "),_c('font',{attrs:{"color":"black"}},[_vm._v("amount:"+_vm._s(utxo.amount))])],1)])})),_vm._v(" "),_c('p',{staticStyle:{"text-align":"center"}},[_c('v-ons-button',{staticStyle:{"margin":"6px 0"},attrs:{"modifier":"cta"},on:{"click":function($event){_vm.issueUTXOs = false}}},[_vm._v("キャンセル")])],1)]),_vm._v(" "),_c('v-ons-modal',{attrs:{"visible":_vm.issueModal}},[_c('v-ons-card',{staticClass:"issuer"},[_c('section',{staticStyle:{"margin":"16px"}},[_c('v-ons-input',{attrs:{"placeholder":"発行数","float":""},model:{value:(_vm.issueQuantity),callback:function ($$v) {_vm.issueQuantity=$$v},expression:"issueQuantity"}}),_vm._v(" "),_c('v-ons-input',{attrs:{"placeholder":"定義ファイルURL","float":""},model:{value:(_vm.issueURL),callback:function ($$v) {_vm.issueURL=$$v},expression:"issueURL"}}),_vm._v(" "),_c('input',{attrs:{"type":"file","accept":"image/*","id":"file-input"},on:{"change":function($event){_vm.uploadImage($event)}}}),_vm._v(" "),_c('div',{staticClass:"upload-box"},[_c('button',{attrs:{"type":"button"},on:{"click":_vm.didTapUploadButton}},[_vm._v("\n                  upload\n                ")])]),_vm._v(" "),_c('div',{staticClass:"upload"},[_c('img',{directives:[{name:"show",rawName:"v-show",value:(_vm.uploadedImage),expression:"uploadedImage"}],attrs:{"src":_vm.uploadedImage}}),_vm._v(" "),_c('input',{attrs:{"type":"file"},on:{"change":_vm.onFileChange}})])],1)]),_vm._v(" "),_c('p',{staticStyle:{"text-align":"center"}},[_c('v-ons-button',{staticStyle:{"margin":"6px 0"},attrs:{"modifier":"cta"},on:{"click":_vm.didTapBack}},[_vm._v("戻る")]),_vm._v(" "),_c('v-ons-button',{attrs:{"modifier":"cta"},on:{"click":_vm.doIssue}},[_vm._v("発行する")])],1)],1),_vm._v(" "),_c('v-ons-modal',{attrs:{"visible":_vm.detailCardModal}},[_c('v-ons-card',{staticClass:"detailCard"},[_c('section',{staticStyle:{"margin":"16px"}},[_c('img',{attrs:{"src":_vm.detailUtxo.image_url}}),_vm._v(" "),_c('v-ons-input',{attrs:{"placeholder":"何枚送付しますか？","float":""},model:{value:(_vm.sendQuantity),callback:function ($$v) {_vm.sendQuantity=$$v},expression:"sendQuantity"}}),_vm._v(" "),_c('v-ons-input',{attrs:{"placeholder":"送付先アドレス","float":""},model:{value:(_vm.send_to_address),callback:function ($$v) {_vm.send_to_address=$$v},expression:"send_to_address"}})],1)]),_vm._v(" "),_c('p',{staticStyle:{"text-align":"center"}},[_c('v-ons-button',{staticStyle:{"margin":"6px 0"},attrs:{"modifier":"cta"},on:{"click":_vm.didTapBackToTop}},[_vm._v("戻る")]),_vm._v(" "),_c('v-ons-button',{attrs:{"modifier":"cta"},on:{"click":_vm.doIssue}},[_vm._v("送付する")])],1)],1),_vm._v(" "),_c('v-ons-modal',{attrs:{"visible":_vm.alert}},[_c('section',{staticStyle:{"margin":"16px"}},[_vm._v("\n          "+_vm._s(_vm.alertMessage)+"\n        ")]),_vm._v(" "),_c('v-ons-button',{attrs:{"modifier":"quiet"},on:{"click":function($event){_vm.alert = false}}},[_vm._v("閉じる")])],1),_vm._v(" "),_c('v-ons-modal',{attrs:{"visible":_vm.loading}},[_c('p',{staticStyle:{"text-align":"center"}},[_vm._v("\n          "+_vm._s(_vm.loadingMessage)+"\n          "),_c('br'),_c('br'),_vm._v(" "),_c('svg',{staticClass:"progress-circular progress-circular--indeterminate"},[_c('circle',{staticClass:"progress-circular__background"}),_vm._v(" "),_c('circle',{staticClass:"progress-circular__primary progress-circular--indeterminate__primary"}),_vm._v(" "),_c('circle',{staticClass:"progress-circular__secondary progress-circular--indeterminate__secondary"})]),_vm._v(" "),_c('br'),_vm._v(" "),_c('v-ons-button',{attrs:{"modifier":"quiet"},on:{"click":function($event){_vm.loading = false}}},[_vm._v(_vm._s(_vm.loadingCloseTitle))])],1)])],1)],1)}
+var render = function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('v-ons-page',{directives:[{name:"show",rawName:"v-show",value:(!_vm.$store.state.transparency),expression:"!$store.state.transparency"}],attrs:{"data-page":"openassets"}},[_c('custom-bar',{staticStyle:{"font-size":"88px"},attrs:{"title":"OpenAssets","menu":"true","id":"bar"}},[_c('v-ons-toolbar-button',{on:{"click":_vm.didTapIssue}},[_c('v-ons-icon',{attrs:{"icon":"fa-plus"}})],1)],1),_vm._v(" "),_c('div',{attrs:{"id":"main"}},[_c('div',{attrs:{"id":"cards"}},_vm._l((_vm.myUtxos),function(cutxo,index){return (cutxo.asset_id)?_c('v-ons-list-item',{staticClass:"list"},[_c('v-ons-card',{attrs:{"modifier":"touch"},on:{"click":function($event){_vm.didTapCard(index)}}},[_c('div',{staticClass:"left"},[_c('span',{staticClass:"notification notification--material"},[_vm._v(_vm._s(cutxo.asset_quantity))])]),_vm._v(" "),_c('div',{staticClass:"right"},[_c('img',{attrs:{"src":cutxo.image_url}})])])],1):_vm._e()})),_vm._v(" "),_c('v-ons-modal',{attrs:{"visible":_vm.issueUTXOs}},[_vm._v("\n        発行に使うUTXOを選択してください\n        "),_c('section',{staticStyle:{"margin":"16px"}},_vm._l((_vm.myUtxos),function(utxo,index){return _c('v-ons-card',{staticClass:"utxos",attrs:{"modifier":"tappable"},on:{"click":function($event){_vm.didTapUtxo(index)}}},[_c('div',{staticClass:"left"},[_c('font',{attrs:{"color":"green"}},[_vm._v("address:"+_vm._s(utxo.address))]),_vm._v(" "),_c('font',{attrs:{"color":"black"}},[_vm._v("amount:"+_vm._s(utxo.amount))])],1)])})),_vm._v(" "),_c('p',{staticStyle:{"text-align":"center"}},[_c('v-ons-button',{staticStyle:{"margin":"6px 0"},attrs:{"modifier":"cta"},on:{"click":function($event){_vm.issueUTXOs = false}}},[_vm._v("キャンセル")])],1)]),_vm._v(" "),_c('v-ons-modal',{attrs:{"visible":_vm.modalAmount}},[_vm._v("\n        発行枚数を入力してください\n        "),_c('v-ons-card',{staticClass:"issuer"},[_c('section',{staticStyle:{"margin":"16px"}},[_c('v-ons-input',{attrs:{"placeholder":"発行数","float":""},model:{value:(_vm.quantityIssue),callback:function ($$v) {_vm.quantityIssue=$$v},expression:"quantityIssue"}}),_vm._v(" "),_c('input',{attrs:{"type":"file","accept":"image/*","id":"file-input"},on:{"change":function($event){_vm.uploadImage($event)}}}),_vm._v(" "),_c('div',{staticClass:"upload-box"},[_c('button',{attrs:{"type":"button"},on:{"click":_vm.didTapUploadButton}},[_vm._v("\n                  upload\n                ")])])],1)]),_vm._v(" "),_c('p',{staticStyle:{"text-align":"center"}},[_c('v-ons-button',{staticStyle:{"margin":"6px 0"},attrs:{"modifier":"cta"},on:{"click":_vm.didTapBack}},[_vm._v("戻る")]),_vm._v(" "),_c('v-ons-button',{attrs:{"modifier":"cta"},on:{"click":_vm.amountDone}},[_vm._v("決定")])],1)],1),_vm._v(" "),_c('v-ons-modal',{attrs:{"visible":_vm.modalAssetUrl}},[_vm._v("\n        アセットの定義ファイルを作成します。\n        "),_c('v-ons-card',{staticClass:"issuer"},[_c('section',{staticStyle:{"margin":"16px"}},[_c('v-ons-input',{attrs:{"placeholder":"発行数","float":""},model:{value:(_vm.quantityIssue),callback:function ($$v) {_vm.quantityIssue=$$v},expression:"quantityIssue"}}),_vm._v(" "),_c('v-ons-input',{attrs:{"placeholder":"asset_ids(必須)","float":""},model:{value:(_vm.quantityIssue),callback:function ($$v) {_vm.quantityIssue=$$v},expression:"quantityIssue"}}),_vm._v(" "),_c('v-ons-input',{attrs:{"placeholder":"アセット名(必須)","float":""},model:{value:(_vm.assetName),callback:function ($$v) {_vm.assetName=$$v},expression:"assetName"}}),_vm._v(" "),_c('v-ons-input',{attrs:{"placeholder":"略称(必須)","float":""},model:{value:(_vm.assetNameShort),callback:function ($$v) {_vm.assetNameShort=$$v},expression:"assetNameShort"}}),_vm._v(" "),_c('v-ons-input',{attrs:{"placeholder":"アセット情報URL(任意)","float":""},model:{value:(_vm.assetContractURL),callback:function ($$v) {_vm.assetContractURL=$$v},expression:"assetContractURL"}}),_vm._v(" "),_c('v-ons-input',{attrs:{"placeholder":"発行者(任意)","float":""},model:{value:(_vm.assetIssuer),callback:function ($$v) {_vm.assetIssuer=$$v},expression:"assetIssuer"}}),_vm._v(" "),_c('v-ons-input',{attrs:{"placeholder":"詳細情報(任意)","float":""},model:{value:(_vm.assetDescription),callback:function ($$v) {_vm.assetDescription=$$v},expression:"assetDescription"}}),_vm._v(" "),_c('v-ons-input',{attrs:{"placeholder":"MIME情報(任意)","float":""},model:{value:(_vm.assetDescriptionMime),callback:function ($$v) {_vm.assetDescriptionMime=$$v},expression:"assetDescriptionMime"}}),_vm._v(" "),_c('v-ons-input',{attrs:{"placeholder":"分割数(小数点何位)","float":""},model:{value:(_vm.assetDivisility),callback:function ($$v) {_vm.assetDivisility=$$v},expression:"assetDivisility"}}),_vm._v(" "),_c('div',{staticClass:"right"},[_c('v-ons-switch')],1),_vm._v(" "),_c('label',{attrs:{"for":"name1"}},[_vm._v("icon画像")]),_vm._v(" "),_c('div',{staticClass:"right"},[_c('img',{directives:[{name:"show",rawName:"v-show",value:(_vm.uploadedImageIcon),expression:"uploadedImageIcon"}],attrs:{"src":_vm.uploadedImageIcon}}),_vm._v(" "),_c('input',{attrs:{"type":"file"},on:{"change":_vm.onFileChangeIconImage}})]),_vm._v(" "),_c('label',{attrs:{"for":"name2"}},[_vm._v("Image画像")]),_vm._v(" "),_c('div',{staticClass:"right"},[_c('img',{directives:[{name:"show",rawName:"v-show",value:(_vm.uploadedImage),expression:"uploadedImage"}],attrs:{"src":_vm.uploadedImage}}),_vm._v(" "),_c('input',{attrs:{"type":"file"},on:{"change":_vm.onFileChangeImage}})])],1)]),_vm._v(" "),_c('p',{staticStyle:{"text-align":"center"}},[_c('v-ons-button',{staticStyle:{"margin":"6px 0"},attrs:{"modifier":"cta"},on:{"click":_vm.didTapBack}},[_vm._v("戻る")]),_vm._v(" "),_c('v-ons-button',{attrs:{"modifier":"cta"},on:{"click":_vm.amountDone}},[_vm._v("決定")]),_vm._v(" "),_c('v-ons-button',{attrs:{"modifier":"cta"},on:{"click":_vm.amountDone}},[_vm._v("まだ作っていない")])],1)],1),_vm._v(" "),_c('v-ons-modal',{attrs:{"visible":_vm.modalDetailCard}},[_c('v-ons-card',{staticClass:"detailCard"},[_c('section',{staticStyle:{"margin":"16px"}},[_c('img',{attrs:{"src":_vm.detailUtxo.image_url}}),_vm._v(" "),_c('v-ons-input',{attrs:{"placeholder":"何枚送付しますか？","float":""},model:{value:(_vm.sendQuantity),callback:function ($$v) {_vm.sendQuantity=$$v},expression:"sendQuantity"}}),_vm._v(" "),_c('v-ons-input',{attrs:{"placeholder":"送付先アドレス","float":""},model:{value:(_vm.send_to_address),callback:function ($$v) {_vm.send_to_address=$$v},expression:"send_to_address"}})],1)]),_vm._v(" "),_c('p',{staticStyle:{"text-align":"center"}},[_c('v-ons-button',{staticStyle:{"margin":"6px 0"},attrs:{"modifier":"cta"},on:{"click":_vm.didTapBackToTop}},[_vm._v("戻る")]),_vm._v(" "),_c('v-ons-button',{attrs:{"modifier":"cta"},on:{"click":_vm.doIssue}},[_vm._v("送付する")])],1)],1),_vm._v(" "),_c('v-ons-modal',{attrs:{"visible":_vm.alert}},[_c('section',{staticStyle:{"margin":"16px"}},[_vm._v("\n          "+_vm._s(_vm.alertMessage)+"\n        ")]),_vm._v(" "),_c('v-ons-button',{attrs:{"modifier":"quiet"},on:{"click":function($event){_vm.alert = false}}},[_vm._v("閉じる")])],1),_vm._v(" "),_c('v-ons-modal',{attrs:{"visible":_vm.loading}},[_c('p',{staticStyle:{"text-align":"center"}},[_vm._v("\n          "+_vm._s(_vm.loadingMessage)+"\n          "),_c('br'),_c('br'),_vm._v(" "),_c('svg',{staticClass:"progress-circular progress-circular--indeterminate"},[_c('circle',{staticClass:"progress-circular__background"}),_vm._v(" "),_c('circle',{staticClass:"progress-circular__primary progress-circular--indeterminate__primary"}),_vm._v(" "),_c('circle',{staticClass:"progress-circular__secondary progress-circular--indeterminate__secondary"})]),_vm._v(" "),_c('br'),_vm._v(" "),_c('v-ons-button',{attrs:{"modifier":"quiet"},on:{"click":function($event){_vm.loading = false}}},[_vm._v(_vm._s(_vm.loadingCloseTitle))])],1)])],1)],1)}
 var staticRenderFns = []
 module.exports = function (_exports) {
   var options = typeof _exports === 'function'

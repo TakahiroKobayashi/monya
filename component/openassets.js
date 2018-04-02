@@ -24,9 +24,9 @@ module.exports=require("./openassets.html")({
       coinType:"",
       possibility:[],
       fiatTicker:this.$store.state.fiat,
-      issueModal:false,
+      modalAssetUrl:false,
       issueUTXOs:false,
-      detailCardModal:false,
+      modalDetailCard:false,
       label:"",
       messageToShow:"aaa",
       txLabel:"",
@@ -61,7 +61,7 @@ module.exports=require("./openassets.html")({
       loadingCloseTitle:"閉じる",
       // issue
       utxoIssue:[],
-      issueQuantity:"10",
+      quantityIssue:"",
       issueURL:"http://prueba-semilla.org/assets/test3",
       issueAddress:"",
       network:"",
@@ -70,12 +70,13 @@ module.exports=require("./openassets.html")({
       detailUtxo:"",
 
       // upload
-      iconImageFile:"",
       assetImageFile:"",
       preview:"",
       imageIconFile:[],
+      uploadedImageIcon: '',
       uploadedImage: '',
       imagefile:'',
+      iconImageFile:'',
     }
   },
   store:require("../js/store.js"),
@@ -95,13 +96,24 @@ module.exports=require("./openassets.html")({
     // this.handlerAssetFromMyServer();
   },  
   methods:{
-    onFileChange(e) {
-      let files = e.target.files || e.dataTransfer.files;
-      console.log("files", files);
-      this.createImage(files[0]);
+    onFileChangeIconImage(event) {
+      let files = event.target.files || event.dataTransfer.files;
+      this.iconImageFile = files[0];
+      this.createIconImage(this.iconImageFile);
+    },
+    onFileChangeImage(event) {
+      let files = event.target.files || event.dataTransfer.files;
       this.imagefile = files[0];
+      this.createImage(this.imagefile);
     },
     // アップロードした画像を表示
+    createIconImage(file) {
+      let reader = new FileReader();
+      reader.onload = (e) => {
+        this.uploadedImageIcon = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    },
     createImage(file) {
       let reader = new FileReader();
       reader.onload = (e) => {
@@ -135,8 +147,6 @@ module.exports=require("./openassets.html")({
       console.log("to_address",to_address);
       console.log("quantity", quantity);
       console.log("from_address", from_address);
-
-
     },
     requestIssueAsset(address, quantity, metadata){
       this.loading=true;
@@ -374,7 +384,7 @@ module.exports=require("./openassets.html")({
         return;
       }
       this.issueUTXOs = false;
-      this.issueModal = true;
+      this.modalAmount = true;
       this.issueAddress = this.utxoIssue.address;
     },
     didTapIssue() {
@@ -383,7 +393,7 @@ module.exports=require("./openassets.html")({
       this.requestMyUtxos(addrs);
     },
     didTapBack() {
-      this.issueModal = false;
+      this.modalAmount = false;
       this.issueUTXOs = true;
     },
     didTapCard(index) {
@@ -391,21 +401,25 @@ module.exports=require("./openassets.html")({
       this.confirmSend(index);
     },
     didTapBackToTop(){
-      this.issueModal = false;
-      this.detailCardModal = false;
+      this.modalAmount = false;
+      this.modalDetailCard = false;
     },
     confirmSend(index){
       this.detailUtxo = this.myUtxos[index];
-      console.log("show detailCardModal");
-      this.detailCardModal = true;
+      console.log("show modalDetailCard");
+      this.modalDetailCard = true;
+    },
+    amountDone(){
+      this.modalAmount = false;
+      this.modalAssetUrl = true;
     },
     doIssue(){
       console.log("発行するタップ")
-      this.issueModal = false;
+      this.modalAmount = false;
       fee = 0.0005;
       promise = [];
       promise.push(
-        this.requestIssueAsset(this.issueAddress,this.issueQuantity,this.issueURL)
+        this.requestIssueAsset(this.issueAddress,this.quantityIssue,this.issueURL)
       );
       Promise.all(promise).then(res=>
         {
